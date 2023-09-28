@@ -486,8 +486,8 @@ sim_main(void)
         int i;
         int max_stall_cyc_before_ready = 0;
         for (i = 0; i < 3; i++) {
-          if ((MD_OP_FLAGS(op) & F_MEM) && (MD_OP_FLAGS(op) & F_STORE)) break; // ignore the store operation
           if (r_in[i] != DNA && reg_ready_q2[r_in[i]] > sim_num_insn){
+            if ((i == 0) && (MD_OP_FLAGS(op) & F_MEM) && (MD_OP_FLAGS(op) & F_STORE)) continue; // ignore the store operation only if dependence is the data to store. But still need to check if the address is dependent on previous instruction, since it required in EX stage.
             if ((reg_ready_q2[r_in[i]] - sim_num_insn) > max_stall_cyc_before_ready) {
               max_stall_cyc_before_ready = reg_ready_q2[r_in[i]] - sim_num_insn;
             }
@@ -500,9 +500,20 @@ sim_main(void)
       }
 
       // NOTE need to update reg_ready after the checking is done to avoid corner case that ADD R1, R2 -> R1 which would trigger stall count
-      // TODO: figure out how to update reg_ready
-      if (r_out[0] != DNA)  reg_ready_q2[r_out[0]] = sim_num_insn + 3;
-      if (r_out[1] != DNA)  reg_ready_q2[r_out[1]] = sim_num_insn + 3; 
+      // if it is store there is no stall needed since the memeory is ideal (i.e. 1 cycle to store)
+      if ((MD_OP_FLAGS(op) & F_MEM) && (MD_OP_FLAGS(op) & F_STORE)){
+        if (r_out[0] != DNA)  reg_ready_q2[r_out[0]] = sim_num_insn + 1;
+        if (r_out[1] != DNA)  reg_ready_q2[r_out[1]] = sim_num_insn + 1; 
+      
+      // if it is load the longest stall is when the data is needed at EX stage 2 cycle stall
+      } else if ((MD_OP_FLAGS(op) & F_MEM) && (MD_OP_FLAGS(op) & F_LOAD)) {
+        if (r_out[0] != DNA)  reg_ready_q2[r_out[0]] = sim_num_insn + 3;
+        if (r_out[1] != DNA)  reg_ready_q2[r_out[1]] = sim_num_insn + 3; 
+      // if data is not generated at M stage, then the max stall cycle needed is 1, from EX to EX.
+      } else {
+        if (r_out[0] != DNA)  reg_ready_q2[r_out[0]] = sim_num_insn + 2;
+        if (r_out[1] != DNA)  reg_ready_q2[r_out[1]] = sim_num_insn + 2; 
+      }
       /* ECE552 Assignment 1 - END CODE*/
 
       if (fault != md_fault_none)
