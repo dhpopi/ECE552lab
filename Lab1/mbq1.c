@@ -25,7 +25,9 @@ int main(int argc, char *argv[])
                     #nop
                     .set	reorder
                     #.set	volatile
-	sw	$2,20($sp)
+	sw	$2,20($sp)  dependent on the perivous lw inst. Distance 0, this require a 2 cycle stall to handle the hazzard
+                    F   D   X   M   W
+                        F   S   S   D   X   W
                     #.set	novolatile
                     .set	noreorder
                     #.set	volatile
@@ -33,7 +35,10 @@ int main(int argc, char *argv[])
                     #.set	novolatile
                     .set	reorder
 	addu	$3,$3,1
-	addu	$2,$2,2
+	addu	$2,$2,2 dependent on the previous lw inst. Distance 1
+                    F   D   X   M   W
+                        F   D   X   M   W
+                            F   S   D   X   M   W
 	                #.set	volatile
 	sw	$2,24($sp)
 	                #.set	novolatile
