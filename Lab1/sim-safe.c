@@ -189,11 +189,11 @@ sim_reg_stats(struct stat_sdb_t *sdb)
 		   &sim_num_stall_two_cyc_q1, sim_num_stall_two_cyc_q1, NULL);
 
   stat_reg_counter(sdb, "sim_num_stall_one_cyc_q2",
-		   "total number of RAW hazards (q2)",
+		   "total number of one cycle stall (q2)",
 		   &sim_num_stall_one_cyc_q2, sim_num_stall_one_cyc_q2, NULL);
   
   stat_reg_counter(sdb, "sim_num_stall_two_cyc_q2",
-		   "total number of RAW hazards (q2)",
+		   "total number of two cycle stall (q2)",
 		   &sim_num_stall_two_cyc_q2, sim_num_stall_two_cyc_q2, NULL);
 
   stat_reg_formula(sdb, "CPI_from_RAW_hazard_q1",
@@ -454,9 +454,8 @@ sim_main(void)
       /* ECE552 Assignment 1 - BEGIN CODE*/
       {
         int i;
-        int max_stall_cyc_before_ready;
+        int max_stall_cyc_before_ready = 0;
         for (i = 0; i < 3; i++) {
-          max_stall_cyc_before_ready = 0;
           /*
           This variable needed if all input register need to be stalled, we need to find the max stall needed. For example:
           ADD R1, R2 -> R3
