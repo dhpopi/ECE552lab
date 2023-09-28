@@ -455,14 +455,14 @@ sim_main(void)
       {
         int i;
         int max_stall_cyc_before_ready = 0;
+        /*
+        This variable needed if all input register need to be stalled, we need to find the max stall needed. For example:
+        ADD R1, R2 -> R3
+        SUB R4, R5 -> R6
+        AND R3, R6 -> R7
+        in this case AND operation need to stall for 2 cycle. if we break the loop early then we will count the wrong number cycle stall needed
+        */
         for (i = 0; i < 3; i++) {
-          /*
-          This variable needed if all input register need to be stalled, we need to find the max stall needed. For example:
-          ADD R1, R2 -> R3
-          SUB R4, R5 -> R6
-          AND R3, R6 -> R7
-          in this case AND operation need to stall for 2 cycle. if we break the loop early then we will count the wrong number cycle stall needed
-          */
           if (r_in[i] != DNA && reg_ready_q1[r_in[i]] > sim_num_insn){
             if ((reg_ready_q1[r_in[i]] - sim_num_insn) > max_stall_cyc_before_ready) {
               max_stall_cyc_before_ready = reg_ready_q1[r_in[i]] - sim_num_insn;
@@ -479,6 +479,30 @@ sim_main(void)
       // Because there is no forwarding, thus the write value is available after 2 cycle (i.e. the third instruction after current)
       if (r_out[0] != DNA)  reg_ready_q1[r_out[0]] = sim_num_insn + 3;
       if (r_out[1] != DNA)  reg_ready_q1[r_out[1]] = sim_num_insn + 3; 
+      /* ECE552 Assignment 1 - END CODE*/
+
+      /* ECE552 Assignment 1 - BEGIN CODE*/
+      {
+        int i;
+        int max_stall_cyc_before_ready = 0;
+        for (i = 0; i < 3; i++) {
+          if ((MD_OP_FLAGS(op) & F_MEM) && (MD_OP_FLAGS(op) & F_STORE)) break; // ignore the store operation
+          if (r_in[i] != DNA && reg_ready_q2[r_in[i]] > sim_num_insn){
+            if ((reg_ready_q2[r_in[i]] - sim_num_insn) > max_stall_cyc_before_ready) {
+              max_stall_cyc_before_ready = reg_ready_q2[r_in[i]] - sim_num_insn;
+            }
+            reg_ready_q2[r_in[i]] = sim_num_insn; // to pretend that NOPs are added, so the reg is ready now.
+          }
+        }
+        if (max_stall_cyc_before_ready > 0)  sim_num_RAW_hazard_q2++;
+        if (max_stall_cyc_before_ready == 1) sim_num_stall_one_cyc_q2++;
+        if (max_stall_cyc_before_ready == 2) sim_num_stall_two_cyc_q2++;
+      }
+
+      // NOTE need to update reg_ready after the checking is done to avoid corner case that ADD R1, R2 -> R1 which would trigger stall count
+      // TODO: figure out how to update reg_ready
+      if (r_out[0] != DNA)  reg_ready_q2[r_out[0]] = sim_num_insn + 3;
+      if (r_out[1] != DNA)  reg_ready_q2[r_out[1]] = sim_num_insn + 3; 
       /* ECE552 Assignment 1 - END CODE*/
 
       if (fault != md_fault_none)
