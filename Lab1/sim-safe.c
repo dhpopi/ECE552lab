@@ -467,9 +467,23 @@ sim_main(void)
             if ((reg_ready_q1[r_in[i]] - sim_num_insn) > max_stall_cyc_before_ready) {
               max_stall_cyc_before_ready = reg_ready_q1[r_in[i]] - sim_num_insn;
             }
-            reg_ready_q1[r_in[i]] = sim_num_insn; // to pretend that NOPs are added, so the reg is ready now.
           }
         }
+        // the reason for iterating through all register is to preventing false trigger of the counter. consider this example
+        /*
+        I1: ADD R1,R2 -> R3
+        I2: SUB R4,R5 -> R6
+        I3: AND R3,R7 -> R8
+        I4: AND R6,R9 -> R10
+
+        the stall happend after I2, this stall will resolve both the data hazard for I3 and I4. Thus, if we only adjust R3 ready time but not R6 ready time, then we counted an extra stall.
+        */
+        for (i = 0; i < MD_TOTAL_REGS; i++){
+          if (reg_ready_q1[r_in[i]] > sim_num_insn){
+            reg_ready_q1[r_in[i]] -= max_stall_cyc_before_ready; // to pretend that NOPs are added, so the ready time for all register need to be adjusted accordingly.
+          }
+        }
+
         if (max_stall_cyc_before_ready > 0)  sim_num_RAW_hazard_q1++;
         if (max_stall_cyc_before_ready == 1) sim_num_stall_one_cyc_q1++;
         if (max_stall_cyc_before_ready == 2) sim_num_stall_two_cyc_q1++;
@@ -491,7 +505,20 @@ sim_main(void)
             if ((reg_ready_q2[r_in[i]] - sim_num_insn) > max_stall_cyc_before_ready) {
               max_stall_cyc_before_ready = reg_ready_q2[r_in[i]] - sim_num_insn;
             }
-            reg_ready_q2[r_in[i]] = sim_num_insn; // to pretend that NOPs are added, so the reg is ready now.
+          }
+        }
+        // the reason for iterating through all register is to preventing false trigger of the counter. consider this example
+        /*
+        I1: ADD R1,R2 -> R3
+        I2: SUB R4,R5 -> R6
+        I3: AND R3,R7 -> R8
+        I4: AND R6,R9 -> R10
+
+        the stall happend after I2, this stall will resolve both the data hazard for I3 and I4. Thus, if we only adjust R3 ready time but not R6 ready time, then we counted an extra stall.
+        */
+        for (i = 0; i < MD_TOTAL_REGS; i++){
+          if (reg_ready_q2[r_in[i]] > sim_num_insn){
+            reg_ready_q2[r_in[i]] -= max_stall_cyc_before_ready; // to pretend that NOPs are added, so the ready time for all register need to be adjusted accordingly.
           }
         }
         if (max_stall_cyc_before_ready > 0)  sim_num_RAW_hazard_q2++;
