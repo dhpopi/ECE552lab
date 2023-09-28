@@ -71,6 +71,7 @@ static counter_t reg_ready[MD_TOTAL_REGS];
 /* ECE552 Pre-Assignment - END CODE*/
 
 /* ECE552 Pre-Assignment - BEGIN CODE*/
+static counter_t sim_num_loads = 0;
 static counter_t sim_num_lduh = 0;
 /* ECE552 Pre-Assignment - END CODE*/
 
@@ -78,7 +79,15 @@ static counter_t sim_num_lduh = 0;
 /* ECE552 Assignment 1 - STATS COUNTERS - BEGIN */
 static counter_t sim_num_RAW_hazard_q1;
 static counter_t sim_num_RAW_hazard_q2;
-static counter_t sim_num_loads = 0;
+
+
+static counter_t reg_ready_q1[MD_TOTAL_REGS];
+static counter_t sim_num_stall_one_cyc_q1;
+static counter_t sim_num_stall_two_cyc_q1;
+
+static counter_t reg_ready_q2[MD_TOTAL_REGS];
+static counter_t sim_num_stall_one_cyc_q2;
+static counter_t sim_num_stall_two_cyc_q2;
 /* ECE552 Assignment 1 - STATS COUNTERS - END */
 
 /*
@@ -143,6 +152,24 @@ sim_reg_stats(struct stat_sdb_t *sdb)
 		   "simulation speed (in insts/sec)",
 		   "sim_num_insn / sim_elapsed_time", NULL);
 
+  /* ECE552 Pre-Assignment - BEGIN CODE*/
+  stat_reg_counter(sdb, "sim_num_loads",
+       "total number of load instructions",
+       &sim_num_loads, sim_num_loads, NULL);
+
+  stat_reg_counter(sdb, "sim_num_lduh",
+        "total number of load use hazards",
+        &sim_num_lduh, sim_num_lduh, NULL);
+
+  stat_reg_formula(sdb, "sim_load_ratio",
+		  "load instruction fraction",
+		  "sim_num_loads / sim_num_insn", NULL);
+
+  stat_reg_formula(sdb, "sim_load_use_ratio",
+      "load use fraction",
+      "sim_num_lduh / sim_num_insn", NULL);
+  /* ECE552 Pre-Assignment - END CODE*/
+
   /* ECE552 Assignment 1 - BEGIN CODE */
 
   stat_reg_counter(sdb, "sim_num_RAW_hazard_q1",
@@ -153,33 +180,29 @@ sim_reg_stats(struct stat_sdb_t *sdb)
 		   "total number of RAW hazards (q2)",
 		   &sim_num_RAW_hazard_q2, sim_num_RAW_hazard_q2, NULL);
 
-  /* ECE552 Pre-Assignment - BEGIN CODE*/
-  stat_reg_counter(sdb, "sim_num_loads",
-       "total number of load instructions",
-       &sim_num_loads, sim_num_loads, NULL);
+  stat_reg_counter(sdb, "sim_num_stall_one_cyc_q1",
+		   "total number of one cycle stall (q1)",
+		   &sim_num_stall_one_cyc_q1, sim_num_stall_one_cyc_q1, NULL);
 
-  stat_reg_counter(sdb, "sim_num_lduh",
-        "total number of load use hazards",
-        &sim_num_lduh, sim_num_lduh, NULL);
-  /* ECE552 Pre-Assignment - END CODE*/
+  stat_reg_counter(sdb, "sim_num_stall_two_cyc_q1",
+		   "total number of two cycle stall (q1)",
+		   &sim_num_stall_two_cyc_q1, sim_num_stall_two_cyc_q1, NULL);
+
+  stat_reg_counter(sdb, "sim_num_stall_one_cyc_q2",
+		   "total number of RAW hazards (q2)",
+		   &sim_num_stall_one_cyc_q2, sim_num_stall_one_cyc_q2, NULL);
+  
+  stat_reg_counter(sdb, "sim_num_stall_two_cyc_q2",
+		   "total number of RAW hazards (q2)",
+		   &sim_num_stall_two_cyc_q2, sim_num_stall_two_cyc_q2, NULL);
 
   stat_reg_formula(sdb, "CPI_from_RAW_hazard_q1",
 		   "CPI from RAW hazard (q1)",
-		   "1" /* ECE552 - MUST ADD YOUR FORMULA */, NULL);
+		   "1 + sim_num_stall_one_cyc_q1/sim_num_insn * 1 + sim_num_stall_two_cyc_q1/sim_num_insn * 2" /* ECE552 - MUST ADD YOUR FORMULA */, NULL);
 
   stat_reg_formula(sdb, "CPI_from_RAW_hazard_q2",
 		   "CPI from RAW hazard (q2)",
-		   "1" /* ECE552 - MUST ADD YOUR FORMULA */, NULL);
-
-  /* ECE552 Pre-Assignment - BEGIN CODE*/
-  stat_reg_formula(sdb, "sim_load_ratio",
-		  "load instruction fraction",
-		  "sim_num_loads / sim_num_insn", NULL);
-
-  stat_reg_formula(sdb, "sim_load_use_ratio",
-      "load use fraction",
-      "sim_num_lduh / sim_num_insn", NULL);
-  /* ECE552 Pre-Assignment - END CODE*/
+		   "1 + sim_num_stall_one_cyc_q2/sim_num_insn * 1 + sim_num_stall_two_cyc_q2/sim_num_insn * 2" /* ECE552 - MUST ADD YOUR FORMULA */, NULL);
 
   /* ECE552 Assignment 1 - END CODE */
 
@@ -422,11 +445,42 @@ sim_main(void)
         }
       }
 
-       if ( (MD_OP_FLAGS(op) & F_MEM) && (MD_OP_FLAGS(op) & F_LOAD) ) {
+      if ( (MD_OP_FLAGS(op) & F_MEM) && (MD_OP_FLAGS(op) & F_LOAD) ) {
       	if (r_out[0] != DNA)  reg_ready[r_out[0]] = sim_num_insn + 2; 
       	if (r_out[1] != DNA)  reg_ready[r_out[1]] = sim_num_insn + 2; 
       }
       /* ECE552 Pre-Assignment - END CODE*/
+
+      /* ECE552 Assignment 1 - BEGIN CODE*/
+      {
+        int i;
+        int max_stall_cyc_before_ready;
+        for (i = 0; i < 3; i++) {
+          max_stall_cyc_before_ready = 0;
+          /*
+          This variable needed if all input register need to be stalled, we need to find the max stall needed. For example:
+          ADD R1, R2 -> R3
+          SUB R4, R5 -> R6
+          AND R3, R6 -> R7
+          in this case AND operation need to stall for 2 cycle. if we break the loop early then we will count the wrong number cycle stall needed
+          */
+          if (r_in[i] != DNA && reg_ready_q1[r_in[i]] > sim_num_insn){
+            if ((reg_ready_q1[r_in[i]] - sim_num_insn) > max_stall_cyc_before_ready) {
+              max_stall_cyc_before_ready = reg_ready_q1[r_in[i]] - sim_num_insn;
+            }
+            reg_ready_q1[r_in[i]] = sim_num_insn; // to pretend that NOPs are added, so the reg is ready now.
+          }
+        }
+        if (max_stall_cyc_before_ready > 0)  sim_num_RAW_hazard_q1++;
+        if (max_stall_cyc_before_ready == 1) sim_num_stall_one_cyc_q1++;
+        if (max_stall_cyc_before_ready == 2) sim_num_stall_two_cyc_q1++;
+      }
+
+      // NOTE need to update reg_ready after the checking is done to avoid corner case that ADD R1, R2 -> R1 which would trigger stall count
+      // Because there is no forwarding, thus the write value is available after 2 cycle (i.e. the third instruction after current)
+      if (r_out[0] != DNA)  reg_ready_q1[r_out[0]] = sim_num_insn + 3;
+      if (r_out[1] != DNA)  reg_ready_q1[r_out[1]] = sim_num_insn + 3; 
+      /* ECE552 Assignment 1 - END CODE*/
 
       if (fault != md_fault_none)
 	fatal("fault (%d) detected @ 0x%08p", fault, regs.regs_PC);
