@@ -2,19 +2,41 @@
 
 int main(int argc, char *argv[])
 {
-    // store the variables to registers, so that we will not load value from stack
-    register int reg1 = 0;
-    register int reg2 = 0;
-    register int reg3 = 0;
-
-    // does not store counter i in order to have load and store from stack opertaions instrution for variety
+    volatile reg1 = 0;
+    volatile reg2 = 0;
+    volatile reg3 = 0;
     int i;
-    for (i = 0; i < 10000000; i++)
-    {
-        register1 = 1;
-        register2 = 1;
-        register3 = register1 + register2;
+    for(i = 0; i < 100000; i++){
+        reg1 = 1;
+        reg2 = reg1;
+        reg3 = reg1 + 2;
     }
-
     return 0;
 }
+
+/*
+                    #.set	volatile
+	sw	$5,16($sp)
+	                #.set	novolatile
+	                .set	noreorder
+	                #.set	volatile
+	lw	$2,16($sp)  
+	                #.set	novolatile
+                    #nop
+                    .set	reorder
+                    #.set	volatile
+	sw	$2,20($sp)
+                    #.set	novolatile
+                    .set	noreorder
+                    #.set	volatile
+	lw	$2,16($sp)
+                    #.set	novolatile
+                    .set	reorder
+	addu	$3,$3,1
+	addu	$2,$2,2
+	                #.set	volatile
+	sw	$2,24($sp)
+	                #.set	novolatile
+	slt	$2,$4,$3
+	beq	$2,$0,$L17
+*/
