@@ -6,7 +6,7 @@
  # -mgas -mgpOPT
 
  # Cc1 arguments (-G value = 8, Cpu = default, ISA = 1):
- # -quiet -dumpbase -O0 -o
+ # -quiet -dumpbase -O2 -o
 
 gcc2_compiled.:
 __gnu_compiled_c:
@@ -14,48 +14,66 @@ __gnu_compiled_c:
 	.align	2
 	.globl	main
 
+	.extern	stdin, 4
+	.extern	stdout, 4
+
 	.text
 
 	.loc	1 4
 	.ent	main
 main:
-	.frame	$fp,32,$31		# vars= 8, regs= 2/0, args= 16, extra= 0
-	.mask	0xc0000000,-4
+	.frame	$sp,40,$31		# vars= 16, regs= 1/0, args= 16, extra= 0
+	.mask	0x80000000,-8
 	.fmask	0x00000000,0
-	subu	$sp,$sp,32
-	sw	$31,28($sp)
-	sw	$fp,24($sp)
-	move	$fp,$sp
-	sw	$4,32($fp)
-	sw	$5,36($fp)
+	subu	$sp,$sp,40
+	sw	$31,32($sp)
 	jal	__main
 	move	$3,$0
-	move	$4,$0
-	move	$5,$0
-	sw	$0,16($fp)
-$L2:
-	lw	$2,16($fp)
-	li	$6,0x0098967f		# 9999999
-	slt	$2,$6,$2
-	beq	$2,$0,$L5
-	j	$L3
-$L5:
-	li	$3,0x00000001		# 1
-	li	$4,0x00000001		# 1
-	addu	$5,$3,$4
-$L4:
-	lw	$6,16($fp)
-	addu	$2,$6,1
-	move	$6,$2
-	sw	$6,16($fp)
-	j	$L2
-$L3:
+	li	$5,0x00000001		# 1
+	li	$4,0x00010000		# 65536
+	ori	$4,$4,0x869f
+	#.set	volatile
+	sw	$0,16($sp)
+	#.set	novolatile
+	#.set	volatile
+	sw	$0,20($sp)
+	#.set	novolatile
+	#.set	volatile
+	sw	$0,24($sp)
+	#.set	novolatile
+$L17:
+	#.set	volatile
+	sw	$5,16($sp)
+	#.set	novolatile
+	.set	noreorder
+	#.set	volatile
+	lw	$2,16($sp)
+	#.set	novolatile
+	#nop
+	.set	reorder
+	#.set	volatile
+	sw	$2,20($sp)
+	#.set	novolatile
+	.set	noreorder
+	#.set	volatile
+	lw	$2,16($sp)
+	#.set	novolatile
+	#nop
+	.set	reorder
+	addu	$2,$2,2
+	#.set	volatile
+	sw	$2,24($sp)
+	#.set	novolatile
+	.set	noreorder
+	#.set	volatile
+	lw	$2,16($sp)
+	#.set	novolatile
+	.set	reorder
+	addu	$3,$3,1
+	slt	$2,$4,$3
+	beq	$2,$0,$L17
 	move	$2,$0
-	j	$L1
-$L1:
-	move	$sp,$fp			# sp not trusted here
-	lw	$31,28($sp)
-	lw	$fp,24($sp)
-	addu	$sp,$sp,32
+	lw	$31,32($sp)
+	addu	$sp,$sp,40
 	j	$31
 	.end	main
