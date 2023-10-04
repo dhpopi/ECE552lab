@@ -198,11 +198,11 @@ sim_reg_stats(struct stat_sdb_t *sdb)
 
   stat_reg_formula(sdb, "CPI_from_RAW_hazard_q1",
 		   "CPI from RAW hazard (q1)",
-		   "1 + sim_num_stall_one_cyc_q1/sim_num_insn * 1 + sim_num_stall_two_cyc_q1/sim_num_insn * 2" /* ECE552 - MUST ADD YOUR FORMULA */, NULL);
+		   "1 + (sim_num_stall_one_cyc_q1/sim_num_insn) * 1 + (sim_num_stall_two_cyc_q1/sim_num_insn) * 2" /* ECE552 - MUST ADD YOUR FORMULA */, NULL);
 
   stat_reg_formula(sdb, "CPI_from_RAW_hazard_q2",
 		   "CPI from RAW hazard (q2)",
-		   "1 + sim_num_stall_one_cyc_q2/sim_num_insn * 1 + sim_num_stall_two_cyc_q2/sim_num_insn * 2" /* ECE552 - MUST ADD YOUR FORMULA */, NULL);
+		   "1 + (sim_num_stall_one_cyc_q2/sim_num_insn) * 1 + (sim_num_stall_two_cyc_q2/sim_num_insn) * 2" /* ECE552 - MUST ADD YOUR FORMULA */, NULL);
 
   /* ECE552 Assignment 1 - END CODE */
 
