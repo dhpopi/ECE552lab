@@ -51,6 +51,12 @@ $L17:
 	#.set	novolatile
 	#nop
 	.set	reorder
+	.set	noreorder
+	#.set	volatile
+	lw	$2,16($sp)
+	#.set	novolatile
+	#nop
+	.set	reorder
 	#.set	volatile
 	sw	$2,20($sp)
 	#.set	novolatile
@@ -66,10 +72,14 @@ $L17:
 	#.set	novolatile
 	.set	noreorder
 	#.set	volatile
-	lw	$2,16($sp)
+	lw	$2,20($sp)
 	#.set	novolatile
 	.set	reorder
 	addu	$3,$3,1
+	addu	$2,$2,1
+	#.set	volatile
+	sw	$2,16($sp)
+	#.set	novolatile
 	slt	$2,$4,$3
 	beq	$2,$0,$L17
 	move	$2,$0

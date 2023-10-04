@@ -12,6 +12,7 @@ int main(int argc, char *argv[])
         reg4 = reg1 + 1;
         reg2 = reg1;
         reg3 = reg1 + 2; 
+		reg1 = reg2 + 1;
     }
     return 0;
 }
@@ -21,13 +22,16 @@ $L17:
 	sw	$5,16($sp)
 	lw	$2,16($sp)
 	lw	$2,16($sp)
-	sw	$2,20($sp)  2 stall
+	sw	$2,20($sp)
 	lw	$2,16($sp)
+	addu	$2,$2,2
+	sw	$2,24($sp)
+	lw	$2,20($sp)
 	addu	$3,$3,1
-	addu	$2,$2,2 1 stall
-	sw	$2,24($sp)  2 stall 
+	addu	$2,$2,1
+	sw	$2,16($sp)
 	slt	$2,$4,$3
-	beq	$2,$0,$L17 2 stall
+	beq	$2,$0,$L17
 	move	$2,$0
 	lw	$31,32($sp)
 	addu	$sp,$sp,40
