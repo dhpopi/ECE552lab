@@ -479,8 +479,8 @@ sim_main(void)
         the stall happend after I2, this stall will resolve both the data hazard for I3 and I4. Thus, if we only adjust R3 ready time but not R6 ready time, then we counted an extra stall.
         */
         for (i = 0; i < MD_TOTAL_REGS; i++){
-          if (reg_ready_q1[r_in[i]] > sim_num_insn){
-            reg_ready_q1[r_in[i]] -= max_stall_cyc_before_ready; // to pretend that NOPs are added, so the ready time for all register need to be adjusted accordingly.
+          if (reg_ready_q1[i] > sim_num_insn){
+            reg_ready_q1[i] -= max_stall_cyc_before_ready; // to pretend that NOPs are added, so the ready time for all register need to be adjusted accordingly.
           }
         }
 
@@ -517,8 +517,8 @@ sim_main(void)
         the stall happend after I2, this stall will resolve both the data hazard for I3 and I4. Thus, if we only adjust R3 ready time but not R6 ready time, then we counted an extra stall.
         */
         for (i = 0; i < MD_TOTAL_REGS; i++){
-          if (reg_ready_q2[r_in[i]] > sim_num_insn){
-            reg_ready_q2[r_in[i]] -= max_stall_cyc_before_ready; // to pretend that NOPs are added, so the ready time for all register need to be adjusted accordingly.
+          if (reg_ready_q2[i] > sim_num_insn){
+            reg_ready_q2[i] -= max_stall_cyc_before_ready; // to pretend that NOPs are added, so the ready time for all register need to be adjusted accordingly.
           }
         }
         if (max_stall_cyc_before_ready > 0)  sim_num_RAW_hazard_q2++;
