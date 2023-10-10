@@ -18,7 +18,7 @@
 static UINT32 Two_bit_sat_PHT[4096];
 
 void InitPredictor_2bitsat() {
-  int idx
+  int idx;
   for (idx = 0; idx < 4096; idx++) {
     // Initialize all entries to weakly not taken
     Two_bit_sat_PHT[idx] = W_T;
