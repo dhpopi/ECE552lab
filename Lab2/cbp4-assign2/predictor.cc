@@ -87,7 +87,7 @@ void InitPredictor_2level() {
 
 bool GetPrediction_2level(UINT32 PC) {
   // using PC and BHT value to index the PHT to find the corresponding prediction value
-  switch(Two_level_PHT[PC & TWO_LEVEL_PHT_IDX_MASK][Two_level_BHT[PC & TWO_LEVEL_BHT_IDX_MASK]]){
+  switch(Two_level_PHT[PC & TWO_LEVEL_PHT_IDX_MASK][Two_level_BHT[(PC & TWO_LEVEL_BHT_IDX_MASK) >> 3]]){
     
     case S_NT:
       return NOT_TAKEN;
@@ -111,19 +111,19 @@ bool GetPrediction_2level(UINT32 PC) {
 void UpdatePredictor_2level(UINT32 PC, bool resolveDir, bool predDir, UINT32 branchTarget) {
   switch (resolveDir) {
     case TAKEN:
-      if (Two_level_PHT[PC & TWO_LEVEL_PHT_IDX_MASK][Two_level_BHT[PC & TWO_LEVEL_BHT_IDX_MASK]] != S_T) {
+      if (Two_level_PHT[PC & TWO_LEVEL_PHT_IDX_MASK][Two_level_BHT[(PC & TWO_LEVEL_BHT_IDX_MASK) >> 3]] != S_T) {
         // update the value in the PHT, shift the predict towards strongly Taken
-        Two_bit_sat_PHT[PC & TWO_BIT_SAT_PHT_IDX_MASK]++;
+        Two_level_PHT[PC & TWO_LEVEL_PHT_IDX_MASK][Two_level_BHT[(PC & TWO_LEVEL_BHT_IDX_MASK) >> 3]]++;
         // update the histroy bits in the BHT
-        Two_level_BHT[PC & TWO_LEVEL_BHT_IDX_MASK] = ((Two_level_BHT[PC & TWO_LEVEL_BHT_IDX_MASK] << 1) | 0x1) & TWO_LEVEL_BHT_BIT_MASK;
+        Two_level_BHT[(PC & TWO_LEVEL_BHT_IDX_MASK) >> 3] = ((Two_level_BHT[(PC & TWO_LEVEL_BHT_IDX_MASK) >> 3] << 1) | 0x1) & TWO_LEVEL_BHT_BIT_MASK;
       }
       break;
     case NOT_TAKEN:
-      if (Two_level_PHT[PC & TWO_LEVEL_PHT_IDX_MASK][Two_level_BHT[PC & TWO_LEVEL_BHT_IDX_MASK]] != S_NT) {
+      if (Two_level_PHT[PC & TWO_LEVEL_PHT_IDX_MASK][Two_level_BHT[(PC & TWO_LEVEL_BHT_IDX_MASK) >> 3]] != S_NT) {
         // update the value in the PHT, shift the predict towards strongly Not Taken
-        Two_bit_sat_PHT[PC & TWO_BIT_SAT_PHT_IDX_MASK]--;
+        Two_level_PHT[PC & TWO_LEVEL_PHT_IDX_MASK][Two_level_BHT[(PC & TWO_LEVEL_BHT_IDX_MASK) >> 3]]--;
         // update the histroy bits in the BHT
-        Two_level_BHT[PC & TWO_LEVEL_BHT_IDX_MASK] = (Two_level_BHT[PC & TWO_LEVEL_BHT_IDX_MASK] << 1) & (TWO_LEVEL_BHT_BIT_MASK - 0b1);
+        Two_level_BHT[(PC & TWO_LEVEL_BHT_IDX_MASK) >> 3] = (Two_level_BHT[(PC & TWO_LEVEL_BHT_IDX_MASK) >> 3] << 1) & (TWO_LEVEL_BHT_BIT_MASK - 0b1);
       }
       break;
     default:
