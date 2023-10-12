@@ -5,15 +5,17 @@ int main(){
     register int a = 0;
     register int b = 0;
 
-    for (i = 0; i < 100000; i++){
-        if (i % 8 == 0){
+    for (i = 0; i < 1000000; i++){
+        if (i % 7 == 0){
             a = b + a;
         }
-        a++;
+        
 
         if (i % 6 == 0){
             b = b + a;
         }
+
+		a++;
         b++;
     }
 
