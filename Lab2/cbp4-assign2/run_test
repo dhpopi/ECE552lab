@@ -1,13 +1,14 @@
 make clean 
 make
 
-predictor /cad2/ece552f/cbp4_benchmarks/astar.cbp4.gz > Test_out
-predictor /cad2/ece552f/cbp4_benchmarks/bwaves.cbp4.gz  >> Test_out
-predictor /cad2/ece552f/cbp4_benchmarks/bzip2.cbp4.gz >> Test_out
-predictor /cad2/ece552f/cbp4_benchmarks/gcc.cbp4.gz >> Test_out
-predictor /cad2/ece552f/cbp4_benchmarks/gromacs.cbp4.gz >> Test_out
-predictor /cad2/ece552f/cbp4_benchmarks/hmmer.cbp4.gz >> Test_out
-predictor /cad2/ece552f/cbp4_benchmarks/mcf.cbp4.gz >> Test_out
-predictor /cad2/ece552f/cbp4_benchmarks/soplex.cbp4.gz >> Test_out
+predictor /cad2/ece552f/cbp4_benchmarks/astar.cbp4.gz > temp_test_out
+predictor /cad2/ece552f/cbp4_benchmarks/bwaves.cbp4.gz  >> temp_test_out
+predictor /cad2/ece552f/cbp4_benchmarks/bzip2.cbp4.gz >> temp_test_out
+predictor /cad2/ece552f/cbp4_benchmarks/gcc.cbp4.gz >> temp_test_out
+predictor /cad2/ece552f/cbp4_benchmarks/gromacs.cbp4.gz >> temp_test_out
+predictor /cad2/ece552f/cbp4_benchmarks/hmmer.cbp4.gz >> temp_test_out
+predictor /cad2/ece552f/cbp4_benchmarks/mcf.cbp4.gz >> temp_test_out
+predictor /cad2/ece552f/cbp4_benchmarks/soplex.cbp4.gz >> temp_test_out
 
-cat Test_out | grep "openend: MISPRED_PER_1K_INST" | grep -Eo '[0-9]+\.[0-9]+' | awk 'BEGIN{s=0;}{s+=$1;}END{print s/NR;}'
+cat temp_test_out | grep "openend: MISPRED_PER_1K_INST" | grep -Eo '[0-9]+\.[0-9]+' | awk 'BEGIN{s=0;}{s+=$1;}END{print s/NR;}'
+rm -f temp_test_out
