@@ -139,6 +139,37 @@ void UpdatePredictor_2level(UINT32 PC, bool resolveDir, bool predDir, UINT32 bra
 
 //total 128Kib
 static UINT32 bimodel_PHT[4096];
+static UINT32 selector[4096];
+void init_sel(){
+  for(int i = 0; i < 4096; i++){
+    selector[i] = W_NT;
+  }
+}
+UINT32 selector_index(UINT32 PC){
+  UINT32 index = (PC >> 2) & 0x00000fff;
+  return index;
+}
+bool Get_sel(UINT32 pc){
+  UINT32 index = selector_index (pc);
+  switch(bimodel_PHT[index]){
+    
+    case S_NT:
+      return NOT_TAKEN;
+
+    case W_NT:
+      return NOT_TAKEN;
+    
+    case W_T:
+      return TAKEN;
+    
+    case S_T:
+      return TAKEN;
+
+    default:
+      return TAKEN;
+  }
+}
+
 
 UINT32 bimodel_index(UINT32 pc){
   UINT32 index = pc & 0x00000fff;
@@ -192,11 +223,27 @@ void InitPredictor_openend() {
 }
 
 bool GetPrediction_openend(UINT32 PC) {
-  bool result = Getperdiction_bimodel(PC);
-  return result;
+  bool result_tage = TAKEN;
+  bool result_bimodel = Getperdiction_bimodel(PC);
+  if(selector[selector_index(PC)] > W_NT){
+    return result_bimodel;
+  }else{
+    return result_tage;
+  }
 }
 
 void UpdatePredictor_openend(UINT32 PC, bool resolveDir, bool predDir, UINT32 branchTarget) {
   UpdatePredictor_bimodel(PC, resolveDir, predDir, branchTarget);
+  bool result_tage = TAKEN;
+  bool result_bimodel = Getperdiction_bimodel(PC);
+
+  if(result_bimodel == resolveDir && result_tage != resolveDir && selector[selector_index(PC)] != S_T){
+    selector[selector_index(PC)] ++;
+  }
+  if(result_bimodel != resolveDir && result_tage == resolveDir && selector[selector_index(PC)] != S_NT){
+    selector[selector_index(PC)] --;
+  }
+
 }
+
 
