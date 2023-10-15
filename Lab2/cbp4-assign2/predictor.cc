@@ -110,7 +110,6 @@ bool GetPrediction_2level(UINT32 PC) {
 
 void UpdatePredictor_2level(UINT32 PC, bool resolveDir, bool predDir, UINT32 branchTarget) {
   switch (resolveDir) {
-     Two_level_BHT[(PC & TWO_LEVEL_BHT_IDX_MASK) >> 3]  = (( Two_level_BHT[(PC & TWO_LEVEL_BHT_IDX_MASK) >> 3] << 1) & 0x3f) | resolveDir;
     case TAKEN:
       if (Two_level_PHT[PC & TWO_LEVEL_PHT_IDX_MASK][Two_level_BHT[(PC & TWO_LEVEL_BHT_IDX_MASK) >> 3]] != S_T) {
         // update the value in the PHT, shift the predict towards strongly Taken
@@ -138,16 +137,66 @@ void UpdatePredictor_2level(UINT32 PC, bool resolveDir, bool predDir, UINT32 bra
 // openend
 /////////////////////////////////////////////////////////////
 
-void InitPredictor_openend() {
+//total 128Kib
+static UINT32 bimodel_PHT[4096];
 
+UINT32 bimodel_index(UINT32 pc){
+  UINT32 index = pc & 0x00000fff;
+  return index;
+}
+
+void init_bimodel(){
+  for(int i = 0 ; i < 4096; i++){
+    bimodel_PHT[i] = 0;
+  }
+
+}
+
+bool Getperdiction_bimodel(UINT32 pc){
+  UINT32 index = bimodel_index (pc);
+  switch(bimodel_PHT[index]){
+    
+    case S_NT:
+      return NOT_TAKEN;
+
+    case W_NT:
+      return NOT_TAKEN;
+    
+    case W_T:
+      return TAKEN;
+    
+    case S_T:
+      return TAKEN;
+
+    default:
+      return TAKEN;
+  }
+}
+
+void UpdatePredictor_bimodel(UINT32 PC, bool resolveDir, bool predDir, UINT32 branchTarget) {
+  UINT32 index = bimodel_index (PC);
+  
+
+  if(resolveDir == TAKEN && bimodel_PHT[index] != S_T){
+    bimodel_PHT[index]++;
+  }
+  if(resolveDir == NOT_TAKEN && bimodel_PHT[index] != S_NT){
+    bimodel_PHT[index]--;
+  }
+}
+
+
+
+void InitPredictor_openend() {
+  init_bimodel();
 }
 
 bool GetPrediction_openend(UINT32 PC) {
-
-  return TAKEN;
+  bool result = Getperdiction_bimodel(PC);
+  return result;
 }
 
 void UpdatePredictor_openend(UINT32 PC, bool resolveDir, bool predDir, UINT32 branchTarget) {
-
+  UpdatePredictor_bimodel(PC, resolveDir, predDir, branchTarget);
 }
 
