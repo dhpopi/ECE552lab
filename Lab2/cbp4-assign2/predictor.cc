@@ -138,12 +138,6 @@ void UpdatePredictor_2level(UINT32 PC, bool resolveDir, bool predDir, UINT32 bra
 // openend
 /////////////////////////////////////////////////////////////
 
-//total 128Kib
-static UINT32 BHT_1[]
-static UINT32 BHT_2[]
-static UINT32 BHT_3[]
-
-
 void InitPredictor_openend() {
 
 }
