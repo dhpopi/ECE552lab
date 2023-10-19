@@ -1,8 +1,8 @@
 make clean
 make
-
-predictor /cad2/ece552f/cbp4_benchmarks/astar.cbp4.gz > temp_test_out
-predictor /cad2/ece552f/cbp4_benchmarks/bwaves.cbp4.gz  >> temp_test_out
+true > temp_test_out
+predictor /cad2/ece552f/cbp4_benchmarks/astar.cbp4.gz >> temp_test_out
+predictor /cad2/ece552f/cbp4_benchmarks/bwaves.cbp4.gz >> temp_test_out
 predictor /cad2/ece552f/cbp4_benchmarks/bzip2.cbp4.gz >> temp_test_out
 predictor /cad2/ece552f/cbp4_benchmarks/gcc.cbp4.gz >> temp_test_out
 predictor /cad2/ece552f/cbp4_benchmarks/gromacs.cbp4.gz >> temp_test_out
