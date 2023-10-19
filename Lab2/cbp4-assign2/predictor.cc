@@ -218,7 +218,7 @@ typedef struct TAG_DATA{
 } TAG_DATA;
 
 #define MAX_U_VALUE 4
-#define TAGE_PHT_SIZE 1000
+#define TAGE_PHT_SIZE 2500
 
 
 static UINT64 TAGE_BHR;
@@ -230,24 +230,24 @@ static TAG_DATA TAGE_PHT4[TAGE_PHT_SIZE];
 
 
 UINT32 Hash1(UINT32 PC){
-  UINT32 HIS = TAGE_BHR;
-  UINT32 combined = PC ^ (HIS & 0x3ff);
-  UINT32 hash = combined & 0xff;
+  UINT64 HIS = TAGE_BHR;
+  UINT32 combined = PC ^ (HIS & 0x3ff) ^ ((HIS << 1) & 0x3ff);
+  UINT32 hash = combined ;
   return hash;
 }
 
 UINT32 Hash2(UINT32 PC){
-  UINT32 HIS = TAGE_BHR;
+  UINT64 HIS = TAGE_BHR;
   UINT32 history_10bit_1 = HIS & 0x3ff;
   HIS = HIS >> 10;
   UINT32 history_10bit_2 = history_10bit_1 ^ (HIS & 0x3ff);
-  UINT32 combined = PC ^ history_10bit_2;
-  UINT32 hash = combined & 0xff;
+  UINT32 combined = PC ^ history_10bit_2 ^ ((history_10bit_2 << 1) & 0x3ff);
+  UINT32 hash = combined ;
   return hash;
 }
 
 UINT32 Hash3(UINT32 PC){
-  UINT32 HIS = TAGE_BHR;
+  UINT64 HIS = TAGE_BHR;
   UINT32 history_10bit_1 = HIS & 0x3ff;
   HIS = HIS >> 10;
   UINT32 history_10bit_2 = history_10bit_1 ^ (HIS & 0x3ff);
@@ -255,13 +255,13 @@ UINT32 Hash3(UINT32 PC){
   UINT32 history_10bit_3 = history_10bit_2 ^ (HIS & 0x3ff);
   HIS = HIS >> 10;
   UINT32 history_10bit_4 = history_10bit_3 ^ (HIS & 0x3ff);
-  UINT32 combined = PC ^ history_10bit_4;
-  UINT32 hash = combined & 0xff;
+  UINT32 combined = PC ^ history_10bit_4 ^ ((history_10bit_4 << 1) & 0x3ff);
+  UINT32 hash = combined ;
   return hash;
 }
 
 UINT32 Hash4(UINT32 PC){
-  UINT32 HIS = TAGE_BHR;
+  UINT64 HIS = TAGE_BHR;
   UINT32 history_10bit_1 = HIS & 0x3ff;
   HIS = HIS >> 10;
   UINT32 history_10bit_2 = history_10bit_1 ^ (HIS & 0x3ff);
@@ -273,8 +273,8 @@ UINT32 Hash4(UINT32 PC){
   UINT32 history_10bit_5 = history_10bit_4 ^ (HIS & 0x3ff);
   HIS = HIS >> 10;
   UINT32 history_10bit_6 = history_10bit_5 ^ (HIS & 0x3ff);
-  UINT32 combined = PC ^ history_10bit_6;
-  UINT32 hash = combined & 0xff;
+  UINT32 combined = PC ^ history_10bit_6 ^ ((history_10bit_6 << 1) & 0x3ff);
+  UINT32 hash = combined ;
   return hash;
 }
 
@@ -282,21 +282,22 @@ UINT32 Hash4(UINT32 PC){
 
 
 UINT32 PHT_index1(UINT32 PC, UINT32 HIS){
-  UINT32 history = HIS;
+  UINT64 history = HIS;
   UINT32 history_10bit = history & 0x3ff;
-  UINT32 val = (PC >> 2) ^ history_10bit;
+  UINT32 PCXOR = (PC & 0x3ff) ^ ((PC >> 10) & 0x3ff);
+  UINT32 val = PCXOR ^ history_10bit;
   return val % TAGE_PHT_SIZE;
 }
 UINT32 PHT_index2(UINT32 PC, UINT32 HIS){
-  UINT32 history = HIS;
+  UINT64 history = HIS;
   UINT32 history_10bit_1 = history & 0x3ff;
   history = history >> 10;
   UINT32 history_10bit_2 = history_10bit_1 ^ (history & 0x3ff);
-  UINT32 val = (PC >> 2) ^ history_10bit_2;
+  UINT32 val = (PC & 0x3ff) ^ ((PC >> 10) & 0x3ff) ^ history_10bit_2;
   return val % TAGE_PHT_SIZE;
 }
 UINT32 PHT_index3(UINT32 PC, UINT32 HIS){
-  UINT32 history = HIS;
+  UINT64 history = HIS;
   UINT32 history_10bit_1 = history & 0x3ff;
   history = history >> 10;
   UINT32 history_10bit_2 = history_10bit_1 ^ (history & 0x3ff);
@@ -304,11 +305,11 @@ UINT32 PHT_index3(UINT32 PC, UINT32 HIS){
   UINT32 history_10bit_3 = history_10bit_2 ^ (history & 0x3ff);
   history = history >> 10;
   UINT32 history_10bit_4 = history_10bit_3 ^ (history & 0x3ff);
-  UINT32 val = (PC >> 2) ^ history_10bit_4;
+  UINT32 val = (PC & 0x3ff) ^ ((PC >> 10) & 0x3ff) ^ history_10bit_4;
   return val % TAGE_PHT_SIZE;
 }
 UINT32 PHT_index4(UINT32 PC, UINT32 HIS){
-  UINT32 history = HIS;
+  UINT64 history = HIS;
   UINT32 history_10bit_1 = history & 0x3ff;
   history = history >> 10;
   UINT32 history_10bit_2 = history_10bit_1 ^ (history & 0x3ff);
@@ -320,7 +321,7 @@ UINT32 PHT_index4(UINT32 PC, UINT32 HIS){
   UINT32 history_10bit_5 = history_10bit_4 ^ (history & 0x3ff);
   history = history >> 10;
   UINT32 history_10bit_6 = history_10bit_5 ^ (history & 0x3ff);
-  UINT32 val = (PC >> 2) ^ history_10bit_6;
+  UINT32 val = (PC & 0x3ff) ^ ((PC >> 10) & 0x3ff) ^ history_10bit_6;
   return val % TAGE_PHT_SIZE;
 }
 
@@ -373,20 +374,15 @@ bool GetPrediction_TAGE(UINT32 PC){
       result = result3;
     }
 
-    if (TAGE_PHT3[index3].pred == hash3){
-      result = result3;
+    if (TAGE_PHT4[index4].pred == hash4){
+      result = result4;
     }
-  
-  
-
   return result;
 
 
 }
 
 void UpdatePredictor_TAGE(UINT32 PC, bool resolveDir, bool predDir, UINT32 branchTarget){
-
-  
   UINT32 index1 = PHT_index1(PC, TAGE_BHR);
   UINT32 index2 = PHT_index2(PC, TAGE_BHR);
   UINT32 index3 = PHT_index3(PC, TAGE_BHR);
@@ -424,14 +420,6 @@ void UpdatePredictor_TAGE(UINT32 PC, bool resolveDir, bool predDir, UINT32 branc
     TAGE_PHT1[index1].ctr++;
     TAGE_PHT1[index1].u = 0;
   }
-  if(TAGE_PHT3[index3].ctr > 0 && resolveDir == NOT_TAKEN){
-    TAGE_PHT3[index3].ctr--;
-    TAGE_PHT3[index3].u = 0;
-  }
-  if(TAGE_PHT3[index3].ctr < 8 && resolveDir == TAKEN){
-    TAGE_PHT3[index3].ctr++;
-    TAGE_PHT3[index3].u = 0;
-  } 
   if(TAGE_PHT2[index2].ctr > 0 && resolveDir == NOT_TAKEN){
     TAGE_PHT2[index2].ctr--;
     TAGE_PHT2[index2].u = 0;
@@ -439,6 +427,14 @@ void UpdatePredictor_TAGE(UINT32 PC, bool resolveDir, bool predDir, UINT32 branc
   if(TAGE_PHT2[index2].ctr < 8 && resolveDir == TAKEN){
     TAGE_PHT2[index2].ctr++;
     TAGE_PHT2[index2].u = 0;
+  } 
+  if(TAGE_PHT3[index3].ctr > 0 && resolveDir == NOT_TAKEN){
+    TAGE_PHT3[index3].ctr--;
+    TAGE_PHT3[index3].u = 0;
+  }
+  if(TAGE_PHT3[index3].ctr < 8 && resolveDir == TAKEN){
+    TAGE_PHT3[index3].ctr++;
+    TAGE_PHT3[index3].u = 0;
   } 
   if(TAGE_PHT4[index4].ctr > 0 && resolveDir == NOT_TAKEN){
     TAGE_PHT4[index4].ctr--;
@@ -458,12 +454,37 @@ void UpdatePredictor_TAGE(UINT32 PC, bool resolveDir, bool predDir, UINT32 branc
           TAGE_PHT1[index1].ctr = resolveDir << 2;
           TAGE_PHT1[index1].u = 0;
         }
+        if(!TAGE_PHT2[index2].u){
+          TAGE_PHT2[index2].pred = hash2;
+          TAGE_PHT2[index2].ctr = resolveDir << 2;
+          TAGE_PHT2[index2].u = 0;
+        }
+        if(!TAGE_PHT3[index3].u){
+          TAGE_PHT3[index3].pred = hash3;
+          TAGE_PHT3[index3].ctr = resolveDir << 2;
+          TAGE_PHT3[index3].u = 0;
+        }
+        if(!TAGE_PHT4[index4].u){
+          TAGE_PHT4[index4].pred = hash4;
+          TAGE_PHT4[index4].ctr = resolveDir << 2;
+          TAGE_PHT4[index4].u = 0;
+        }
       }
       if(result_bank == 1){
         if(!TAGE_PHT2[index2].u){
           TAGE_PHT2[index2].pred = hash2;
           TAGE_PHT2[index2].ctr = resolveDir << 2;
           TAGE_PHT2[index2].u = 0;
+        }
+        if(!TAGE_PHT3[index3].u){
+          TAGE_PHT3[index3].pred = hash3;
+          TAGE_PHT3[index3].ctr = resolveDir << 2;
+          TAGE_PHT3[index3].u = 0;
+        }
+        if(!TAGE_PHT4[index4].u){
+          TAGE_PHT4[index4].pred = hash4;
+          TAGE_PHT4[index4].ctr = resolveDir << 2;
+          TAGE_PHT4[index4].u = 0;
         }
       }
       if(result_bank == 2){
@@ -472,6 +493,13 @@ void UpdatePredictor_TAGE(UINT32 PC, bool resolveDir, bool predDir, UINT32 branc
           TAGE_PHT3[index3].ctr = resolveDir << 2;
           TAGE_PHT3[index3].u = 0;
         }
+        if(result_bank == 3){
+        if(!TAGE_PHT4[index4].u){
+          TAGE_PHT4[index4].pred = hash4;
+          TAGE_PHT4[index4].ctr = resolveDir << 2;
+          TAGE_PHT4[index4].u = 0;
+        }
+      }
       }
       if(result_bank == 3){
         if(!TAGE_PHT4[index4].u){
@@ -496,7 +524,7 @@ void UpdatePredictor_TAGE(UINT32 PC, bool resolveDir, bool predDir, UINT32 branc
       TAGE_PHT3[index3].u = 1;
     }
     if(result_bank == 4){
-      TAGE_PHT3[index3].u = 1;
+      TAGE_PHT4[index4].u = 1;
     }
     
   }
