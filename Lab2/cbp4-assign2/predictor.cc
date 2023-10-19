@@ -241,6 +241,7 @@ static UINT64 TAGE_BHR;
 static TAG_DATA TAGE_PHT1[TAGE_PHT_SIZE];
 static TAG_DATA TAGE_PHT2[TAGE_PHT_SIZE];
 static TAG_DATA TAGE_PHT3[TAGE_PHT_SIZE];
+static TAG_DATA TAGE_PHT4[TAGE_PHT_SIZE];
 
 
 
@@ -269,8 +270,26 @@ UINT32 Hash3(UINT32 PC){
   HIS = HIS >> 10;
   UINT32 history_10bit_3 = history_10bit_2 ^ (HIS & 0x3ff);
   HIS = HIS >> 10;
-  UINT32 history_10bit_4 = history_10bit_4 ^ (HIS & 0x3ff);
+  UINT32 history_10bit_4 = history_10bit_3 ^ (HIS & 0x3ff);
   UINT32 combined = PC ^ history_10bit_4;
+  UINT32 hash = combined & 0xff;
+  return hash;
+}
+
+UINT32 Hash4(UINT32 PC){
+  UINT32 HIS = TAGE_BHR;
+  UINT32 history_10bit_1 = HIS & 0x3ff;
+  HIS = HIS >> 10;
+  UINT32 history_10bit_2 = history_10bit_1 ^ (HIS & 0x3ff);
+  HIS = HIS >> 10;
+  UINT32 history_10bit_3 = history_10bit_2 ^ (HIS & 0x3ff);
+  HIS = HIS >> 10;
+  UINT32 history_10bit_4 = history_10bit_3 ^ (HIS & 0x3ff);
+  HIS = HIS >> 10;
+  UINT32 history_10bit_5 = history_10bit_4 ^ (HIS & 0x3ff);
+  HIS = HIS >> 10;
+  UINT32 history_10bit_6 = history_10bit_5 ^ (HIS & 0x3ff);
+  UINT32 combined = PC ^ history_10bit_6;
   UINT32 hash = combined & 0xff;
   return hash;
 }
@@ -304,6 +323,22 @@ UINT32 PHT_index3(UINT32 PC, UINT32 HIS){
   UINT32 val = (PC >> 2) ^ history_10bit_4;
   return val % TAGE_PHT_SIZE;
 }
+UINT32 PHT_index4(UINT32 PC, UINT32 HIS){
+  UINT32 history = HIS;
+  UINT32 history_10bit_1 = history & 0x3ff;
+  history = history >> 10;
+  UINT32 history_10bit_2 = history_10bit_1 ^ (history & 0x3ff);
+  history = history >> 10;
+  UINT32 history_10bit_3 = history_10bit_2 ^ (history & 0x3ff);
+  history = history >> 10;
+  UINT32 history_10bit_4 = history_10bit_3 ^ (history & 0x3ff);
+  history = history >> 10;
+  UINT32 history_10bit_5 = history_10bit_4 ^ (history & 0x3ff);
+  history = history >> 10;
+  UINT32 history_10bit_6 = history_10bit_5 ^ (history & 0x3ff);
+  UINT32 val = (PC >> 2) ^ history_10bit_6;
+  return val % TAGE_PHT_SIZE;
+}
 
 void Init_TAGE(){
   for(int i = 0; i < TAGE_PHT_SIZE; i++){
@@ -316,6 +351,9 @@ void Init_TAGE(){
     TAGE_PHT3[i].ctr = 2;
     TAGE_PHT3[i].pred = 0;
     TAGE_PHT3[i].u = 0;
+    TAGE_PHT4[i].ctr = 2;
+    TAGE_PHT4[i].pred = 0;
+    TAGE_PHT4[i].u = 0;
   }
   TAGE_BHR = 0;
   return;
@@ -325,13 +363,15 @@ bool GetPrediction_TAGE(UINT32 PC){
   UINT32 index1 = PHT_index1(PC, TAGE_BHR);
   UINT32 index2 = PHT_index2(PC, TAGE_BHR);
   UINT32 index3 = PHT_index3(PC, TAGE_BHR);
+  UINT32 index4 = PHT_index4(PC, TAGE_BHR);
   UINT32 hash1 = Hash1(PC);
   UINT32 hash2 = Hash2(PC);
   UINT32 hash3 = Hash3(PC);
-  
+  UINT32 hash4 = Hash4(PC);
   UINT32 result1 = TAGE_PHT1[index1].ctr >> 1;
   UINT32 result2 = TAGE_PHT2[index2].ctr >> 1;
   UINT32 result3 = TAGE_PHT3[index3].ctr >> 1;
+  UINT32 result4 = TAGE_PHT4[index3].ctr >> 1;
   //all tag geted
   bool result = Getperdiction_bimodel(PC);
   
@@ -345,6 +385,10 @@ bool GetPrediction_TAGE(UINT32 PC){
     }
   
   
+    if (TAGE_PHT3[index3].pred == hash3){
+      result = result3;
+    }
+
     if (TAGE_PHT3[index3].pred == hash3){
       result = result3;
     }
@@ -362,12 +406,15 @@ void UpdatePredictor_TAGE(UINT32 PC, bool resolveDir, bool predDir, UINT32 branc
   UINT32 index1 = PHT_index1(PC, TAGE_BHR);
   UINT32 index2 = PHT_index2(PC, TAGE_BHR);
   UINT32 index3 = PHT_index3(PC, TAGE_BHR);
+  UINT32 index4 = PHT_index4(PC, TAGE_BHR);
   UINT32 hash1 = Hash1(PC);
   UINT32 hash2 = Hash2(PC);
   UINT32 hash3 = Hash3(PC);
+  UINT32 hash4 = Hash4(PC);
   UINT32 result1 = TAGE_PHT1[index1].ctr >> 1;
   UINT32 result2 = TAGE_PHT2[index2].ctr >> 1;
   UINT32 result3 = TAGE_PHT3[index3].ctr >> 1;
+  UINT32 result4 = TAGE_PHT4[index3].ctr >> 1;
 
   UINT32 result_bank = 0;
   if (TAGE_PHT1[index1].pred == hash1){
@@ -378,6 +425,9 @@ void UpdatePredictor_TAGE(UINT32 PC, bool resolveDir, bool predDir, UINT32 branc
   }
   if (TAGE_PHT3[index3].pred == hash3){
     result_bank = 3;
+  }
+  if (TAGE_PHT4[index4].pred == hash4){
+    result_bank = 4;
   }
   //find result from which bank
 
@@ -406,10 +456,18 @@ void UpdatePredictor_TAGE(UINT32 PC, bool resolveDir, bool predDir, UINT32 branc
     TAGE_PHT2[index2].ctr++;
     TAGE_PHT2[index2].u = 0;
   } 
+  if(TAGE_PHT4[index4].ctr != S_NT && resolveDir == NOT_TAKEN){
+    TAGE_PHT4[index4].ctr--;
+    TAGE_PHT4[index4].u = 0;
+  }
+  if(TAGE_PHT4[index4].ctr != S_T && resolveDir == TAKEN){
+    TAGE_PHT4[index4].ctr++;
+    TAGE_PHT4[index4].u = 0;
+  } 
 
   //prediciton wrong
   if(resolveDir != predDir){
-    if(result_bank < 3){
+    if(result_bank < 4){
       if(result_bank == 0){
         if(!TAGE_PHT1[index1].u){
           TAGE_PHT1[index1].pred = hash1;
@@ -431,6 +489,13 @@ void UpdatePredictor_TAGE(UINT32 PC, bool resolveDir, bool predDir, UINT32 branc
           TAGE_PHT3[index3].u = 0;
         }
       }
+      if(result_bank == 3){
+        if(!TAGE_PHT4[index4].u){
+          TAGE_PHT4[index4].pred = hash4;
+          TAGE_PHT4[index4].ctr = resolveDir << 1;
+          TAGE_PHT4[index4].u = 0;
+        }
+      }
     }
     if(result_bank > 0){
     // printf("hit,but wrong\n");
@@ -450,6 +515,9 @@ void UpdatePredictor_TAGE(UINT32 PC, bool resolveDir, bool predDir, UINT32 branc
       TAGE_PHT2[index2].u = 1;
     }
     if(result_bank == 3){
+      TAGE_PHT3[index3].u = 1;
+    }
+    if(result_bank == 4){
       TAGE_PHT3[index3].u = 1;
     }
     
