@@ -185,7 +185,7 @@ bool Get_sel(UINT32 pc){
 }
 
 UINT32 bimodel_index(UINT32 PC){
-  UINT32 index = (PC >> 2) & 0x00000fff;
+  UINT32 index = (PC) & 0x00000fff;
   return index;
 }
 
@@ -533,7 +533,7 @@ void UpdatePredictor_TAGE(UINT32 PC, bool resolveDir, bool predDir, UINT32 branc
     bimodel_PHT[index] = (resolveDir << 2);
   }
   TAGE_BHR = (TAGE_BHR << 1) | resolveDir;
-  
+  UpdatePredictor_bimodel(PC, resolveDir, predDir, branchTarget);
 }
 
 
@@ -557,7 +557,7 @@ bool GetPrediction_openend(UINT32 PC) {
 }
 
 void UpdatePredictor_openend(UINT32 PC, bool resolveDir, bool predDir, UINT32 branchTarget) {
-  UpdatePredictor_bimodel(PC, resolveDir, predDir, branchTarget);
+  
   UpdatePredictor_TAGE(PC, resolveDir, predDir, branchTarget);
   bool result_tage = GetPrediction_TAGE(PC);
   bool result_bimodel = Getperdiction_bimodel(PC);
