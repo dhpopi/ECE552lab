@@ -173,7 +173,7 @@ bool Get_sel(UINT32 pc){
 }
 
 UINT32 bimodel_index(UINT32 PC){
-  UINT32 index = (PC >> 2) & 0x00000fff;
+  UINT32 index = (PC >> 0) & 0x00000fff;
   return index;
 }
 
