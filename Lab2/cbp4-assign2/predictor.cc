@@ -142,30 +142,47 @@ void UpdatePredictor_2level(UINT32 PC, bool resolveDir, bool predDir, UINT32 bra
 #define HASH_MATRIX_ROW_3 0b01111101100000100100000101000010
 #define HASH_MATRIX_ROW_4 0b00000001000000011000000010000001
 
-typedef struct TAG_DATA{
-  UINT32 TAG;
-  UINT32 DATA;
-  UINT32 MIS;
-} TAG_DATA;
+
 
 //total 128Kib
 static UINT32 bimodel_PHT[4096];
 static UINT32 selector[4096];
-static UINT32 supersel = 0;
+
 
 #define TAGE_BHR_MASK 0xFFFFFFFF
 #define TAGE_PHT1_MASK 0b00000000000011111111
 #define TAGE_PHT2_MASK 0b00000000111111111111
 #define TAGE_PHT3_MASK 0b11111111111111111111
 
-#define MAX_U_VALUE 4
-#define TAGE_PHT_SIZE 256
+void init_sel(){
+  for(int i = 0; i < 4096; i++){
+    selector[i] = W_NT;
+  }
+}
+UINT32 selector_index(UINT32 PC){
+  UINT32 index = (PC >> 2) & 0x00000fff;
+  return index;
+}
+bool Get_sel(UINT32 pc){
+  UINT32 index = selector_index (pc);
+  switch(bimodel_PHT[index]){
 
+    case S_NT:
+      return NOT_TAKEN;
 
-static UINT32 TAGE_BHR;
-static TAG_DATA TAGE_PHT1[TAGE_PHT_SIZE];
-static TAG_DATA TAGE_PHT2[TAGE_PHT_SIZE];
-static TAG_DATA TAGE_PHT3[TAGE_PHT_SIZE];
+    case W_NT:
+      return NOT_TAKEN;
+
+    case W_T:
+      return TAKEN;
+
+    case S_T:
+      return TAKEN;
+
+    default:
+      return TAKEN;
+  }
+}
 
 UINT32 bimodel_index(UINT32 PC){
   UINT32 index = PC & 0x00000fff;
@@ -210,201 +227,239 @@ void UpdatePredictor_bimodel(UINT32 PC, bool resolveDir, bool predDir, UINT32 br
   }
 }
 
+typedef struct TAG_DATA{
+  UINT32 pred; //8 bit tag
+  UINT32 ctr; //3 bit sta
+  UINT32 u; //useful counter
+} TAG_DATA;
+
+#define MAX_U_VALUE 4
+#define TAGE_PHT_SIZE 1000
 
 
-void init_sel(){
-  for(int i = 0; i < 4096; i++){
-    selector[i] = W_NT;
+static UINT64 TAGE_BHR;
+static TAG_DATA TAGE_PHT1[TAGE_PHT_SIZE];
+static TAG_DATA TAGE_PHT2[TAGE_PHT_SIZE];
+static TAG_DATA TAGE_PHT3[TAGE_PHT_SIZE];
+
+
+
+UINT32 Hash1(UINT32 PC){
+  UINT32 HIS = TAGE_BHR;
+  UINT32 combined = PC ^ (HIS & 0x3ff);
+  UINT32 hash = combined & 0xff;
+  return hash;
+}
+
+UINT32 Hash2(UINT32 PC){
+  UINT32 HIS = TAGE_BHR;
+  UINT32 history_10bit_1 = HIS & 0x3ff;
+  HIS = HIS >> 10;
+  UINT32 history_10bit_2 = history_10bit_1 ^ (HIS & 0x3ff);
+  UINT32 combined = PC ^ history_10bit_2;
+  UINT32 hash = combined & 0xff;
+  return hash;
+}
+
+UINT32 Hash3(UINT32 PC){
+  UINT32 HIS = TAGE_BHR;
+  UINT32 history_10bit_1 = HIS & 0x3ff;
+  HIS = HIS >> 10;
+  UINT32 history_10bit_2 = history_10bit_1 ^ (HIS & 0x3ff);
+  HIS = HIS >> 10;
+  UINT32 history_10bit_3 = history_10bit_2 ^ (HIS & 0x3ff);
+  HIS = HIS >> 10;
+  UINT32 history_10bit_4 = history_10bit_4 ^ (HIS & 0x3ff);
+  UINT32 combined = PC ^ history_10bit_4;
+  UINT32 hash = combined & 0xff;
+  return hash;
+}
+
+
+
+
+UINT32 PHT_index1(UINT32 PC, UINT32 HIS){
+  UINT32 history = HIS;
+  UINT32 history_10bit = history & 0x3ff;
+  UINT32 val = (PC >> 2) ^ history_10bit;
+  return val % TAGE_PHT_SIZE;
+}
+UINT32 PHT_index2(UINT32 PC, UINT32 HIS){
+  UINT32 history = HIS;
+  UINT32 history_10bit_1 = history & 0x3ff;
+  history = history >> 10;
+  UINT32 history_10bit_2 = history_10bit_1 ^ (history & 0x3ff);
+  UINT32 val = (PC >> 2) ^ history_10bit_2;
+  return val % TAGE_PHT_SIZE;
+}
+UINT32 PHT_index3(UINT32 PC, UINT32 HIS){
+  UINT32 history = HIS;
+  UINT32 history_10bit_1 = history & 0x3ff;
+  history = history >> 10;
+  UINT32 history_10bit_2 = history_10bit_1 ^ (history & 0x3ff);
+  history = history >> 10;
+  UINT32 history_10bit_3 = history_10bit_2 ^ (history & 0x3ff);
+  history = history >> 10;
+  UINT32 history_10bit_4 = history_10bit_3 ^ (history & 0x3ff);
+  UINT32 val = (PC >> 2) ^ history_10bit_4;
+  return val % TAGE_PHT_SIZE;
+}
+
+void Init_TAGE(){
+  for(int i = 0; i < TAGE_PHT_SIZE; i++){
+    TAGE_PHT1[i].ctr = 2;
+    TAGE_PHT1[i].pred = 0;
+    TAGE_PHT1[i].u = 0;
+    TAGE_PHT2[i].ctr = 2;
+    TAGE_PHT2[i].pred = 0;
+    TAGE_PHT2[i].u = 0;
+    TAGE_PHT3[i].ctr = 2;
+    TAGE_PHT3[i].pred = 0;
+    TAGE_PHT3[i].u = 0;
   }
-}
-
-UINT32 selector_index(UINT32 PC){
-  UINT32 index = (PC >> 2) & 0x00000fff;
-  return index;
-}
-
-bool Get_sel(UINT32 PC){
-  UINT32 index = selector_index (PC);
-  switch(selector[index]){
-    
-    case S_NT:
-      return NOT_TAKEN;
-
-    case W_NT:
-      return NOT_TAKEN;
-    
-    case W_T:
-      return TAKEN;
-    
-    case S_T:
-      return TAKEN;
-
-    default:
-      return TAKEN;
-  }
-}
-
-int unary_xor(UINT32 num){
-    int count = 0;
-    while(num > 0){
-        if(num & 1){
-        count ++;
-        }
-        num = num >> 1;
-        
-    }
-    return count%2;
-}
-
-UINT32 hash_func1(UINT32 index, UINT32 PC){
-  UINT32 val = (PC >> 2) ^ index;
-  UINT32 y1 = val & 0x00000001;
-  UINT32 yn = val & 0x00002000;
-  UINT32 changed = (val >> 1) |  yn;
-  return (y1 ^ changed) % TAGE_PHT_SIZE;
-}
-
-UINT32 hash_func2(UINT32 index, UINT32 PC){
-  UINT32 val = (PC>>2) ^ index;
-  UINT32 yn = val & 0x00002000;
-  UINT32 yn_1 = val & 0x00001000;
-  UINT32 changed = ((val << 1) & 0x00003fff) | (yn_1 >> 12);
-  return (changed ^ yn)% TAGE_PHT_SIZE;
-}
-
-UINT32 hash_func3(UINT32 index, UINT32 PC){
-  UINT32 val = (PC>>2) ^ index;
-  UINT32 yn = val & 0x00002000;
-  UINT32 yn_1 = val & 0x00001000;
-  UINT32 changed = ((val << 1) & 0x00003fff) | (yn_1 >> 12);
-  UINT32 temp = (changed ^ yn);
-
-  UINT32 y1_1 = val & 0x00000001;
-  UINT32 yn_1_1 = val & 0x00002000;
-  UINT32 changed_1 = (val >> 1) |  yn_1_1;
-  UINT32 temp2 = (y1_1 ^ changed_1);
-
-
-  return (temp^temp2) % TAGE_PHT_SIZE;
-}
-
-
-
-
-void init_TAGE(){
   TAGE_BHR = 0;
-  for (int i = 0; i < TAGE_PHT_SIZE; i++){
-    
-    TAGE_PHT1[i].TAG = 0;
-    TAGE_PHT1[i].DATA = W_NT;
-    TAGE_PHT1[i].MIS = 0;
-
-    TAGE_PHT2[i].TAG = 0;
-    TAGE_PHT2[i].DATA = W_NT;
-    TAGE_PHT2[i].MIS = 0;
-    
-    TAGE_PHT3[i].TAG = 0;
-    TAGE_PHT3[i].DATA = W_NT;
-    TAGE_PHT3[i].MIS = 0;
-   
-  }
+  return;
 }
-bool get_result(UINT32 val){
-  switch(val){
-    
-    case S_NT:
-      return NOT_TAKEN;
-
-    case W_NT:
-      return NOT_TAKEN;
-    
-    case W_T:
-      return TAKEN;
-    
-    case S_T:
-      return TAKEN;
-
-    default:
-      return TAKEN;
-  }
-}
-
-bool Getprediction_TAGE(UINT32 PC){
-  UINT32 hashed_tag1 = hash_func1(TAGE_BHR , PC);
-  UINT32 hashed_tag2 = hash_func2(TAGE_BHR , PC);
-  UINT32 hashed_tag3 = hash_func3(TAGE_BHR , PC);
-  UINT32 result = Getperdiction_bimodel(PC);
-  bool result1 = 0;
-  bool result2 = 0;
-  bool result3 = 0;
-
-    result1 = get_result(TAGE_PHT1[hashed_tag1].DATA);
-    result2 = get_result(TAGE_PHT2[hashed_tag1].DATA);
-    result3 = get_result(TAGE_PHT3[hashed_tag3].DATA);
-
-  if ((result1 == TAKEN && result2 == TAKEN) || (result1 == TAKEN && result3 == TAKEN) || (result2 == TAKEN && result3 == TAKEN)) 
-        result = TAKEN;
-    else
-        result = NOT_TAKEN;
-
-    return result;
-
+bool GetPrediction_TAGE(UINT32 PC){  
+  //get pred from 3 entry:
+  UINT32 index1 = PHT_index1(PC, TAGE_BHR);
+  UINT32 index2 = PHT_index2(PC, TAGE_BHR);
+  UINT32 index3 = PHT_index3(PC, TAGE_BHR);
+  UINT32 hash1 = Hash1(PC);
+  UINT32 hash2 = Hash2(PC);
+  UINT32 hash3 = Hash3(PC);
+  
+  UINT32 result1 = TAGE_PHT1[index1].ctr >> 1;
+  UINT32 result2 = TAGE_PHT2[index2].ctr >> 1;
+  UINT32 result3 = TAGE_PHT3[index3].ctr >> 1;
+  //all tag geted
+  bool result = Getperdiction_bimodel(PC);
+  
+    if (TAGE_PHT1[index1].pred == hash1){
+    result = result1;
+    }
+  
+  
+    if (TAGE_PHT2[index2].pred == hash2){
+      result = result2;
+    }
+  
+  
+    if (TAGE_PHT3[index3].pred == hash3){
+      result = result3;
+    }
+  
   
 
+  return result;
+
+
 }
 
-void UpdatePredictor_TAGE(UINT32 PC, bool resolveDir, bool predDir, UINT32 branchTarget) {
-  UINT32 hashed_tag1 = hash_func1(TAGE_BHR , PC);
-  UINT32 hashed_tag2 = hash_func2(TAGE_BHR , PC);
-  UINT32 hashed_tag3 = hash_func3(TAGE_BHR , PC);
+void UpdatePredictor_TAGE(UINT32 PC, bool resolveDir, bool predDir, UINT32 branchTarget){
+
+  
+  UINT32 index1 = PHT_index1(PC, TAGE_BHR);
+  UINT32 index2 = PHT_index2(PC, TAGE_BHR);
+  UINT32 index3 = PHT_index3(PC, TAGE_BHR);
+  UINT32 hash1 = Hash1(PC);
+  UINT32 hash2 = Hash2(PC);
+  UINT32 hash3 = Hash3(PC);
+  UINT32 result1 = TAGE_PHT1[index1].ctr >> 1;
+  UINT32 result2 = TAGE_PHT2[index2].ctr >> 1;
+  UINT32 result3 = TAGE_PHT3[index3].ctr >> 1;
+
+  UINT32 result_bank = 0;
+  if (TAGE_PHT1[index1].pred == hash1){
+    result_bank = 1;
+  }
+  if (TAGE_PHT2[index2].pred == hash2){
+    result_bank = 2;
+  }
+  if (TAGE_PHT3[index3].pred == hash3){
+    result_bank = 3;
+  }
+  //find result from which bank
+
+  //update 2bit in each bank
+  if(TAGE_PHT1[index1].ctr != S_NT && resolveDir == NOT_TAKEN){
+    TAGE_PHT1[index1].ctr --;
+    TAGE_PHT1[index1].u = 0;
+  }
+  if(TAGE_PHT1[index1].ctr != S_T && resolveDir == TAKEN){
+    TAGE_PHT1[index1].ctr++;
+    TAGE_PHT1[index1].u = 0;
+  }
+  if(TAGE_PHT3[index3].ctr != S_NT && resolveDir == NOT_TAKEN){
+    TAGE_PHT3[index3].ctr--;
+    TAGE_PHT3[index3].u = 0;
+  }
+  if(TAGE_PHT3[index3].ctr != S_T && resolveDir == TAKEN){
+    TAGE_PHT3[index3].ctr++;
+    TAGE_PHT3[index3].u = 0;
+  } 
+  if(TAGE_PHT2[index2].ctr != S_NT && resolveDir == NOT_TAKEN){
+    TAGE_PHT2[index2].ctr--;
+    TAGE_PHT2[index2].u = 0;
+  }
+  if(TAGE_PHT2[index2].ctr != S_T && resolveDir == TAKEN){
+    TAGE_PHT2[index2].ctr++;
+    TAGE_PHT2[index2].u = 0;
+  } 
+
+  //prediciton wrong
+  if(resolveDir != predDir){
+    if(result_bank < 3){
+      if(result_bank == 0){
+        if(!TAGE_PHT1[index1].u){
+          TAGE_PHT1[index1].pred = hash1;
+          TAGE_PHT1[index1].ctr = resolveDir << 1;
+          TAGE_PHT1[index1].u = 0;
+        }
+      }
+      if(result_bank == 1){
+        if(!TAGE_PHT2[index2].u){
+          TAGE_PHT2[index2].pred = hash2;
+          TAGE_PHT2[index2].ctr = resolveDir << 1;
+          TAGE_PHT2[index2].u = 0;
+        }
+      }
+      if(result_bank == 2){
+        if(!TAGE_PHT3[index3].u){
+          TAGE_PHT3[index3].pred = hash3;
+          TAGE_PHT3[index3].ctr = resolveDir << 1;
+          TAGE_PHT3[index3].u = 0;
+        }
+      }
+    }
+    if(result_bank > 0){
+    // printf("hit,but wrong\n");
+    }
+
+  }
+  if(result_bank > 0){
+    // printf("hit\n");
+    }
+  
+  //perdiction correct
+  if(resolveDir == predDir){
+    if(result_bank == 1){
+      TAGE_PHT1[index1].u = 1;
+    }
+    if(result_bank == 2){
+      TAGE_PHT2[index2].u = 1;
+    }
+    if(result_bank == 3){
+      TAGE_PHT3[index3].u = 1;
+    }
+    
+  }
   TAGE_BHR = (TAGE_BHR << 1) | resolveDir;
-
-  //TAGE_PHT1
-  if (resolveDir == TAKEN && TAGE_PHT1[hashed_tag1].DATA != S_T){
-    TAGE_PHT1[hashed_tag1].DATA++;
-  }
-  if(resolveDir == NOT_TAKEN && TAGE_PHT1[hashed_tag1].DATA != S_NT){
-    TAGE_PHT1[hashed_tag1].DATA++;
-  }
-  //devide 2 to convert 2bits to T/N
-  if(resolveDir != (TAGE_PHT1[hashed_tag1].DATA /2) && TAGE_PHT1[hashed_tag1].MIS < MAX_U_VALUE ){
-    TAGE_PHT1[hashed_tag1].MIS ++;
-  }
-  if(resolveDir == (TAGE_PHT1[hashed_tag1].DATA /2) && TAGE_PHT1[hashed_tag1].MIS > 0 ){
-
-    TAGE_PHT1[hashed_tag1].MIS --;
-  }
-
-  //TAGE_PHT2
-  if (resolveDir == TAKEN && TAGE_PHT2[hashed_tag2].DATA != S_T){
-    TAGE_PHT2[hashed_tag2].DATA++;
-  }
-  if(resolveDir == NOT_TAKEN && TAGE_PHT2[hashed_tag2].DATA != S_NT){
-    TAGE_PHT2[hashed_tag2].DATA++;
-  }
-  //devide 2 to convert 2bits to T/N
-  if(resolveDir != (TAGE_PHT2[hashed_tag2].DATA /2) && TAGE_PHT2[hashed_tag2].MIS < MAX_U_VALUE ){
-    TAGE_PHT2[hashed_tag2].MIS ++;
-  }
-  if(resolveDir == (TAGE_PHT2[hashed_tag2].DATA /2) && TAGE_PHT2[hashed_tag2].MIS > 0 ){
-    TAGE_PHT2[hashed_tag2].MIS --;
-  }
-
-  //TAGE_PHT3
-  if (resolveDir == TAKEN && TAGE_PHT3[hashed_tag3].DATA != S_T){
-    TAGE_PHT3[hashed_tag3].DATA++;
-  }
-  if(resolveDir == NOT_TAKEN && TAGE_PHT1[hashed_tag3].DATA != S_NT){
-    TAGE_PHT1[hashed_tag3].DATA++;
-  }
-  //devide 2 to convert 2bits to T/N
-  if(resolveDir != (TAGE_PHT3[hashed_tag3].DATA /2) && TAGE_PHT3[hashed_tag3].MIS < MAX_U_VALUE ){
-    TAGE_PHT3[hashed_tag3].MIS ++;
-  }
-  if(resolveDir == (TAGE_PHT3[hashed_tag3].DATA /2) && TAGE_PHT3[hashed_tag3].MIS > 0 ){
-    TAGE_PHT3[hashed_tag3].MIS --;
-  }
+  
 }
+
+
+
 
 
 
@@ -412,20 +467,26 @@ void UpdatePredictor_TAGE(UINT32 PC, bool resolveDir, bool predDir, UINT32 branc
 
 void InitPredictor_openend() {
   init_bimodel();
-  init_TAGE();
+  Init_TAGE();
 }
 
 bool GetPrediction_openend(UINT32 PC) {
-  bool result_tage = Getprediction_TAGE(PC);
+  bool result_tage = GetPrediction_TAGE(PC);
   bool result_bimodel = Getperdiction_bimodel(PC);
-  bool res = Getprediction_TAGE(PC);
+  bool res = result_tage;
+  // if(selector[selector_index(PC)] >> 1){
+  //   res = result_tage;
+  // }else{
+  //   res = result_bimodel;
+  // }
+  
   return res;
 }
 
 void UpdatePredictor_openend(UINT32 PC, bool resolveDir, bool predDir, UINT32 branchTarget) {
   UpdatePredictor_bimodel(PC, resolveDir, predDir, branchTarget);
   UpdatePredictor_TAGE(PC, resolveDir, predDir, branchTarget);
-  bool result_tage = Getprediction_TAGE(PC);
+  bool result_tage = GetPrediction_TAGE(PC);
   bool result_bimodel = Getperdiction_bimodel(PC);
 
   if(result_bimodel == resolveDir && result_tage != resolveDir && selector[selector_index(PC)] != S_T){
