@@ -145,14 +145,24 @@ void UpdatePredictor_2level(UINT32 PC, bool resolveDir, bool predDir, UINT32 bra
 #define BASE_IDX_MASK   MASK_OF_SIZE(BASE_IDX_SIZE)   // mask for obtaining basic prediction table index from PC
 #define BASE_CNT_SIZE   8       // number of bits used in saturation counter in basic prediction table
 
-#define NUM_TAGE_PHT    7       // number of TAGE prediction table used
+#define NUM_TAGE_PHT    6       // number of TAGE prediction table used
 #define TAGE_IDX_SIZE   10      // size of the TAGE prediction table index
 #define TAGE_PHT_SIZE   (1 << TAGE_IDX_SIZE)          // number of entries in TAGE prediction table
 #define TAGE_IDX_MASK   MASK_OF_SIZE(TAGE_IDX_SIZE)   // mask for obtaining TAGE prediction table index from PC
 #define TAGE_CNT_SIZE   3       // number of bits used in saturation counters in TAGE prediction table
-#define TAGE_TAG_SIZE   11       // number of bits used in tags in TAGE prediction table
+#define TAGE_TAG_SIZE   11      // number of bits used in tags in TAGE prediction table
 #define TAGE_U_SIZE     2       // number of bits used in usefulness counter in TAGE prediction table
 #define CYC_RST_U       ((BASE_PHT_SIZE + TAGE_PHT_SIZE * NUM_TAGE_PHT)<<4)   // number of prediction made before all usefulness counter being "weakened"
+
+#define LOOP_IDX_SIZE   4       // size of the Loop prediction table index
+#define LOOP_PHT_SIZE   (1 << LOOP_IDX_SIZE)          // size of the Loop prediction table index
+#define LOOP_IDX_MASK   MASK_OF_SIZE(LOOP_IDX_SIZE)   // size of the Loop prediction table index
+#define LOOP_IDX_OFFSET 4       // offset applied when calculating index from PC
+#define LOOP_TAG_SIZE   32      // size of the Loop prediction tag
+#define LOOP_SI_SIZE    10      // size of the Loop prediction speculative iteration count
+#define LOOP_NSI_SIZE   10      // size of the Loop prediction non-speculative iteration count
+#define LOOP_TRIP_SIZE  10      // size of the Loop prediction trip counter
+#define LOOP_CONF_SIZE  1       // size of the Loop prediction confidence bit
 
 #define BIAS_SIZE       6       // the size of bias counter that determine whether longer history with less confidence is better than short history
 
@@ -167,11 +177,20 @@ typedef struct tage_entry{
   UINT32 useful;  // age counter
 }tage_entry;
 
+typedef struct loop_entry{
+  UINT32 tag;             // tag
+  UINT32 spec_iter;       // speculative iteration count
+  UINT32 non_spec_iter;   // non-speculative iteration count
+  UINT32 trip;            // loop trip count is the number of times in a row the loop branch is taken
+  UINT32 conf;            // confidence bit indicating that the same loop trip count has been seen at least twice in a row
+}loop_entry;
+
 typedef __uint128_t UINT128;
 
 UINT128 BHT[BHT_SIZE];  // Globle history register
 base_entry BASE_PHT[BASE_PHT_SIZE];  // basic prediction table
 tage_entry TAGE_PHT[NUM_TAGE_PHT][TAGE_PHT_SIZE];  // TAGE prediction tables
+loop_entry LOOP_PHT[LOOP_PHT_SIZE]; // loop prediction table
 
 // give an alternative if the bias counter indicates that prediction made by longest history with less confidence is less favourable
 UINT32 use_alt;
@@ -243,6 +262,15 @@ void InitPredictor_openend() {
       TAGE_PHT[i][j].useful = 0;
     }
   }
+
+  // initialize loop prediction table
+  for(int i = 0; i < LOOP_PHT_SIZE; i++){
+    LOOP_PHT[i].tag = 0;
+    LOOP_PHT[i].spec_iter = 0;
+    LOOP_PHT[i].non_spec_iter = 0;
+    LOOP_PHT[i].trip = 0;
+    LOOP_PHT[i].conf = 0;
+  }
   
   // initialize the bias counter to slightly favour the prediction made with longer history bits even it is newly allocated
   use_alt = WEAK_NOT_TAKEN(BIAS_SIZE);
@@ -299,6 +327,15 @@ bool GetPrediction_openend(UINT32 PC) {
     alt_PHT_idx = PC & BASE_IDX_MASK;
     predDir = lh_pred;
   }
+
+  if (LOOP_PHT[(PC >> LOOP_IDX_OFFSET) & LOOP_IDX_MASK].tag == PC){
+    if (LOOP_PHT[(PC >> LOOP_IDX_OFFSET) & LOOP_IDX_MASK].spec_iter == LOOP_PHT[(PC >> LOOP_IDX_OFFSET) & LOOP_IDX_MASK].trip){
+      if (LOOP_PHT[(PC >> LOOP_IDX_OFFSET) & LOOP_IDX_MASK].conf) predDir = NOT_TAKEN;
+    } else {
+      LOOP_PHT[(PC >> LOOP_IDX_OFFSET) & LOOP_IDX_MASK].spec_iter = INC_SAT_CNT(LOOP_PHT[(PC >> LOOP_IDX_OFFSET) & LOOP_IDX_MASK].spec_iter, LOOP_SI_SIZE);
+    }
+  }
+  
   return predDir;
 }
 
@@ -362,6 +399,32 @@ void UpdatePredictor_openend(UINT32 PC, bool resolveDir, bool predDir, UINT32 br
         idx = get_idx(PC, BHT[(PC>>BHT_IDX_OFFSET) & BHT_IDX_MASK], i);
         TAGE_PHT[i][idx].useful = DEC_SAT_CNT(TAGE_PHT[i][idx].useful, TAGE_U_SIZE);
       }
+    }
+  }
+
+  // update loop prediction table
+  if (loop_back && resolveDir == TAKEN){
+    if (LOOP_PHT[(PC >> LOOP_IDX_OFFSET) & LOOP_IDX_MASK].tag != PC && predDir != resolveDir){
+      LOOP_PHT[(PC >> LOOP_IDX_OFFSET) & LOOP_IDX_MASK].tag = PC;
+      LOOP_PHT[(PC >> LOOP_IDX_OFFSET) & LOOP_IDX_MASK].spec_iter = 0;
+      LOOP_PHT[(PC >> LOOP_IDX_OFFSET) & LOOP_IDX_MASK].non_spec_iter = 0;
+      LOOP_PHT[(PC >> LOOP_IDX_OFFSET) & LOOP_IDX_MASK].trip = 0;
+      LOOP_PHT[(PC >> LOOP_IDX_OFFSET) & LOOP_IDX_MASK].conf = 0;
+    } else if (LOOP_PHT[(PC >> LOOP_IDX_OFFSET) & LOOP_IDX_MASK].tag == PC) {
+      LOOP_PHT[(PC >> LOOP_IDX_OFFSET) & LOOP_IDX_MASK].non_spec_iter = INC_SAT_CNT(LOOP_PHT[(PC >> LOOP_IDX_OFFSET) & LOOP_IDX_MASK].non_spec_iter, LOOP_NSI_SIZE);
+    }
+  } else if (loop_back && resolveDir == NOT_TAKEN){
+    if (LOOP_PHT[(PC >> LOOP_IDX_OFFSET) & LOOP_IDX_MASK].tag == PC){
+      LOOP_PHT[(PC >> LOOP_IDX_OFFSET) & LOOP_IDX_MASK].trip = INC_SAT_CNT(LOOP_PHT[(PC >> LOOP_IDX_OFFSET) & LOOP_IDX_MASK].trip, LOOP_TRIP_SIZE);
+      if (LOOP_PHT[(PC >> LOOP_IDX_OFFSET) & LOOP_IDX_MASK].non_spec_iter == LOOP_PHT[(PC >> LOOP_IDX_OFFSET) & LOOP_IDX_MASK].trip){
+        LOOP_PHT[(PC >> LOOP_IDX_OFFSET) & LOOP_IDX_MASK].conf = 1;
+      } else {
+        LOOP_PHT[(PC >> LOOP_IDX_OFFSET) & LOOP_IDX_MASK].conf = 0;
+      }
+      LOOP_PHT[(PC >> LOOP_IDX_OFFSET) & LOOP_IDX_MASK].non_spec_iter = INC_SAT_CNT(LOOP_PHT[(PC >> LOOP_IDX_OFFSET) & LOOP_IDX_MASK].non_spec_iter, LOOP_NSI_SIZE);
+      LOOP_PHT[(PC >> LOOP_IDX_OFFSET) & LOOP_IDX_MASK].trip = LOOP_PHT[(PC >> LOOP_IDX_OFFSET) & LOOP_IDX_MASK].non_spec_iter;
+      LOOP_PHT[(PC >> LOOP_IDX_OFFSET) & LOOP_IDX_MASK].spec_iter = LOOP_PHT[(PC >> LOOP_IDX_OFFSET) & LOOP_IDX_MASK].spec_iter - LOOP_PHT[(PC >> LOOP_IDX_OFFSET) & LOOP_IDX_MASK].non_spec_iter;
+      LOOP_PHT[(PC >> LOOP_IDX_OFFSET) & LOOP_IDX_MASK].non_spec_iter = 0;
     }
   }
 
