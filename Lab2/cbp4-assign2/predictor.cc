@@ -144,8 +144,8 @@ void UpdatePredictor_2level(UINT32 PC, bool resolveDir, bool predDir, UINT32 bra
 #define TAGE_IDX_SIZE   10      // size of the TAGE prediction table index
 #define TAGE_PHT_SIZE   (1 << TAGE_IDX_SIZE)          // number of entries in TAGE prediction table
 #define TAGE_IDX_MASK   MASK_OF_SIZE(TAGE_IDX_SIZE)   // mask for obtaining TAGE prediction table index from PC
-#define TAGE_CNT_SIZE   4       // number of bits used in saturation counters in TAGE prediction table
-#define TAGE_TAG_SIZE   8       // number of bits used in tags in TAGE prediction table
+#define TAGE_CNT_SIZE   3       // number of bits used in saturation counters in TAGE prediction table
+#define TAGE_TAG_SIZE   11       // number of bits used in tags in TAGE prediction table
 #define TAGE_U_SIZE     2       // number of bits used in usefulness counter in TAGE prediction table
 #define CYC_RST_U       ((BASE_PHT_SIZE + TAGE_PHT_SIZE * NUM_TAGE_PHT)<<4)   // number of prediction made before all usefulness counter being "weakened"
 
