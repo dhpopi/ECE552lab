@@ -135,6 +135,11 @@ void UpdatePredictor_2level(UINT32 PC, bool resolveDir, bool predDir, UINT32 bra
 #define DEC_SAT_CNT(cnt, size) ((cnt == 0) ? cnt : cnt - 1)                // count down saturating counter
 
 // predictor hyperparameters
+#define BHT_IDX_SIZE    1       // size of the history table index
+#define BHT_SIZE        (1 << BHT_IDX_SIZE)           // size of the history table index
+#define BHT_IDX_MASK    MASK_OF_SIZE(BHT_IDX_SIZE)    // size of the history table index
+#define BHT_IDX_OFFSET  1       // offset applied when calculating index from PC
+
 #define BASE_IDX_SIZE   9       // size of the basic prediction table index
 #define BASE_PHT_SIZE   (1 << BASE_IDX_SIZE)          // number of entries in basic prediction table
 #define BASE_IDX_MASK   MASK_OF_SIZE(BASE_IDX_SIZE)   // mask for obtaining basic prediction table index from PC
@@ -164,7 +169,7 @@ typedef struct tage_entry{
 
 typedef __uint128_t UINT128;
 
-UINT128 GHR;  // Globle history register
+UINT128 BHT[BHT_SIZE];  // Globle history register
 base_entry BASE_PHT[BASE_PHT_SIZE];  // basic prediction table
 tage_entry TAGE_PHT[NUM_TAGE_PHT][TAGE_PHT_SIZE];  // TAGE prediction tables
 
@@ -208,7 +213,7 @@ UINT32 get_tag(UINT32 PC, UINT128 history, UINT32 PHT_number){
 
 // calculating index based on Michaud PPM-like paper
 UINT32 get_idx(UINT32 PC, UINT128 history, UINT32 PHT_number){
-  UINT32 folded_PC = folded_xor(PC>>4, 32, TAGE_IDX_SIZE);
+  UINT32 folded_PC = folded_xor(PC, 32, TAGE_IDX_SIZE);
   UINT32 folded_HIS = folded_xor(history, (2<<PHT_number), TAGE_IDX_SIZE);
   UINT32 combined = folded_PC ^ folded_HIS;
   UINT32 hash = combined & TAGE_IDX_MASK;
@@ -218,7 +223,9 @@ UINT32 get_idx(UINT32 PC, UINT128 history, UINT32 PHT_number){
 
 void InitPredictor_openend() {
   // initialize history register
-  GHR = 0;
+  for(int i = 0; i < BHT_SIZE; i++){
+    BHT[i] = NOT_TAKEN;
+  }
 
   // initialize basic prediction table
   for(int i = 0; i < BASE_PHT_SIZE; i++){
@@ -237,7 +244,7 @@ void InitPredictor_openend() {
   }
   
   // initialize the bias counter to slightly favour the prediction made with longer history bits even it is newly allocated
-  use_alt = WEAK_TAKEN(BIAS_SIZE);
+  use_alt = WEAK_NOT_TAKEN(BIAS_SIZE);
   num_prediction_made = 0;
   
 }
@@ -251,8 +258,8 @@ bool GetPrediction_openend(UINT32 PC) {
   UINT32 TAGE_PHT_tag;
 
   for (int i = NUM_TAGE_PHT-1; i >= 0; i--){
-    TAGE_PHT_idx = get_idx(PC, GHR, i);
-    TAGE_PHT_tag = get_tag(PC, GHR, i);
+    TAGE_PHT_idx = get_idx(PC, BHT[(PC>>BHT_IDX_OFFSET) & BHT_IDX_MASK], i);
+    TAGE_PHT_tag = get_tag(PC, BHT[(PC>>BHT_IDX_OFFSET) & BHT_IDX_MASK], i);
     if (TAGE_PHT[i][TAGE_PHT_idx].tag == TAGE_PHT_tag){   // tag match
       if (!lh_pred_made){   // first time finding a match -> longest histroy
         lh_pred = MAPPING_RESULT(TAGE_PHT[i][TAGE_PHT_idx].cnt, TAGE_CNT_SIZE);
@@ -286,6 +293,9 @@ bool GetPrediction_openend(UINT32 PC) {
     lh_pred = MAPPING_RESULT(BASE_PHT[PC & BASE_IDX_MASK].cnt, BASE_CNT_SIZE);
     lh_PHT_num = -1;
     lh_PHT_idx = PC & BASE_IDX_MASK;
+    alt_pred = lh_pred;
+    alt_PHT_num = -1;
+    alt_PHT_idx = PC & BASE_IDX_MASK;
     predDir = lh_pred;
   }
   return predDir;
@@ -337,10 +347,10 @@ void UpdatePredictor_openend(UINT32 PC, bool resolveDir, bool predDir, UINT32 br
     UINT32 idx;
     bool space_found = false;
     for(int i = lh_PHT_num + 1; i < NUM_TAGE_PHT; i++){
-      idx = get_idx(PC, GHR, i);
+      idx = get_idx(PC, BHT[(PC>>BHT_IDX_OFFSET) & BHT_IDX_MASK], i);
       if (TAGE_PHT[i][idx].useful == 0){
         TAGE_PHT[i][idx].cnt = WEAK_TAKEN(TAGE_CNT_SIZE);
-        TAGE_PHT[i][idx].tag = get_tag(PC, GHR, i);
+        TAGE_PHT[i][idx].tag = get_tag(PC, BHT[(PC>>BHT_IDX_OFFSET) & BHT_IDX_MASK], i);
         space_found = true;
         break;
       }
@@ -348,14 +358,14 @@ void UpdatePredictor_openend(UINT32 PC, bool resolveDir, bool predDir, UINT32 br
     
     if (!space_found){  // no space available then decrease all the usefulness counter
       for(int i = lh_PHT_num + 1; i < NUM_TAGE_PHT; i++){
-        idx = get_idx(PC, GHR, i);
+        idx = get_idx(PC, BHT[(PC>>BHT_IDX_OFFSET) & BHT_IDX_MASK], i);
         TAGE_PHT[i][idx].useful = DEC_SAT_CNT(TAGE_PHT[i][idx].useful, TAGE_U_SIZE);
       }
     }
   }
 
   // update history register
-  GHR = (GHR << 1) | resolveDir;
+  BHT[(PC>>BHT_IDX_OFFSET) & BHT_IDX_MASK] = (BHT[(PC>>BHT_IDX_OFFSET) & BHT_IDX_MASK] << 1) | resolveDir;
 }
 
 
