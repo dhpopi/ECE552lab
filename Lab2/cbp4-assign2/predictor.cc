@@ -208,7 +208,7 @@ UINT32 get_tag(UINT32 PC, UINT128 history, UINT32 PHT_number){
 
 // calculating index based on Michaud PPM-like paper
 UINT32 get_idx(UINT32 PC, UINT128 history, UINT32 PHT_number){
-  UINT32 folded_PC = folded_xor(PC, 32, TAGE_IDX_SIZE);
+  UINT32 folded_PC = folded_xor(PC>>4, 32, TAGE_IDX_SIZE);
   UINT32 folded_HIS = folded_xor(history, (2<<PHT_number), TAGE_IDX_SIZE);
   UINT32 combined = folded_PC ^ folded_HIS;
   UINT32 hash = combined & TAGE_IDX_MASK;
@@ -294,6 +294,7 @@ bool GetPrediction_openend(UINT32 PC) {
 void UpdatePredictor_openend(UINT32 PC, bool resolveDir, bool predDir, UINT32 branchTarget) {
   // increment counter
   num_prediction_made++;
+  bool loop_back = PC > branchTarget;
 
   // update basic prediction table
   if (resolveDir == TAKEN){
