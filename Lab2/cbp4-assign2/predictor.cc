@@ -143,7 +143,7 @@ void UpdatePredictor_2level(UINT32 PC, bool resolveDir, bool predDir, UINT32 bra
 #define BASE_IDX_SIZE   9       // size of the basic prediction table index
 #define BASE_PHT_SIZE   (1 << BASE_IDX_SIZE)          // number of entries in basic prediction table
 #define BASE_IDX_MASK   MASK_OF_SIZE(BASE_IDX_SIZE)   // mask for obtaining basic prediction table index from PC
-#define BASE_CNT_SIZE   4       // number of bits used in saturation counter in basic prediction table
+#define BASE_CNT_SIZE   8       // number of bits used in saturation counter in basic prediction table
 
 #define NUM_TAGE_PHT    7       // number of TAGE prediction table used
 #define TAGE_IDX_SIZE   10      // size of the TAGE prediction table index
