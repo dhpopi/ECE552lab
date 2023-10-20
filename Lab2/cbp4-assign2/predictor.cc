@@ -213,9 +213,10 @@ UINT32 get_tag(UINT32 PC, UINT128 history, UINT32 PHT_number){
 
 // calculating index based on Michaud PPM-like paper
 UINT32 get_idx(UINT32 PC, UINT128 history, UINT32 PHT_number){
-  UINT32 folded_PC = folded_xor(PC, 32, TAGE_IDX_SIZE);
+  UINT32 folded_PC1 = folded_xor(PC, 32, TAGE_IDX_SIZE);
+  UINT32 folded_PC2 = folded_xor(PC, 32, TAGE_IDX_SIZE-1);
   UINT32 folded_HIS = folded_xor(history, (2<<PHT_number), TAGE_IDX_SIZE);
-  UINT32 combined = folded_PC ^ folded_HIS;
+  UINT32 combined = folded_PC1 ^ (folded_PC2 << 1) ^ folded_HIS;
   UINT32 hash = combined & TAGE_IDX_MASK;
   return hash;
 }
