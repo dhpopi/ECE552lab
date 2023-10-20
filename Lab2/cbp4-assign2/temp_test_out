@@ -1,0 +1,133 @@
+..............................
+..............................
+..............................
+..............................
+.............................
+
+NUM_INSTRUCTIONS     	 :  149999964
+NUM_CONDITIONAL_BR   	 :   14796021
+
+2bitsat: NUM_MISPREDICTIONS   	 :    3696045
+2bitsat: MISPRED_PER_1K_INST  	 :     24.640
+2level:  NUM_MISPREDICTIONS   	 :    1785464
+2level:  MISPRED_PER_1K_INST  	 :     11.903
+openend: NUM_MISPREDICTIONS   	 :     781987
+openend: MISPRED_PER_1K_INST  	 :      5.213
+
+..............................
+..............................
+..............................
+..............................
+..............................
+
+
+NUM_INSTRUCTIONS     	 :  150000001
+NUM_CONDITIONAL_BR   	 :   16754009
+
+2bitsat: NUM_MISPREDICTIONS   	 :    1181919
+2bitsat: MISPRED_PER_1K_INST  	 :      7.879
+2level:  NUM_MISPREDICTIONS   	 :    1071909
+2level:  MISPRED_PER_1K_INST  	 :      7.146
+openend: NUM_MISPREDICTIONS   	 :     268049
+openend: MISPRED_PER_1K_INST  	 :      1.787
+
+..............................
+..............................
+..............................
+..............................
+..............................
+
+
+NUM_INSTRUCTIONS     	 :  150000004
+NUM_CONDITIONAL_BR   	 :   25323638
+
+2bitsat: NUM_MISPREDICTIONS   	 :    1225001
+2bitsat: MISPRED_PER_1K_INST  	 :      8.167
+2level:  NUM_MISPREDICTIONS   	 :    1297677
+2level:  MISPRED_PER_1K_INST  	 :      8.651
+openend: NUM_MISPREDICTIONS   	 :    1206126
+openend: MISPRED_PER_1K_INST  	 :      8.041
+
+..............................
+..............................
+..............................
+..............................
+.............................
+
+NUM_INSTRUCTIONS     	 :  149999988
+NUM_CONDITIONAL_BR   	 :   22628704
+
+2bitsat: NUM_MISPREDICTIONS   	 :    3161385
+2bitsat: MISPRED_PER_1K_INST  	 :     21.076
+2level:  NUM_MISPREDICTIONS   	 :    2223671
+2level:  MISPRED_PER_1K_INST  	 :     14.824
+openend: NUM_MISPREDICTIONS   	 :     486096
+openend: MISPRED_PER_1K_INST  	 :      3.241
+
+..............................
+..............................
+..............................
+..............................
+..............................
+
+
+NUM_INSTRUCTIONS     	 :  150000001
+NUM_CONDITIONAL_BR   	 :    9409564
+
+2bitsat: NUM_MISPREDICTIONS   	 :    1361053
+2bitsat: MISPRED_PER_1K_INST  	 :      9.074
+2level:  NUM_MISPREDICTIONS   	 :    1122586
+2level:  MISPRED_PER_1K_INST  	 :      7.484
+openend: NUM_MISPREDICTIONS   	 :     848605
+openend: MISPRED_PER_1K_INST  	 :      5.657
+
+..............................
+..............................
+..............................
+..............................
+..............................
+
+
+NUM_INSTRUCTIONS     	 :  150000008
+NUM_CONDITIONAL_BR   	 :   19679814
+
+2bitsat: NUM_MISPREDICTIONS   	 :    2035060
+2bitsat: MISPRED_PER_1K_INST  	 :     13.567
+2level:  NUM_MISPREDICTIONS   	 :    2230774
+2level:  MISPRED_PER_1K_INST  	 :     14.872
+openend: NUM_MISPREDICTIONS   	 :    1784154
+openend: MISPRED_PER_1K_INST  	 :     11.894
+
+..............................
+..............................
+..............................
+..............................
+..............................
+
+
+NUM_INSTRUCTIONS     	 :  150000004
+NUM_CONDITIONAL_BR   	 :   31520616
+
+2bitsat: NUM_MISPREDICTIONS   	 :    3675261
+2bitsat: MISPRED_PER_1K_INST  	 :     24.502
+2level:  NUM_MISPREDICTIONS   	 :    2024172
+2level:  MISPRED_PER_1K_INST  	 :     13.494
+openend: NUM_MISPREDICTIONS   	 :    1570034
+openend: MISPRED_PER_1K_INST  	 :     10.467
+
+..............................
+..............................
+..............................
+..............................
+.............................
+
+NUM_INSTRUCTIONS     	 :  149999993
+NUM_CONDITIONAL_BR   	 :   20449090
+
+2bitsat: NUM_MISPREDICTIONS   	 :    1066163
+2bitsat: MISPRED_PER_1K_INST  	 :      7.108
+2level:  NUM_MISPREDICTIONS   	 :    1022869
+2level:  MISPRED_PER_1K_INST  	 :      6.819
+openend: NUM_MISPREDICTIONS   	 :     735641
+openend: MISPRED_PER_1K_INST  	 :      4.904
+
