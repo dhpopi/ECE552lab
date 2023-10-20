@@ -395,8 +395,9 @@ bool GetPrediction_TAGE(UINT32 PC){
   return result;
 }
 
+static UINT32 u_counter = 0;
 void UpdatePredictor_TAGE(UINT32 PC, bool resolveDir, bool predDir, UINT32 branchTarget){
-
+  u_counter++;
   
   UINT32 index1 = PHT_index1(PC, TAGE_BHR);
   UINT32 index2 = PHT_index2(PC, TAGE_BHR);
@@ -425,36 +426,35 @@ void UpdatePredictor_TAGE(UINT32 PC, bool resolveDir, bool predDir, UINT32 branc
   //update 2bit in each bank
   if(TAGE_PHT1[index1].ctr > 0 && resolveDir == NOT_TAKEN){
     TAGE_PHT1[index1].ctr --;
-    TAGE_PHT1[index1].u = 0;
   }
   if(TAGE_PHT1[index1].ctr < ((1<<N_BIT_SAT)-1) && resolveDir == TAKEN){
     TAGE_PHT1[index1].ctr++;
-    TAGE_PHT1[index1].u = 0;
   }
   if(TAGE_PHT2[index2].ctr > 0 && resolveDir == NOT_TAKEN){
     TAGE_PHT2[index2].ctr--;
-    TAGE_PHT2[index2].u = 0;
   }
   if(TAGE_PHT2[index2].ctr < ((1<<N_BIT_SAT)-1) && resolveDir == TAKEN){
     TAGE_PHT2[index2].ctr++;
-    TAGE_PHT2[index2].u = 0;
   } 
   if(TAGE_PHT3[index3].ctr > 0 && resolveDir == NOT_TAKEN){
     TAGE_PHT3[index3].ctr--;
-    TAGE_PHT3[index3].u = 0;
   }
   if(TAGE_PHT3[index3].ctr < ((1<<N_BIT_SAT)-1) && resolveDir == TAKEN){
     TAGE_PHT3[index3].ctr++;
-    TAGE_PHT3[index3].u = 0;
   } 
   if(TAGE_PHT4[index4].ctr > 0 && resolveDir == NOT_TAKEN){
     TAGE_PHT4[index4].ctr--;
-    TAGE_PHT4[index4].u = 0;
   }
   if(TAGE_PHT4[index4].ctr < ((1<<N_BIT_SAT)-1) && resolveDir == TAKEN){
     TAGE_PHT4[index4].ctr++;
-    TAGE_PHT4[index4].u = 0;
   } 
+
+  if (u_counter % 200 == 0) {
+    TAGE_PHT1[index1].u = 0;
+    TAGE_PHT2[index2].u = 0;
+    TAGE_PHT3[index3].u = 0;
+    TAGE_PHT4[index4].u = 0;
+  }
 
   //prediciton wrong
   if(resolveDir != predDir){
