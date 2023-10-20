@@ -143,7 +143,7 @@ void UpdatePredictor_2level(UINT32 PC, bool resolveDir, bool predDir, UINT32 bra
 #define BASE_IDX_SIZE   9       // size of the basic prediction table index
 #define BASE_PHT_SIZE   (1 << BASE_IDX_SIZE)          // number of entries in basic prediction table
 #define BASE_IDX_MASK   MASK_OF_SIZE(BASE_IDX_SIZE)   // mask for obtaining basic prediction table index from PC
-#define BASE_CNT_SIZE   8       // number of bits used in saturation counter in basic prediction table
+#define BASE_CNT_SIZE   4       // number of bits used in saturation counter in basic prediction table
 
 #define NUM_TAGE_PHT    7       // number of TAGE prediction table used
 #define TAGE_IDX_SIZE   10      // size of the TAGE prediction table index
@@ -305,7 +305,6 @@ bool GetPrediction_openend(UINT32 PC) {
 void UpdatePredictor_openend(UINT32 PC, bool resolveDir, bool predDir, UINT32 branchTarget) {
   // increment counter
   num_prediction_made++;
-  bool loop_back = PC > branchTarget;
 
   // update basic prediction table
   if (resolveDir == TAKEN){
@@ -347,7 +346,7 @@ void UpdatePredictor_openend(UINT32 PC, bool resolveDir, bool predDir, UINT32 br
   if (lh_pred != resolveDir){
     UINT32 idx;
     bool space_found = false;
-    for(int i = lh_PHT_num + 1; i < NUM_TAGE_PHT; i++){
+    for(int i = lh_PHT_num + 1 + use_alt%NUM_TAGE_PHT; i < NUM_TAGE_PHT; i++){
       idx = get_idx(PC, BHT[(PC>>BHT_IDX_OFFSET) & BHT_IDX_MASK], i);
       if (TAGE_PHT[i][idx].useful == 0){
         TAGE_PHT[i][idx].cnt = WEAK_TAKEN(TAGE_CNT_SIZE);
