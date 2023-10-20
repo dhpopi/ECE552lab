@@ -136,439 +136,118 @@ void UpdatePredictor_2level(UINT32 PC, bool resolveDir, bool predDir, UINT32 bra
 /////////////////////////////////////////////////////////////
 // openend
 /////////////////////////////////////////////////////////////
+UINT64 GHR;
+//hyper table
+#define T0_size 1000
+//2bit sat base T0
+static UINT32 bimodel[T0_size];
+//hyper table
+#define NUM_BANK 4
+#define BANK_SIZE 1024
+#define CYC_RES_U 100
+//banks of TAGE
+int cycle_count = 0;
+int alt_pred = 0;
 
-#define HASH_MATRIX_ROW_1 0b00010111001010000001010011011000
-#define HASH_MATRIX_ROW_2 0b00111011010001000010001010100100
-#define HASH_MATRIX_ROW_3 0b01111101100000100100000101000010
-#define HASH_MATRIX_ROW_4 0b00000001000000011000000010000001
+typedef struct tage_entry{
+  UINT32 ctr; //counter
+  UINT32 tag; // tag
+  UINT32 u; //age counter
+}tage_entry;
 
+static tage_entry bank[NUM_BANK][BANK_SIZE];
 
-
-//total 128Kib
-static UINT32 bimodel_PHT[4096];
-static UINT32 selector[4096];
-
-
-#define TAGE_BHR_MASK 0xFFFFFFFF
-#define TAGE_PHT1_MASK 0b00000000000011111111
-#define TAGE_PHT2_MASK 0b00000000111111111111
-#define TAGE_PHT3_MASK 0b11111111111111111111
-
-void init_sel(){
-  for(int i = 0; i < 4096; i++){
-    selector[i] = W_NT;
+UINT32 TAG_8bit(UINT32 PC, int history_bits){
+  UINT32 his_temp1 =0;
+  UINT32 his_temp2 =0;
+  UINT32 pc_temp = 0;
+  //pc csr
+  for(int i = 0; i < 32/8; i++){
+    pc_temp ^= PC >> (8*i);
   }
-}
-UINT32 selector_index(UINT32 PC){
-  UINT32 index = (PC >> 2) & 0x00000fff;
-  return index;
-}
-bool Get_sel(UINT32 pc){
-  UINT32 index = selector_index (pc);
-  switch(bimodel_PHT[index]){
-
-    case S_NT:
-      return NOT_TAKEN;
-
-    case W_NT:
-      return NOT_TAKEN;
-
-    case W_T:
-      return TAKEN;
-
-    case S_T:
-      return TAKEN;
-
-    default:
-      return TAKEN;
+  //csr1
+  for(int i = 0; i < history_bits / 8; i++){
+    his_temp1 ^= GHR >> (8*i);
   }
-}
-
-UINT32 bimodel_index(UINT32 PC){
-  UINT32 index = (PC) & 0x00000fff;
-  return index;
-}
-
-void init_bimodel(){
-  for(int i = 0 ; i < 4096; i++){
-    bimodel_PHT[i] = 0;
+  //csr2
+  for(int i = 0; i < history_bits / 7; i++){
+    his_temp2 ^= GHR >> (8*i);
   }
 
+  return (pc_temp ^ his_temp1 ^ (his_temp2 << 1)) && 0xff;
 }
 
-bool Getperdiction_bimodel(UINT32 PC){
-  UINT32 index = bimodel_index (PC);
-  return (bimodel_PHT[index] >> 2);
+UINT32 Index_10bit(UINT32 PC, int history_bits){
+  UINT32 pc_temp = 0;
+  UINT32 his_temp1 =0;
+  //csr pc
+  for(int i = 0; i < 4; i++){
+    pc_temp ^= PC >> (8*i);
+  }
+  //csr his
+  for(int i = 0; i < history_bits / 10; i++){
+    his_temp1 ^= GHR >> (8*i);
+  }
+
+  return (pc_temp ^ his_temp1) & 0x3ff;
 }
-
-void UpdatePredictor_bimodel(UINT32 PC, bool resolveDir, bool predDir, UINT32 branchTarget) {
-  UINT32 index = bimodel_index (PC);
-  if(resolveDir == TAKEN && bimodel_PHT[index] < 8){
-    bimodel_PHT[index]++;
-  }
-  if(resolveDir == NOT_TAKEN && bimodel_PHT[index] > 0){
-    bimodel_PHT[index]--;
-  }
-}
-
-typedef struct TAG_DATA{
-  UINT32 pred; //8 bit tag
-  UINT32 ctr; //3 bit sta
-  UINT32 u; //useful counter
-} TAG_DATA;
-
-#define MAX_U_VALUE 4
-#define TAGE_PHT_SIZE 2500
-
-
-static UINT64 TAGE_BHR;
-static TAG_DATA TAGE_PHT1[TAGE_PHT_SIZE];
-static TAG_DATA TAGE_PHT2[TAGE_PHT_SIZE];
-static TAG_DATA TAGE_PHT3[TAGE_PHT_SIZE];
-static TAG_DATA TAGE_PHT4[TAGE_PHT_SIZE];
-
-
-
-UINT32 Hash1(UINT32 PC){
-  UINT64 HIS = TAGE_BHR;
-  UINT32 combined = PC ^ (HIS & 0x3ff) ^ ((HIS << 1) & 0x3ff);
-  UINT32 hash = combined ;
-  return hash;
-}
-
-UINT32 Hash2(UINT32 PC){
-  UINT64 HIS = TAGE_BHR;
-  UINT32 history_10bit_1 = HIS & 0x3ff;
-  HIS = HIS >> 10;
-  UINT32 history_10bit_2 = history_10bit_1 ^ (HIS & 0x3ff);
-  UINT32 combined = PC ^ history_10bit_2 ^ ((history_10bit_2 << 1) & 0x3ff);
-  UINT32 hash = combined ;
-  return hash;
-}
-
-UINT32 Hash3(UINT32 PC){
-  UINT64 HIS = TAGE_BHR;
-  UINT32 history_10bit_1 = HIS & 0x3ff;
-  HIS = HIS >> 10;
-  UINT32 history_10bit_2 = history_10bit_1 ^ (HIS & 0x3ff);
-  HIS = HIS >> 10;
-  UINT32 history_10bit_3 = history_10bit_2 ^ (HIS & 0x3ff);
-  HIS = HIS >> 10;
-  UINT32 history_10bit_4 = history_10bit_3 ^ (HIS & 0x3ff);
-  UINT32 combined = PC ^ history_10bit_4 ^ ((history_10bit_4 << 1) & 0x3ff);
-  UINT32 hash = combined ;
-  return hash;
-}
-
-UINT32 Hash4(UINT32 PC){
-  UINT64 HIS = TAGE_BHR;
-  UINT32 history_10bit_1 = HIS & 0x3ff;
-  HIS = HIS >> 10;
-  UINT32 history_10bit_2 = history_10bit_1 ^ (HIS & 0x3ff);
-  HIS = HIS >> 10;
-  UINT32 history_10bit_3 = history_10bit_2 ^ (HIS & 0x3ff);
-  HIS = HIS >> 10;
-  UINT32 history_10bit_4 = history_10bit_3 ^ (HIS & 0x3ff);
-  HIS = HIS >> 10;
-  UINT32 history_10bit_5 = history_10bit_4 ^ (HIS & 0x3ff);
-  HIS = HIS >> 10;
-  UINT32 history_10bit_6 = history_10bit_5 ^ (HIS & 0x3ff);
-  UINT32 combined = PC ^ history_10bit_6 ^ ((history_10bit_6 << 1) & 0x3ff);
-  UINT32 hash = combined ;
-  return hash;
-}
-
-
-
-
-UINT32 PHT_index1(UINT32 PC, UINT32 HIS){
-  UINT64 history = HIS;
-  UINT32 history_10bit = history & 0x3ff;
-  UINT32 PCXOR = (PC & 0x3ff) ^ ((PC >> 10) & 0x3ff);
-  UINT32 val = PCXOR ^ history_10bit;
-  return val % TAGE_PHT_SIZE;
-}
-UINT32 PHT_index2(UINT32 PC, UINT32 HIS){
-  UINT64 history = HIS;
-  UINT32 history_10bit_1 = history & 0x3ff;
-  history = history >> 10;
-  UINT32 history_10bit_2 = history_10bit_1 ^ (history & 0x3ff);
-  UINT32 val = (PC & 0x3ff) ^ ((PC >> 10) & 0x3ff) ^ history_10bit_2;
-  return val % TAGE_PHT_SIZE;
-}
-UINT32 PHT_index3(UINT32 PC, UINT32 HIS){
-  UINT64 history = HIS;
-  UINT32 history_10bit_1 = history & 0x3ff;
-  history = history >> 10;
-  UINT32 history_10bit_2 = history_10bit_1 ^ (history & 0x3ff);
-  history = history >> 10;
-  UINT32 history_10bit_3 = history_10bit_2 ^ (history & 0x3ff);
-  history = history >> 10;
-  UINT32 history_10bit_4 = history_10bit_3 ^ (history & 0x3ff);
-  UINT32 val = (PC & 0x3ff) ^ ((PC >> 10) & 0x3ff) ^ history_10bit_4;
-  return val % TAGE_PHT_SIZE;
-}
-UINT32 PHT_index4(UINT32 PC, UINT32 HIS){
-  UINT64 history = HIS;
-  UINT32 history_10bit_1 = history & 0x3ff;
-  history = history >> 10;
-  UINT32 history_10bit_2 = history_10bit_1 ^ (history & 0x3ff);
-  history = history >> 10;
-  UINT32 history_10bit_3 = history_10bit_2 ^ (history & 0x3ff);
-  history = history >> 10;
-  UINT32 history_10bit_4 = history_10bit_3 ^ (history & 0x3ff);
-  history = history >> 10;
-  UINT32 history_10bit_5 = history_10bit_4 ^ (history & 0x3ff);
-  history = history >> 10;
-  UINT32 history_10bit_6 = history_10bit_5 ^ (history & 0x3ff);
-  UINT32 val = (PC & 0x3ff) ^ ((PC >> 10) & 0x3ff) ^ history_10bit_6;
-  return val % TAGE_PHT_SIZE;
-}
-
-void Init_TAGE(){
-  for(int i = 0; i < TAGE_PHT_SIZE; i++){
-    TAGE_PHT1[i].ctr = 4;
-    TAGE_PHT1[i].pred = 0;
-    TAGE_PHT1[i].u = 0;
-    TAGE_PHT2[i].ctr = 4;
-    TAGE_PHT2[i].pred = 0;
-    TAGE_PHT2[i].u = 0;
-    TAGE_PHT3[i].ctr = 4;
-    TAGE_PHT3[i].pred = 0;
-    TAGE_PHT3[i].u = 0;
-    TAGE_PHT4[i].ctr = 4;
-    TAGE_PHT4[i].pred = 0;
-    TAGE_PHT4[i].u = 0;
-  }
-  TAGE_BHR = 0;
-  return;
-}
-bool GetPrediction_TAGE(UINT32 PC){  
-  //get pred from 3 entry:
-  UINT32 index1 = PHT_index1(PC, TAGE_BHR);
-  UINT32 index2 = PHT_index2(PC, TAGE_BHR);
-  UINT32 index3 = PHT_index3(PC, TAGE_BHR);
-  UINT32 index4 = PHT_index4(PC, TAGE_BHR);
-  UINT32 hash1 = Hash1(PC);
-  UINT32 hash2 = Hash2(PC);
-  UINT32 hash3 = Hash3(PC);
-  UINT32 hash4 = Hash4(PC);
-  UINT32 result1 = TAGE_PHT1[index1].ctr >> 2;
-  UINT32 result2 = TAGE_PHT2[index2].ctr >> 2;
-  UINT32 result3 = TAGE_PHT3[index3].ctr >> 2;
-  UINT32 result4 = TAGE_PHT4[index3].ctr >> 2;
-  //all tag geted
-  bool result = Getperdiction_bimodel(PC);
-  
-    if (TAGE_PHT1[index1].pred == hash1){
-    result = result1;
-    }
-  
-  
-    if (TAGE_PHT2[index2].pred == hash2){
-      result = result2;
-    }
-  
-  
-    if (TAGE_PHT3[index3].pred == hash3){
-      result = result3;
-    }
-
-    if (TAGE_PHT4[index4].pred == hash4){
-      result = result4;
-    }
-  return result;
-
-
-}
-
-void UpdatePredictor_TAGE(UINT32 PC, bool resolveDir, bool predDir, UINT32 branchTarget){
-  UINT32 index1 = PHT_index1(PC, TAGE_BHR);
-  UINT32 index2 = PHT_index2(PC, TAGE_BHR);
-  UINT32 index3 = PHT_index3(PC, TAGE_BHR);
-  UINT32 index4 = PHT_index4(PC, TAGE_BHR);
-  UINT32 hash1 = Hash1(PC);
-  UINT32 hash2 = Hash2(PC);
-  UINT32 hash3 = Hash3(PC);
-  UINT32 hash4 = Hash4(PC);
-  UINT32 result1 = TAGE_PHT1[index1].ctr >> 2;
-  UINT32 result2 = TAGE_PHT2[index2].ctr >> 2;
-  UINT32 result3 = TAGE_PHT3[index3].ctr >> 2;
-  UINT32 result4 = TAGE_PHT4[index3].ctr >> 2;
-
-  UINT32 result_bank = 0;
-  if (TAGE_PHT1[index1].pred == hash1){
-    result_bank = 1;
-  }
-  if (TAGE_PHT2[index2].pred == hash2){
-    result_bank = 2;
-  }
-  if (TAGE_PHT3[index3].pred == hash3){
-    result_bank = 3;
-  }
-  if (TAGE_PHT4[index4].pred == hash4){
-    result_bank = 4;
-  }
-  //find result from which bank
-
-  //update 2bit in each bank
-  if(TAGE_PHT1[index1].ctr > 0 && resolveDir == NOT_TAKEN){
-    TAGE_PHT1[index1].ctr --;
-    TAGE_PHT1[index1].u = 0;
-  }
-  if(TAGE_PHT1[index1].ctr < 8 && resolveDir == TAKEN){
-    TAGE_PHT1[index1].ctr++;
-    TAGE_PHT1[index1].u = 0;
-  }
-  if(TAGE_PHT2[index2].ctr > 0 && resolveDir == NOT_TAKEN){
-    TAGE_PHT2[index2].ctr--;
-    TAGE_PHT2[index2].u = 0;
-  }
-  if(TAGE_PHT2[index2].ctr < 8 && resolveDir == TAKEN){
-    TAGE_PHT2[index2].ctr++;
-    TAGE_PHT2[index2].u = 0;
-  } 
-  if(TAGE_PHT3[index3].ctr > 0 && resolveDir == NOT_TAKEN){
-    TAGE_PHT3[index3].ctr--;
-    TAGE_PHT3[index3].u = 0;
-  }
-  if(TAGE_PHT3[index3].ctr < 8 && resolveDir == TAKEN){
-    TAGE_PHT3[index3].ctr++;
-    TAGE_PHT3[index3].u = 0;
-  } 
-  if(TAGE_PHT4[index4].ctr > 0 && resolveDir == NOT_TAKEN){
-    TAGE_PHT4[index4].ctr--;
-    TAGE_PHT4[index4].u = 0;
-  }
-  if(TAGE_PHT4[index4].ctr < 8 && resolveDir == TAKEN){
-    TAGE_PHT4[index4].ctr++;
-    TAGE_PHT4[index4].u = 0;
-  } 
-
-  //prediciton wrong
-  if(resolveDir != predDir){
-    if(result_bank < 4){
-      if(result_bank == 0){
-        if(!TAGE_PHT1[index1].u){
-          TAGE_PHT1[index1].pred = hash1;
-          TAGE_PHT1[index1].ctr = resolveDir << 2;
-          TAGE_PHT1[index1].u = 0;
-        }
-        if(!TAGE_PHT2[index2].u){
-          TAGE_PHT2[index2].pred = hash2;
-          TAGE_PHT2[index2].ctr = resolveDir << 2;
-          TAGE_PHT2[index2].u = 0;
-        }
-        if(!TAGE_PHT3[index3].u){
-          TAGE_PHT3[index3].pred = hash3;
-          TAGE_PHT3[index3].ctr = resolveDir << 2;
-          TAGE_PHT3[index3].u = 0;
-        }
-        if(!TAGE_PHT4[index4].u){
-          TAGE_PHT4[index4].pred = hash4;
-          TAGE_PHT4[index4].ctr = resolveDir << 2;
-          TAGE_PHT4[index4].u = 0;
-        }
-      }
-      if(result_bank == 1){
-        if(!TAGE_PHT2[index2].u){
-          TAGE_PHT2[index2].pred = hash2;
-          TAGE_PHT2[index2].ctr = resolveDir << 2;
-          TAGE_PHT2[index2].u = 0;
-        }
-        if(!TAGE_PHT3[index3].u){
-          TAGE_PHT3[index3].pred = hash3;
-          TAGE_PHT3[index3].ctr = resolveDir << 2;
-          TAGE_PHT3[index3].u = 0;
-        }
-        if(!TAGE_PHT4[index4].u){
-          TAGE_PHT4[index4].pred = hash4;
-          TAGE_PHT4[index4].ctr = resolveDir << 2;
-          TAGE_PHT4[index4].u = 0;
-        }
-      }
-      if(result_bank == 2){
-        if(!TAGE_PHT3[index3].u){
-          TAGE_PHT3[index3].pred = hash3;
-          TAGE_PHT3[index3].ctr = resolveDir << 2;
-          TAGE_PHT3[index3].u = 0;
-        }
-        if(result_bank == 3){
-        if(!TAGE_PHT4[index4].u){
-          TAGE_PHT4[index4].pred = hash4;
-          TAGE_PHT4[index4].ctr = resolveDir << 2;
-          TAGE_PHT4[index4].u = 0;
-        }
-      }
-      }
-      if(result_bank == 3){
-        if(!TAGE_PHT4[index4].u){
-          TAGE_PHT4[index4].pred = hash4;
-          TAGE_PHT4[index4].ctr = resolveDir << 2;
-          TAGE_PHT4[index4].u = 0;
-        }
-      }
-    }
-
-  }
-  
-  //perdiction correct
-  if(resolveDir == predDir){
-    if(result_bank == 1){
-      TAGE_PHT1[index1].u = 1;
-    }
-    if(result_bank == 2){
-      TAGE_PHT2[index2].u = 1;
-    }
-    if(result_bank == 3){
-      TAGE_PHT3[index3].u = 1;
-    }
-    if(result_bank == 4){
-      TAGE_PHT4[index4].u = 1;
-    }
-    
-  }
-  if (Getperdiction_bimodel(PC) != resolveDir && Getperdiction_bimodel(PC) != predDir){
-    UINT32 index = bimodel_index (PC);
-    bimodel_PHT[index] = (resolveDir << 2);
-  }
-  TAGE_BHR = (TAGE_BHR << 1) | resolveDir;
-  UpdatePredictor_bimodel(PC, resolveDir, predDir, branchTarget);
-}
-
-
-
-
-
-
 
 
 void InitPredictor_openend() {
-  init_bimodel();
-  Init_TAGE();
+  GHR = 0;
+  for(int i = 0; i < NUM_BANK; i++){
+    for (int j = 0; j < BANK_SIZE; j++){
+      bank[i][j].ctr = 0;
+      bank[i][j].u = 0;
+      bank[i][j].tag = 0;
+    }
+  }
+  for(int i = 0; i < T0_size; i++){
+    //set bimodel to weak_NT
+    bimodel[i] = 1;
+  }
 }
 
 bool GetPrediction_openend(UINT32 PC) {
-  bool result_tage = GetPrediction_TAGE(PC);
-  bool result_bimodel = Getperdiction_bimodel(PC);
-  bool res = result_tage;
+  //find index and tags
+  UINT32 tag[4];
+  UINT32 index[4];
+  UINT32 his_bit[4] = {10, 20, 40, 60};
+  //get predition and altern prediction
+  int pred = 0;
+  int pred_make = 0;
   
-  return res;
+  int alt_pred_make =0
+  for(int i = 0; i < 4; i++){
+    tag[i] = TAG_8bit(PC, his_bit[i]);
+    index[i] = Index_10bit(PC, his_bit[i]);
+  }
+  //from higter order bank to lower bank
+  for(int i = NUM_BANK - 1; i > 0; i--){
+    //bank entry hit
+    if(bank[i][index[i]].tag == tag[i]){
+      if(pred_make == 0){
+        pred_make = 1;
+        pred = bank[i][index[i]].ctr >> 1;
+      }else if(alt_pred_make == 0;){
+        alt_pred_make = 0;
+        alt_pred = bank[i][index[i]].ctr >> 1;
+      }
+    }
+  }
+  if(perd_make == 0){
+    //use bimodel
+    pred = bimodel[(PC >> 2) % T0_size] > 1;
+  }
+  if(alt_pred_make == 0){
+    alt_pred = bimodel[(PC >> 2) % T0_size] > 1;
+  }
 }
 
 void UpdatePredictor_openend(UINT32 PC, bool resolveDir, bool predDir, UINT32 branchTarget) {
   
-  UpdatePredictor_TAGE(PC, resolveDir, predDir, branchTarget);
-  bool result_tage = GetPrediction_TAGE(PC);
-  bool result_bimodel = Getperdiction_bimodel(PC);
 
-  if(result_bimodel == resolveDir && result_tage != resolveDir && selector[selector_index(PC)] != S_T){
-    selector[selector_index(PC)] ++;
-  }
-  if(result_bimodel != resolveDir && result_tage == resolveDir && selector[selector_index(PC)] != S_NT){
-    selector[selector_index(PC)] --;
-  }
-
+  GHR = (GHR << 1) | resolveDir;
 }
 
 
