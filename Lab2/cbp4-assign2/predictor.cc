@@ -136,117 +136,276 @@ void UpdatePredictor_2level(UINT32 PC, bool resolveDir, bool predDir, UINT32 bra
 /////////////////////////////////////////////////////////////
 // openend
 /////////////////////////////////////////////////////////////
-UINT64 GHR;
-//hyper table
-#define T0_size 1000
-//2bit sat base T0
-static UINT32 bimodel[T0_size];
-//hyper table
-#define NUM_BANK 4
-#define BANK_SIZE 1024
-#define CYC_RES_U 100
-//banks of TAGE
-int cycle_count = 0;
-int alt_pred = 0;
+
+// helper macro functions
+#define MASK_OF_SIZE(size) ((1 << size) - 1)
+#define WEAK_TAKEN(size) (1 << (size - 1))
+#define WEAK_NOT_TAKEN(size) (WEAK_TAKEN(size) - 1)
+#define LOW_CONFIDENCE(cnt,size) (cnt != 0 && cnt != MASK_OF_SIZE(size))
+#define MAPPING_RESULT(prediction,size) ((prediction >> (size - 1) == TAKEN) ? TAKEN : NOT_TAKEN)
+#define INC_SAT_CNT(cnt,size) ((cnt == ((1 << size)-1)) ? cnt : cnt + 1)  // count up saturating counter
+#define DEC_SAT_CNT(cnt,size) ((cnt == 0) ? cnt : cnt - 1)                // count down saturating counter
+
+// predictor hyperparameters
+#define BASE_IDX_SIZE   9       // size of the basic prediction table index
+#define BASE_PHT_SIZE   (1 << BASE_IDX_SIZE)          // number of entries in basic prediction table
+#define BASE_IDX_MASK   MASK_OF_SIZE(BASE_IDX_SIZE)   // mask for obtaining basic prediction table index from PC
+#define BASE_CNT_SIZE   2       // number of bits used in saturation counter in basic prediction table
+
+#define NUM_TAGE_PHT    6       // number of TAGE prediction table used
+#define TAGE_IDX_SIZE   10      // size of the TAGE prediction table index
+#define TAGE_PHT_SIZE   (1 << TAGE_IDX_SIZE)          // number of entries in TAGE prediction table
+#define TAGE_IDX_MASK   MASK_OF_SIZE(TAGE_IDX_SIZE)   // mask for obtaining TAGE prediction table index from PC
+#define TAGE_CNT_SIZE   3       // number of bits used in saturation counters in TAGE prediction table
+#define TAGE_TAG_SIZE   8       // number of bits used in tags in TAGE prediction table
+#define TAGE_U_SIZE     2       // number of bits used in usefulness counter in TAGE prediction table
+#define CYC_RST_U       ((BASE_PHT_SIZE + TAGE_PHT_SIZE * NUM_TAGE_PHT)<<2)   // number of prediction made before all usefulness counter being "weakened"
+
+#define BIAS_SIZE       4       // the size of bias counter that determine whether longer history with less confidence is better than short history
+
+
+typedef struct base_entry{
+  UINT32 cnt;     // saturation counter
+}base_entry;
 
 typedef struct tage_entry{
-  UINT32 ctr; //counter
-  UINT32 tag; // tag
-  UINT32 u; //age counter
+  UINT32 cnt;     // saturation counter
+  UINT32 tag;     // tag
+  UINT32 useful;  // age counter
 }tage_entry;
 
-static tage_entry bank[NUM_BANK][BANK_SIZE];
+typedef __uint128_t UINT128;
 
-UINT32 TAG_8bit(UINT32 PC, int history_bits){
-  UINT32 his_temp1 =0;
-  UINT32 his_temp2 =0;
-  UINT32 pc_temp = 0;
-  //pc csr
-  for(int i = 0; i < 32/8; i++){
-    pc_temp ^= PC >> (8*i);
-  }
-  //csr1
-  for(int i = 0; i < history_bits / 8; i++){
-    his_temp1 ^= GHR >> (8*i);
-  }
-  //csr2
-  for(int i = 0; i < history_bits / 7; i++){
-    his_temp2 ^= GHR >> (8*i);
+UINT128 GHR;  // Globle history register
+base_entry BASE_PHT[BASE_PHT_SIZE];  // basic prediction table
+tage_entry TAGE_PHT[NUM_TAGE_PHT][BASE_PHT_SIZE];  // TAGE prediction tables
+
+// give an alternative if the bias counter indicates that prediction made by longest history with less confidence is less favourable
+UINT32 use_alt;
+
+UINT32 lh_pred;       // the prediction made by tag-matching TAGE_PHT that uses the longest history
+int lh_PHT_num;       // the table number tag-matching TAGE_PHT that uses the longest history
+UINT32 lh_PHT_idx;    // the index of the entry in the tag-matching TAGE_PHT that uses the longest history
+
+UINT32 alt_pred;      // the prediction made by tag-matching TAGE_PHT that uses the second longest history
+int alt_PHT_num;      // the table number tag-matching TAGE_PHT that uses the second longest history
+UINT32 alt_PHT_idx;   // the index of the entry in the tag-matching TAGE_PHT that uses the second longest history
+
+UINT32 num_prediction_made;   // counter for keeping track of when to soft reset all usefulness counter
+
+// folding xor based on Michaud PPM-like paper
+UINT32 folded_xor(UINT128 value, UINT32 size, UINT32 targ_size){
+  UINT32 mask = MASK_OF_SIZE(targ_size);
+  UINT32 temp = value & mask;
+
+  if (size < 128) value = value & MASK_OF_SIZE(size);
+
+  for (UINT32 i = 0; i < ((size - 1) / targ_size); i++){
+    value = value >> targ_size;
+    temp = temp ^ value;
   }
 
-  return (pc_temp ^ his_temp1 ^ (his_temp2 << 1)) && 0xff;
+  return temp & mask;
 }
 
-UINT32 Index_10bit(UINT32 PC, int history_bits){
-  UINT32 pc_temp = 0;
-  UINT32 his_temp1 =0;
-  //csr pc
-  for(int i = 0; i < 4; i++){
-    pc_temp ^= PC >> (8*i);
-  }
-  //csr his
-  for(int i = 0; i < history_bits / 10; i++){
-    his_temp1 ^= GHR >> (8*i);
-  }
+// calculating tag based on Michaud PPM-like paper
+UINT32 get_tag(UINT32 PC, UINT128 history, UINT32 PHT_number){
+  UINT32 folded_PC = folded_xor(PC, 32, TAGE_TAG_SIZE);
+  UINT32 folded_HIS1 = folded_xor(history, (2<<PHT_number), TAGE_TAG_SIZE);
+  UINT32 folded_HIS2 = folded_xor(history, (2<<PHT_number), TAGE_TAG_SIZE-1);
+  UINT32 combined = folded_PC ^ folded_HIS1 ^ (folded_HIS2 << 1);
+  UINT32 hash = combined & MASK_OF_SIZE(TAGE_TAG_SIZE);
+  return hash;
+}
 
-  return (pc_temp ^ his_temp1) & 0x3ff;
+// calculating index based on Michaud PPM-like paper
+UINT32 get_idx(UINT32 PC, UINT128 history, UINT32 PHT_number){
+  UINT32 folded_PC = folded_xor(PC, 32, TAGE_IDX_SIZE);
+  UINT32 folded_HIS = folded_xor(history, (2<<PHT_number), TAGE_IDX_SIZE);
+  UINT32 combined = folded_PC ^ folded_HIS;
+  UINT32 hash = combined & TAGE_IDX_MASK;
+  return hash;
 }
 
 
 void InitPredictor_openend() {
+  // initialize history register
   GHR = 0;
-  for(int i = 0; i < NUM_BANK; i++){
-    for (int j = 0; j < BANK_SIZE; j++){
-      bank[i][j].ctr = 0;
-      bank[i][j].u = 0;
-      bank[i][j].tag = 0;
+
+  // initialize basic prediction table
+  for(int i = 0; i < BASE_PHT_SIZE; i++){
+    //set base prediction to weak_NT
+    BASE_PHT[i].cnt = WEAK_TAKEN(BASE_CNT_SIZE);
+  }
+
+  // initialize TAGE prediction table
+  for(int i = 0; i < NUM_TAGE_PHT; i++){
+    for (int j = 0; j < TAGE_PHT_SIZE; j++){
+      //set TAGE prediction to weak_T
+      TAGE_PHT[i][j].cnt = WEAK_TAKEN(TAGE_CNT_SIZE);
+      TAGE_PHT[i][j].tag = 0;
+      TAGE_PHT[i][j].useful = 0;
     }
   }
-  for(int i = 0; i < T0_size; i++){
-    //set bimodel to weak_NT
-    bimodel[i] = 1;
-  }
+  
+  // initialize the bias counter to slightly favour the prediction made with longer history bits even it is newly allocated
+  use_alt = WEAK_TAKEN(BIAS_SIZE);
+  num_prediction_made = 0;
+  
 }
 
 bool GetPrediction_openend(UINT32 PC) {
-  //find index and tags
-  UINT32 tag[4];
-  UINT32 index[4];
-  UINT32 his_bit[4] = {10, 20, 40, 60};
-  //get predition and altern prediction
-  int pred = 0;
-  int pred_make = 0;
-  
-  int alt_pred_make =0
-  for(int i = 0; i < 4; i++){
-    tag[i] = TAG_8bit(PC, his_bit[i]);
-    index[i] = Index_10bit(PC, his_bit[i]);
-  }
-  //from higter order bank to lower bank
-  for(int i = NUM_BANK - 1; i > 0; i--){
-    //bank entry hit
-    if(bank[i][index[i]].tag == tag[i]){
-      if(pred_make == 0){
-        pred_make = 1;
-        pred = bank[i][index[i]].ctr >> 1;
-      }else if(alt_pred_make == 0;){
-        alt_pred_make = 0;
-        alt_pred = bank[i][index[i]].ctr >> 1;
+  //get predition and alternate prediction
+  UINT32 predDir = TAKEN;
+  bool lh_pred_made = false;
+  bool alt_pred_made = false;
+  UINT32 TAGE_PHT_idx;
+  UINT32 TAGE_PHT_tag;
+
+  for (int i = NUM_TAGE_PHT-1; i >= 0; i--){
+    TAGE_PHT_idx = get_idx(PC, GHR, i);
+    TAGE_PHT_tag = get_tag(PC, GHR, i);
+    if (TAGE_PHT[i][TAGE_PHT_idx].tag == TAGE_PHT_tag){   // tag match
+      if (!lh_pred_made){   // first time finding a match -> longest histroy
+        lh_pred = MAPPING_RESULT(TAGE_PHT[i][TAGE_PHT_idx].cnt, TAGE_CNT_SIZE);
+        lh_PHT_num = i;
+        lh_PHT_idx = TAGE_PHT_idx;
+        lh_pred_made = true;
+      } else {  // second time finding a match
+        alt_pred = MAPPING_RESULT(TAGE_PHT[i][TAGE_PHT_idx].cnt, TAGE_CNT_SIZE);     
+        alt_PHT_num = i;
+        alt_PHT_idx = TAGE_PHT_idx;
+        alt_pred_made = true;
+        break;
       }
     }
   }
-  if(perd_make == 0){
-    //use bimodel
-    pred = bimodel[(PC >> 2) % T0_size] > 1;
+
+  if (lh_pred_made){
+    if (!alt_pred_made){ // no alternative found
+      alt_pred = MAPPING_RESULT(BASE_PHT[PC & BASE_IDX_MASK].cnt, BASE_CNT_SIZE);
+      alt_PHT_num = -1;
+      alt_PHT_idx = PC & BASE_IDX_MASK;
+    }
+
+    // deciding if current bias favour longer history with low confidence
+    if(MAPPING_RESULT(use_alt, BIAS_SIZE) && TAGE_PHT[lh_PHT_num][lh_PHT_idx].useful == 0 && LOW_CONFIDENCE(TAGE_PHT[lh_PHT_num][lh_PHT_idx].cnt,TAGE_CNT_SIZE)) {
+      predDir = alt_pred;
+    } else {
+      predDir = lh_pred;
+    }
+  } else {  // no prediction made in TAGE PHT
+    lh_pred = MAPPING_RESULT(BASE_PHT[PC & BASE_IDX_MASK].cnt, BASE_CNT_SIZE);
+    lh_PHT_num = -1;
+    lh_PHT_idx = PC & BASE_IDX_MASK;
+    predDir = lh_pred;
   }
-  if(alt_pred_make == 0){
-    alt_pred = bimodel[(PC >> 2) % T0_size] > 1;
-  }
+  return predDir;
 }
 
 void UpdatePredictor_openend(UINT32 PC, bool resolveDir, bool predDir, UINT32 branchTarget) {
-  
+  // increment counter
+  num_prediction_made++;
 
+  // update basic prediction table
+  if (resolveDir == TAKEN){
+    BASE_PHT[PC & BASE_IDX_MASK].cnt = INC_SAT_CNT(BASE_PHT[PC & BASE_IDX_MASK].cnt,BASE_CNT_SIZE);
+  } else {
+    BASE_PHT[PC & BASE_IDX_MASK].cnt = DEC_SAT_CNT(BASE_PHT[PC & BASE_IDX_MASK].cnt,BASE_CNT_SIZE);
+  } 
+
+  // update the bias counter
+  if (lh_PHT_num != -1 && lh_pred != alt_pred && TAGE_PHT[lh_PHT_num][lh_PHT_idx].useful == 0 && LOW_CONFIDENCE(TAGE_PHT[lh_PHT_num][lh_PHT_idx].cnt,TAGE_CNT_SIZE)){
+    if (alt_pred == resolveDir) use_alt = INC_SAT_CNT(use_alt,BIAS_SIZE);
+    else                        use_alt = DEC_SAT_CNT(use_alt,BIAS_SIZE);
+  }
+
+  // update the usefulness counter if the prediction is made using TAGE PHT
+  if (lh_PHT_num != -1 && lh_pred != alt_pred){
+    if (lh_pred == resolveDir) TAGE_PHT[lh_PHT_num][lh_PHT_idx].useful = INC_SAT_CNT(TAGE_PHT[lh_PHT_num][lh_PHT_idx].useful, TAGE_U_SIZE);
+    else                       TAGE_PHT[lh_PHT_num][lh_PHT_idx].useful = DEC_SAT_CNT(TAGE_PHT[lh_PHT_num][lh_PHT_idx].useful, TAGE_U_SIZE);
+  }
+
+  // check if it is time to "weaken" the usefulness of all entries
+  if (num_prediction_made == CYC_RST_U){
+    for(int i = 0; i < NUM_TAGE_PHT; i++){
+      for (int j = 0; j < TAGE_PHT_SIZE; j++){
+        // "weaken" usefulness counter
+        TAGE_PHT[i][j].useful &= MASK_OF_SIZE(TAGE_U_SIZE)-1;
+      }
+    }
+    num_prediction_made = 0;
+  }
+
+  // update TAGE PHT
+  if (lh_PHT_num != -1){
+    if (lh_pred == resolveDir) TAGE_PHT[lh_PHT_num][lh_PHT_idx].cnt = INC_SAT_CNT(TAGE_PHT[lh_PHT_num][lh_PHT_idx].cnt, TAGE_CNT_SIZE);
+    else                       TAGE_PHT[lh_PHT_num][lh_PHT_idx].cnt = DEC_SAT_CNT(TAGE_PHT[lh_PHT_num][lh_PHT_idx].cnt, TAGE_CNT_SIZE);
+  }
+  
+  // if prediction is wrong then allocate a new entry in TAGE PHT that looks at longer history
+  if (lh_pred != resolveDir){
+    UINT32 idx;
+    bool space_found = false;
+    for(int i = lh_PHT_num + 1; i < NUM_TAGE_PHT; i++){
+      idx = get_idx(PC, GHR, i);
+      if (TAGE_PHT[i][idx].useful == 0){
+        TAGE_PHT[i][idx].cnt == WEAK_TAKEN(TAGE_CNT_SIZE);
+        TAGE_PHT[i][idx].tag == get_tag(PC, GHR, i);
+        space_found = true;
+        break;
+      }
+    }
+    
+    if (!space_found){  // no space available then decrease all the usefulness counter
+      for(int i = lh_PHT_num + 1; i < NUM_TAGE_PHT; i++){
+        idx = get_idx(PC, GHR, i);
+        TAGE_PHT[i][idx].useful = DEC_SAT_CNT(TAGE_PHT[i][idx].useful, TAGE_U_SIZE);
+      }
+    }
+  }
+/*
+  if (lh_pred != resolveDir){
+    // find first free index of tables with longer history
+    int num_free_tables = 0;
+    int free_table_index[NUM_TAGE_PHT];
+    int free_entry_index[NUM_TAGE_PHT];
+    for(int i = lh_PHT_num + 1; i < NUM_TAGE_PHT; i++){
+      UINT32 index = get_idx(PC, GHR, i);
+      if(TAGE_PHT[i][index].useful == 0){
+        free_table_index[num_free_tables] = i;
+        free_entry_index[num_free_tables] = index;
+        num_free_tables++;
+      }
+    }
+    // if no free entry found, decrement all u
+    if(num_free_tables == 0){
+      for(int i = lh_PHT_num + 1; i < NUM_TAGE_PHT; i++){
+        UINT32 index = get_idx(PC, GHR, i);
+        TAGE_PHT[i][index].useful = DEC_SAT_CNT(TAGE_PHT[i][index].useful, TAGE_U_SIZE);
+      }
+    }
+    // else allocate new entry
+    else{
+      for(int i = 0; i < num_free_tables; i++){
+        // pick table with (ALLOC_CHANCE-1)/ALLOC_CHANCE chance
+        if(i < num_free_tables - 1){ // not last table
+          if(free_entry_index[i]%2 == 1){
+            continue;
+          }
+        }
+        // if allocated with 2/3 chance or last table, initialize entry
+        int table = free_table_index[i];
+        int entry = free_entry_index[i];
+        TAGE_PHT[table][entry].cnt = WEAK_TAKEN(TAGE_CNT_SIZE);
+        TAGE_PHT[table][entry].tag = get_tag(PC, GHR, i);
+        TAGE_PHT[table][entry].useful   = 0;
+        break;
+      }
+    }
+  }
+*/
+  // update history register
   GHR = (GHR << 1) | resolveDir;
 }
 
