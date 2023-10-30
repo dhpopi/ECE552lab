@@ -410,7 +410,21 @@ void dispatch_To_issue(int current_cycle) {
 
   /* ECE552: YOUR CODE GOES HERE */
   /* ECE552 Assignment 3 - BEGIN CODE */
-  
+
+  // check if any instruction dispatched is not issued yet
+  for (int idx = 0; idx < RESERV_INT_SIZE; idx++){
+    if (reservINT[idx] != NULL && reservINT[idx]->tom_issue_cycle == 0){
+      reservINT[idx]->tom_issue_cycle = current_cycle;
+    }
+  }
+
+  // check if any instruction dispatched is not issued yet
+  for (int idx = 0; idx < RESERV_FP_SIZE; idx++){
+    if (reservFP[idx] != NULL && reservFP[idx]->tom_issue_cycle == 0){
+      reservFP[idx]->tom_issue_cycle = current_cycle;
+    }
+  }
+
   /* ECE552 Assignment 3 - END CODE */
 }
 
