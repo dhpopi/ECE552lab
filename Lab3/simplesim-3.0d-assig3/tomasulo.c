@@ -119,13 +119,15 @@ static bool is_simulation_done(counter_t sim_insn) {
   /* ECE552: YOUR CODE GOES HERE */
   /* ECE552 Assignment 3 - BEGIN CODE */
   // D S X W 
+  //check if all instuction is fetched
+  if(fetch_index <= sim_insn){
+    return false;
+  }
   //check if all instr is depatched is finished
   if(instr_queue_size != 0){
     return false;
   }
-  if(fetch_index <= sim_insn){
-    return false;
-  }
+  
 
   //check is all reservation is cleaned
   for(int i = 0; i < RESERV_FP_SIZE; i++){
@@ -178,6 +180,24 @@ void CDB_To_retire(int current_cycle) {
 
   /* ECE552: YOUR CODE GOES HERE */
   /* ECE552 Assignment 3 - BEGIN CODE */
+  if(commonDataBus == NULL){
+    //nothing in the CDB, no retire
+    return;
+  }
+  if(commonDataBus->tom_cdb_cycle < current_cycle){
+
+    if(commonDataBus->r_out[0] != DNA){
+      if (commonDataBus->r_out[0] != 0){
+        map_table[commonDataBus->r_out[0]] == NULL;
+      }
+    }
+    if(commonDataBus->r_out[1] != DNA){
+      if (commonDataBus->r_out[1] != 0){
+        map_table[commonDataBus->r_out[1]] == NULL;
+      }
+    }
+    commonDataBus = NULL;
+  }
 
   /* ECE552 Assignment 3 - END CODE */
 }
