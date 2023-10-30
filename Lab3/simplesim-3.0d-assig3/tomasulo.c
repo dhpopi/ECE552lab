@@ -120,10 +120,11 @@ static bool is_simulation_done(counter_t sim_insn) {
   /* ECE552 Assignment 3 - BEGIN CODE */
   // D S X W 
   //check if all instr is depatched is finished
-  for(int i = 0; i < INSTR_QUEUE_SIZE; i++){
-    if(instr_queue[i] != NULL){
-      return false;
-    }
+  if(instr_queue_size != 0){
+    return false;
+  }
+  if(fetch_index <= sim_insn){
+    return false;
   }
 
   //check is all reservation is cleaned
@@ -160,8 +161,6 @@ static bool is_simulation_done(counter_t sim_insn) {
       return false;
     }
   }
-
-
   /* ECE552 Assignment 3 - END CODE */
 
   return true; //ECE552: you can change this as needed; we've added this so the code provided to you compiles
