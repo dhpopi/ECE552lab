@@ -587,7 +587,11 @@ counter_t runTomasulo(instruction_trace_t* trace)
 
     /* ECE552: YOUR CODE GOES HERE */
     /* ECE552 Assignment 3 - BEGIN CODE */
-    
+    CDB_To_retire(cycle);  
+    execute_To_CDB(cycle);
+    issue_To_execute(cycle);
+    dispatch_To_issue(cycle);
+    fetch_To_dispatch(trace, cycle); 
     /* ECE552 Assignment 3 - END CODE */
     cycle++;
 
