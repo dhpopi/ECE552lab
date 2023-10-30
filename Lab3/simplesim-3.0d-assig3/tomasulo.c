@@ -109,6 +109,8 @@ static int fetch_index = 0;
 #define INT_EXECUTION_DONE(cur_cyc, start_cyc) (cur_cyc >= start_cyc + FU_INT_LATENCY)
 #define FP_EXECUTION_DONE(cur_cyc, start_cyc) (cur_cyc >= start_cyc + FU_FP_LATENCY)
 
+#define TAG_CLEAR(inst) (inst->Q[0] == NULL && inst->Q[1] == NULL && inst->Q[2] == NULL)
+
 void rm_from_RS(instruction_t* inst){
 
   if (USES_INT_FU(inst->op)){ // if instruction is in INT RS
@@ -343,7 +345,56 @@ void issue_To_execute(int current_cycle) {
 
   /* ECE552: YOUR CODE GOES HERE */
   /* ECE552 Assignment 3 - BEGIN CODE */
+
+  instruction_t* oldest_issueable_inst = NULL;
+  // check if INT FU is available
+  for (int FU_idx = 0; FU_idx < FU_INT_SIZE; FU_idx++){
+    if (fuINT[FU_idx] == NULL){
+      oldest_issueable_inst = NULL;
+      // Check if instructions in INT RS is issueable and issue the oldest one
+      for (int RS_idx = 0; RS_idx < RESERV_INT_SIZE; RS_idx++){
+        if (TAG_CLEAR(reservINT[RS_idx]) && current_cycle > reservINT[RS_idx]->tom_issue_cycle){
+          if (oldest_issueable_inst == NULL){
+            oldest_issueable_inst = reservINT[RS_idx];
+          } else if (oldest_issueable_inst->index > reservINT[RS_idx]->index) {
+            oldest_issueable_inst = reservINT[RS_idx];
+          }
+        }
+      }
+      
+      if (oldest_issueable_inst == NULL){ // if there is no instruction issueable
+        break;
+      } else {  // issue the oldest one found
+        fuINT[FU_idx] = oldest_issueable_inst;
+        fuINT[FU_idx]->tom_execute_cycle = current_cycle;
+      }
+    }
+  }
   
+  // check if FP FU is available
+  for (int FU_idx = 0; FU_idx < FU_FP_SIZE; FU_idx++){
+    if (fuFP[FU_idx] == NULL){
+      oldest_issueable_inst = NULL;
+      // Check if instructions in FP RS is issueable and issue the oldest one
+      for (int RS_idx = 0; RS_idx < RESERV_FP_SIZE; RS_idx++){
+        if (TAG_CLEAR(reservFP[RS_idx]) && current_cycle > reservFP[RS_idx]->tom_issue_cycle){
+          if (oldest_issueable_inst == NULL){
+            oldest_issueable_inst = reservFP[RS_idx];
+          } else if (oldest_issueable_inst->index > reservFP[RS_idx]->index) {
+            oldest_issueable_inst = reservFP[RS_idx];
+          }
+        }
+      }
+      
+      if (oldest_issueable_inst == NULL){ // if there is no instruction issueable
+        break;
+      } else {  // issue the oldest one found
+        fuFP[FU_idx] = oldest_issueable_inst;
+        fuFP[FU_idx]->tom_execute_cycle = current_cycle;
+      }
+    }
+  }
+
   /* ECE552 Assignment 3 - END CODE */
 }
 
