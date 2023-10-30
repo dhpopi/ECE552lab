@@ -441,6 +441,21 @@ void fetch(instruction_trace_t* trace) {
   /* ECE552: YOUR CODE GOES HERE */
   /* ECE552 Assignment 3 - BEGIN CODE */
   
+  instruction_t* new_inst = NULL;
+  // if IFQ is not full and there is more instruction to be fetched then fetch instruction into the queue
+  if (instr_queue_size < INSTR_QUEUE_SIZE && fetch_index <= sim_num_insn){
+    // discard trap instructions
+    do {
+      new_inst = get_instr(trace, fetch_index);
+      fetch_index++;
+    } while(IS_TRAP(new_inst->op));
+    
+    // add the new instruction to IFQ
+    if (new_inst != NULL){
+      instr_queue[instr_queue_size] = new_inst;
+      instr_queue_size++;
+    }
+  }
   /* ECE552 Assignment 3 - END CODE */
 }
 
