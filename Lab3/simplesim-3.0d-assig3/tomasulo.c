@@ -105,6 +105,33 @@ static int fetch_index = 0;
 /* RESERVATION STATIONS */
 
 
+/* ECE552 Assignment 3 - BEGIN CODE */
+#define INT_EXECUTION_DONE(cur_cyc, start_cyc) (cur_cyc >= start_cyc + FU_INT_LATENCY)
+#define FP_EXECUTION_DONE(cur_cyc, start_cyc) (cur_cyc >= start_cyc + FU_FP_LATENCY)
+
+void rm_from_RS(instruction_t* inst){
+
+  if (USES_INT_FU(inst->op)){ // if instruction is in INT RS
+    for (int idx = 0; idx < RESERV_INT_SIZE; idx++){
+      if (reservINT[idx] == inst){
+        reservINT[idx] = NULL;
+        break;
+      }
+    }
+
+  } else if (USES_FP_FU(inst->op)){ // if instruction is in FP RS
+    for (int idx = 0; idx < RESERV_FP_SIZE; idx++){
+      if (reservFP[idx] == inst){
+        reservFP[idx] = NULL;
+        break;
+      }
+    }
+  }
+}
+
+
+/* ECE552 Assignment 3 - END CODE */
+
 /* 
  * Description: 
  * 	Checks if simulation is done by finishing the very last instruction
@@ -123,12 +150,12 @@ static bool is_simulation_done(counter_t sim_insn) {
   if(fetch_index <= sim_insn){
     return false;
   }
+
   //check if all instr is depatched is finished
   if(instr_queue_size != 0){
     return false;
   }
   
-
   //check is all reservation is cleaned
   for(int i = 0; i < RESERV_FP_SIZE; i++){
     if(reservFP[i] != NULL){
@@ -142,7 +169,7 @@ static bool is_simulation_done(counter_t sim_insn) {
     }
   }
 
-  //check if the fuction unit is cleaned
+  //check if the function unit is cleaned
   for(int i = 0; i < FU_INT_SIZE; i++){
     if(fuINT[i] != NULL){
       return false;
@@ -154,10 +181,13 @@ static bool is_simulation_done(counter_t sim_insn) {
       return false;
     }
   }
-  //check CDB clean
+
+  //check if CDB broadcast is finished
   if(commonDataBus != NULL){
     return false;
   }
+
+  // check if all register value are written to the regfile
   for(int i = 0; i < MD_TOTAL_REGS; i++){
     if(map_table[i] != NULL){
       return false;
@@ -180,21 +210,14 @@ void CDB_To_retire(int current_cycle) {
 
   /* ECE552: YOUR CODE GOES HERE */
   /* ECE552 Assignment 3 - BEGIN CODE */
-  if(commonDataBus == NULL){
-    //nothing in the CDB, no retire
-    return;
-  }
-  if(commonDataBus->tom_cdb_cycle < current_cycle){
-
+  
+  // if CDB is in use and the current cycle is after the cdb broadcast cycle then clear the map table and cdb
+  if(commonDataBus != NULL && commonDataBus->tom_cdb_cycle < current_cycle){
     if(commonDataBus->r_out[0] != DNA){
-      if (commonDataBus->r_out[0] != 0){
-        map_table[commonDataBus->r_out[0]] == NULL;
-      }
+      map_table[commonDataBus->r_out[0]] == NULL;
     }
     if(commonDataBus->r_out[1] != DNA){
-      if (commonDataBus->r_out[1] != 0){
-        map_table[commonDataBus->r_out[1]] == NULL;
-      }
+      map_table[commonDataBus->r_out[1]] == NULL;
     }
     commonDataBus = NULL;
   }
@@ -215,7 +238,64 @@ void execute_To_CDB(int current_cycle) {
 
   /* ECE552: YOUR CODE GOES HERE */
   /* ECE552 Assignment 3 - BEGIN CODE */
-  
+  instruction_t* oldest_complete_inst = NULL;
+  instruction_t** oldest_complete_inst_fu_entry = NULL;
+
+  // if there is not structual hazard with CDB
+  if (commonDataBus == NULL){
+    // check if any instruction in INT FU finished
+    for (int idx = 0; idx < FU_INT_SIZE; idx++){
+      if (fuINT[idx] != NULL && INT_EXECUTION_DONE(current_cycle, fuINT[idx]->tom_execute_cycle)){
+        // check if the instruction need to use CDB
+        if (WRITES_CDB(fuINT[idx]->op)) {
+          // check if there is contention on the CDB and only let the oldest one use the CDB
+          if (oldest_complete_inst == NULL){
+            oldest_complete_inst = fuINT[idx];
+            oldest_complete_inst_fu_entry = &fuINT[idx];
+          } else {
+            if (oldest_complete_inst->index > fuINT[idx]->index){
+              oldest_complete_inst = fuINT[idx];
+              oldest_complete_inst_fu_entry = &fuINT[idx];
+            }
+          }
+        } else { // if the instruction does not use CDB then clear RS and FU entry
+          rm_from_RS(fuINT[idx]);
+          fuINT[idx] = NULL;
+        }
+        
+      }
+    }
+
+    // check if any instruction in FP FU finished
+    for (int idx = 0; idx < FU_FP_SIZE; idx++){
+      if (fuFP[idx] != NULL && FP_EXECUTION_DONE(current_cycle, fuFP[idx]->tom_execute_cycle)){
+        // check if the instruction need to use CDB
+        if (WRITES_CDB(fuFP[idx]->op)) {
+          // check if there is contention on the CDB and only let the oldest one use the CDB
+          if (oldest_complete_inst == NULL){
+            oldest_complete_inst = fuFP[idx];
+            oldest_complete_inst_fu_entry = &fuFP[idx];
+          } else {
+            if (oldest_complete_inst->index > fuFP[idx]->index){
+              oldest_complete_inst = fuFP[idx];
+              oldest_complete_inst_fu_entry = &fuFP[idx];
+            }
+          }
+        } else { // if the instruction does not use CDB then clear RS and FU entry
+          rm_from_RS(fuFP[idx]);
+          fuFP[idx] = NULL;
+        }
+      }
+    }
+
+    // clear RS and FU entry for the instruction that goes into the CDB
+    if (oldest_complete_inst != NULL) {
+      oldest_complete_inst->tom_cdb_cycle = current_cycle;
+      commonDataBus = oldest_complete_inst;
+      rm_from_RS(oldest_complete_inst);
+      *oldest_complete_inst_fu_entry = NULL;
+    }
+  }
   /* ECE552 Assignment 3 - END CODE */
 
 }
@@ -334,12 +414,14 @@ counter_t runTomasulo(instruction_trace_t* trace)
   int cycle = 1;
   while (true) {
 
-     /* ECE552: YOUR CODE GOES HERE */
+    /* ECE552: YOUR CODE GOES HERE */
+    /* ECE552 Assignment 3 - BEGIN CODE */
+  
+    /* ECE552 Assignment 3 - END CODE */
+    cycle++;
 
-     cycle++;
-
-     if (is_simulation_done(sim_num_insn))
-        break;
+    if (is_simulation_done(sim_num_insn))
+      break;
   }
   
   return cycle;
