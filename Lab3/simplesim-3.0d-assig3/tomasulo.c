@@ -129,6 +129,32 @@ void rm_from_RS(instruction_t* inst){
   }
 }
 
+void broadcast_tags(instruction_t* inst){
+  // if tag match in map table then clear the tag
+  for (int idx = 0; idx < MD_TOTAL_REGS; idx++){
+    if (map_table[idx] == inst){
+      map_table[idx] = NULL;
+    }
+  }
+
+  // if tag match in INT RS then clear the tag
+  for (int idx = 0; idx < RESERV_INT_SIZE; idx++){
+    for (int tag_idx = 0; tag_idx < 3; tag_idx++){
+      if (reservINT[idx]->Q[tag_idx] == inst){
+        reservINT[idx]->Q[tag_idx] = NULL;
+      }
+    }
+  }
+
+  // if tag match in FP RS then clear the tag
+  for (int idx = 0; idx < RESERV_FP_SIZE; idx++){
+    for (int tag_idx = 0; tag_idx < 3; tag_idx++){
+      if (reservFP[idx]->Q[tag_idx] == inst){
+        reservFP[idx]->Q[tag_idx] = NULL;
+      }
+    }
+  }
+}
 
 /* ECE552 Assignment 3 - END CODE */
 
@@ -294,6 +320,9 @@ void execute_To_CDB(int current_cycle) {
       commonDataBus = oldest_complete_inst;
       rm_from_RS(oldest_complete_inst);
       *oldest_complete_inst_fu_entry = NULL;
+
+      // broadcast the tag and update the RS and map table
+      broadcast_tags(commonDataBus);
     }
   }
   /* ECE552 Assignment 3 - END CODE */
