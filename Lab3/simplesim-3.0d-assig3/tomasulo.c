@@ -111,6 +111,8 @@ static int fetch_index = 0;
 
 #define TAG_CLEAR(inst) (inst->Q[0] == NULL && inst->Q[1] == NULL && inst->Q[2] == NULL)
 
+#define IS_BRANCH(inst) (IS_UNCOND_CTRL(inst->op) || IS_COND_CTRL(inst->op))
+
 void rm_from_RS(instruction_t* inst){
 
   if (USES_INT_FU(inst->op)){ // if instruction is in INT RS
@@ -155,6 +157,34 @@ void broadcast_tags(instruction_t* inst){
         reservFP[idx]->Q[tag_idx] = NULL;
       }
     }
+  }
+}
+
+void set_tags(instruction_t* inst){
+  // set the map table entries based on the instruction output registers number
+  for (int idx = 0; idx < 2; idx++) {
+    if (inst->r_out[idx] != DNA) {
+      map_table[inst->r_out[idx]] = inst;
+    }
+  }
+
+  // set the RS table tag entries base on map table
+  for (int idx = 0; idx < 3; idx++) {
+    if (inst->r_in[idx] != DNA) {
+      inst->Q[idx] = map_table[inst->r_in[idx]];
+    }
+  }
+}
+
+void IFQ_pop_front(){
+  if (instr_queue_size > 0){
+    // shift to the left
+    for (int idx = 0; idx < INSTR_QUEUE_SIZE-1; idx++) {
+      instr_queue[idx] = instr_queue[idx+1];
+    }
+    // set the last element to NULL
+    instr_queue[INSTR_QUEUE_SIZE-1] = NULL;
+    instr_queue_size--;
   }
 }
 
@@ -475,6 +505,38 @@ void fetch_To_dispatch(instruction_trace_t* trace, int current_cycle) {
   /* ECE552: YOUR CODE GOES HERE */
   /* ECE552 Assignment 3 - BEGIN CODE */
   
+  // get the first instruction in the IFQ
+  instruction_t* new_inst = instr_queue[0]; 
+  if (new_inst != NULL){
+    // if the instruction are branch instruction then only set the dispatch cycle
+    if (IS_BRANCH(new_inst)){
+      new_inst->tom_dispatch_cycle = current_cycle;
+      IFQ_pop_front();
+    } else if (USES_INT_FU(new_inst->op)){  // if uses INT FU then need to dispatch to INT RS
+      for (int idx = 0; idx < RESERV_INT_SIZE; idx++){
+        if (reservINT[idx] == NULL){
+          reservINT[idx] = new_inst;
+          reservINT[idx]->tom_dispatch_cycle = current_cycle;
+          set_tags(reservINT[idx]);
+          IFQ_pop_front();
+          break;
+        }
+      }
+    } else if (USES_FP_FU(new_inst->op)){
+      for (int idx = 0; idx < RESERV_FP_SIZE; idx++){
+        if (reservFP[idx] == NULL){
+          reservFP[idx] = new_inst;
+          reservFP[idx]->tom_dispatch_cycle = current_cycle;
+          set_tags(reservFP[idx]);
+          IFQ_pop_front();
+          break;
+        }
+      }
+    } else {
+      IFQ_pop_front();
+    }
+  }
+  
   /* ECE552 Assignment 3 - END CODE */
 }
 
@@ -525,7 +587,7 @@ counter_t runTomasulo(instruction_trace_t* trace)
 
     /* ECE552: YOUR CODE GOES HERE */
     /* ECE552 Assignment 3 - BEGIN CODE */
-  
+    
     /* ECE552 Assignment 3 - END CODE */
     cycle++;
 
