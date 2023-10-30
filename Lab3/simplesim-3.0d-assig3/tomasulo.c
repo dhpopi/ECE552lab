@@ -117,6 +117,52 @@ static int fetch_index = 0;
 static bool is_simulation_done(counter_t sim_insn) {
 
   /* ECE552: YOUR CODE GOES HERE */
+  /* ECE552 Assignment 3 - BEGIN CODE */
+  // D S X W 
+  //check if all instr is depatched is finished
+  for(int i = 0; i < INSTR_QUEUE_SIZE; i++){
+    if(instr_queue[i] != NULL){
+      return false;
+    }
+  }
+
+  //check is all reservation is cleaned
+  for(int i = 0; i < RESERV_FP_SIZE; i++){
+    if(reservFP[i] != NULL){
+      return false;
+    }
+  }
+
+  for(int i = 0; i < RESERV_INT_SIZE; i++){
+    if(reservINT[i] != NULL){
+      return false;
+    }
+  }
+
+  //check if the fuction unit is cleaned
+  for(int i = 0; i < FU_INT_SIZE; i++){
+    if(fuINT[i] != NULL){
+      return false;
+    }
+  }
+  
+  for(int i = 0; i < FU_FP_SIZE; i++){
+    if(fuFP[i] != NULL){
+      return false;
+    }
+  }
+  //check CDB clean
+  if(commonDataBus != NULL){
+    return false;
+  }
+  for(int i = 0; i < MD_TOTAL_REGS; i++){
+    if(map_table[i] != NULL){
+      return false;
+    }
+  }
+
+
+  /* ECE552 Assignment 3 - END CODE */
 
   return true; //ECE552: you can change this as needed; we've added this so the code provided to you compiles
 }
@@ -132,7 +178,9 @@ static bool is_simulation_done(counter_t sim_insn) {
 void CDB_To_retire(int current_cycle) {
 
   /* ECE552: YOUR CODE GOES HERE */
+  /* ECE552 Assignment 3 - BEGIN CODE */
 
+  /* ECE552 Assignment 3 - END CODE */
 }
 
 
@@ -147,6 +195,9 @@ void CDB_To_retire(int current_cycle) {
 void execute_To_CDB(int current_cycle) {
 
   /* ECE552: YOUR CODE GOES HERE */
+  /* ECE552 Assignment 3 - BEGIN CODE */
+  
+  /* ECE552 Assignment 3 - END CODE */
 
 }
 
@@ -163,6 +214,9 @@ void execute_To_CDB(int current_cycle) {
 void issue_To_execute(int current_cycle) {
 
   /* ECE552: YOUR CODE GOES HERE */
+  /* ECE552 Assignment 3 - BEGIN CODE */
+  
+  /* ECE552 Assignment 3 - END CODE */
 }
 
 /* 
@@ -176,6 +230,9 @@ void issue_To_execute(int current_cycle) {
 void dispatch_To_issue(int current_cycle) {
 
   /* ECE552: YOUR CODE GOES HERE */
+  /* ECE552 Assignment 3 - BEGIN CODE */
+  
+  /* ECE552 Assignment 3 - END CODE */
 }
 
 /* 
@@ -189,6 +246,9 @@ void dispatch_To_issue(int current_cycle) {
 void fetch(instruction_trace_t* trace) {
 
   /* ECE552: YOUR CODE GOES HERE */
+  /* ECE552 Assignment 3 - BEGIN CODE */
+  
+  /* ECE552 Assignment 3 - END CODE */
 }
 
 /* 
@@ -205,6 +265,9 @@ void fetch_To_dispatch(instruction_trace_t* trace, int current_cycle) {
   fetch(trace);
 
   /* ECE552: YOUR CODE GOES HERE */
+  /* ECE552 Assignment 3 - BEGIN CODE */
+  
+  /* ECE552 Assignment 3 - END CODE */
 }
 
 /* 
