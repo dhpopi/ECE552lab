@@ -109,7 +109,7 @@ static int fetch_index = 0;
 #define INT_EXECUTION_DONE(cur_cyc, start_cyc) (cur_cyc >= start_cyc + FU_INT_LATENCY)
 #define FP_EXECUTION_DONE(cur_cyc, start_cyc) (cur_cyc >= start_cyc + FU_FP_LATENCY)
 
-#define TAG_CLEAR(inst) (inst->Q[0] == NULL && inst->Q[1] == NULL && inst->Q[2] == NULL)
+#define TAG_CLEAR(inst) (inst != NULL && inst->Q[0] == NULL && inst->Q[1] == NULL && inst->Q[2] == NULL)
 
 #define IS_BRANCH(inst) (IS_UNCOND_CTRL(inst->op) || IS_COND_CTRL(inst->op))
 
@@ -144,7 +144,7 @@ void broadcast_tags(instruction_t* inst){
   // if tag match in INT RS then clear the tag
   for (int idx = 0; idx < RESERV_INT_SIZE; idx++){
     for (int tag_idx = 0; tag_idx < 3; tag_idx++){
-      if (reservINT[idx]->Q[tag_idx] == inst){
+      if (reservINT[idx] != NULL && reservINT[idx]->Q[tag_idx] == inst){
         reservINT[idx]->Q[tag_idx] = NULL;
       }
     }
@@ -153,7 +153,7 @@ void broadcast_tags(instruction_t* inst){
   // if tag match in FP RS then clear the tag
   for (int idx = 0; idx < RESERV_FP_SIZE; idx++){
     for (int tag_idx = 0; tag_idx < 3; tag_idx++){
-      if (reservFP[idx]->Q[tag_idx] == inst){
+      if (reservFP[idx] != NULL && reservFP[idx]->Q[tag_idx] == inst){
         reservFP[idx]->Q[tag_idx] = NULL;
       }
     }
