@@ -106,8 +106,8 @@ static int fetch_index = 0;
 
 
 /* ECE552 Assignment 3 - BEGIN CODE */
-#define INT_EXECUTION_DONE(cur_cyc, start_cyc) (cur_cyc >= start_cyc + FU_INT_LATENCY)
-#define FP_EXECUTION_DONE(cur_cyc, start_cyc) (cur_cyc >= start_cyc + FU_FP_LATENCY)
+#define INT_EXECUTION_DONE(cur_cyc, start_cyc) (cur_cyc >= (start_cyc + FU_INT_LATENCY))
+#define FP_EXECUTION_DONE(cur_cyc, start_cyc) (cur_cyc >= (start_cyc + FU_FP_LATENCY))
 
 #define TAG_CLEAR(inst) (inst != NULL && inst->Q[0] == NULL && inst->Q[1] == NULL && inst->Q[2] == NULL)
 
@@ -161,17 +161,17 @@ void broadcast_tags(instruction_t* inst){
 }
 
 void set_tags(instruction_t* inst){
-  // set the map table entries based on the instruction output registers number
-  for (int idx = 0; idx < 2; idx++) {
-    if (inst->r_out[idx] != DNA) {
-      map_table[inst->r_out[idx]] = inst;
-    }
-  }
-
   // set the RS table tag entries base on map table
   for (int idx = 0; idx < 3; idx++) {
     if (inst->r_in[idx] != DNA) {
       inst->Q[idx] = map_table[inst->r_in[idx]];
+    }
+  }
+
+  // set the map table entries based on the instruction output registers number
+  for (int idx = 0; idx < 2; idx++) {
+    if (inst->r_out[idx] != DNA) {
+      map_table[inst->r_out[idx]] = inst;
     }
   }
 }
@@ -205,6 +205,7 @@ static bool is_simulation_done(counter_t sim_insn) {
   /* ECE552 Assignment 3 - BEGIN CODE */
   // D S X W 
   //check if all instuction is fetched
+
   if(fetch_index <= sim_insn){
     return false;
   }
@@ -252,7 +253,6 @@ static bool is_simulation_done(counter_t sim_insn) {
     }
   }
   /* ECE552 Assignment 3 - END CODE */
-
   return true; //ECE552: you can change this as needed; we've added this so the code provided to you compiles
 }
 
@@ -309,11 +309,11 @@ void execute_To_CDB(int current_cycle) {
           // check if there is contention on the CDB and only let the oldest one use the CDB
           if (oldest_complete_inst == NULL){
             oldest_complete_inst = fuINT[idx];
-            oldest_complete_inst_fu_entry = &fuINT[idx];
+            oldest_complete_inst_fu_entry = &(fuINT[idx]);
           } else {
             if (oldest_complete_inst->index > fuINT[idx]->index){
               oldest_complete_inst = fuINT[idx];
-              oldest_complete_inst_fu_entry = &fuINT[idx];
+              oldest_complete_inst_fu_entry = &(fuINT[idx]);
             }
           }
         } else { // if the instruction does not use CDB then clear RS and FU entry
@@ -332,11 +332,11 @@ void execute_To_CDB(int current_cycle) {
           // check if there is contention on the CDB and only let the oldest one use the CDB
           if (oldest_complete_inst == NULL){
             oldest_complete_inst = fuFP[idx];
-            oldest_complete_inst_fu_entry = &fuFP[idx];
+            oldest_complete_inst_fu_entry = &(fuFP[idx]);
           } else {
             if (oldest_complete_inst->index > fuFP[idx]->index){
               oldest_complete_inst = fuFP[idx];
-              oldest_complete_inst_fu_entry = &fuFP[idx];
+              oldest_complete_inst_fu_entry = &(fuFP[idx]);
             }
           }
         } else { // if the instruction does not use CDB then clear RS and FU entry
@@ -383,7 +383,7 @@ void issue_To_execute(int current_cycle) {
       oldest_issueable_inst = NULL;
       // Check if instructions in INT RS is issueable and issue the oldest one
       for (int RS_idx = 0; RS_idx < RESERV_INT_SIZE; RS_idx++){
-        if (TAG_CLEAR(reservINT[RS_idx]) && current_cycle > reservINT[RS_idx]->tom_issue_cycle){
+        if (TAG_CLEAR(reservINT[RS_idx]) && reservINT[RS_idx]->tom_execute_cycle == 0 && current_cycle > reservINT[RS_idx]->tom_issue_cycle){
           if (oldest_issueable_inst == NULL){
             oldest_issueable_inst = reservINT[RS_idx];
           } else if (oldest_issueable_inst->index > reservINT[RS_idx]->index) {
@@ -407,7 +407,7 @@ void issue_To_execute(int current_cycle) {
       oldest_issueable_inst = NULL;
       // Check if instructions in FP RS is issueable and issue the oldest one
       for (int RS_idx = 0; RS_idx < RESERV_FP_SIZE; RS_idx++){
-        if (TAG_CLEAR(reservFP[RS_idx]) && current_cycle > reservFP[RS_idx]->tom_issue_cycle){
+        if (TAG_CLEAR(reservFP[RS_idx]) && reservFP[RS_idx]->tom_execute_cycle == 0 && current_cycle > reservFP[RS_idx]->tom_issue_cycle){
           if (oldest_issueable_inst == NULL){
             oldest_issueable_inst = reservFP[RS_idx];
           } else if (oldest_issueable_inst->index > reservFP[RS_idx]->index) {
@@ -593,6 +593,7 @@ counter_t runTomasulo(instruction_trace_t* trace)
     dispatch_To_issue(cycle);
     fetch_To_dispatch(trace, cycle); 
     /* ECE552 Assignment 3 - END CODE */
+
     cycle++;
 
     if (is_simulation_done(sim_num_insn))
