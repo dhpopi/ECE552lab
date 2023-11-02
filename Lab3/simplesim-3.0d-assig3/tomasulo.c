@@ -353,8 +353,7 @@ void execute_To_CDB(int current_cycle) {
       rm_from_RS(oldest_complete_inst);
       *oldest_complete_inst_fu_entry = NULL;
 
-      // broadcast the tag and update the RS and map table
-      broadcast_tags(commonDataBus);
+      
     }
   }
   /* ECE552 Assignment 3 - END CODE */
@@ -427,6 +426,8 @@ void issue_To_execute(int current_cycle) {
       }
     }
   }
+  // broadcast the tag and update the RS and map table
+      broadcast_tags(commonDataBus);
 
   /* ECE552 Assignment 3 - END CODE */
 }
@@ -623,11 +624,6 @@ counter_t runTomasulo(instruction_trace_t* trace)
     // printf("%p\n",fuFP[i]);
     // }
 
-  //initialize map_table to no producers
-  int reg;
-  for (reg = 0; reg < MD_TOTAL_REGS; reg++) {
-    map_table[reg] = NULL;
-  }
 
     cycle++;
 
