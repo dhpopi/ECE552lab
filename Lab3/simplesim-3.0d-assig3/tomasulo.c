@@ -272,10 +272,10 @@ void CDB_To_retire(int current_cycle) {
   // if CDB is in use and the current cycle is after the cdb broadcast cycle then clear the map table and cdb
   if(commonDataBus != NULL && commonDataBus->tom_cdb_cycle < current_cycle){
     if(commonDataBus->r_out[0] != DNA){
-      map_table[commonDataBus->r_out[0]] == NULL;
+      map_table[commonDataBus->r_out[0]] = NULL;
     }
     if(commonDataBus->r_out[1] != DNA){
-      map_table[commonDataBus->r_out[1]] == NULL;
+      map_table[commonDataBus->r_out[1]] = NULL;
     }
     commonDataBus = NULL;
   }
@@ -383,7 +383,10 @@ void issue_To_execute(int current_cycle) {
       oldest_issueable_inst = NULL;
       // Check if instructions in INT RS is issueable and issue the oldest one
       for (int RS_idx = 0; RS_idx < RESERV_INT_SIZE; RS_idx++){
-        if (TAG_CLEAR(reservINT[RS_idx]) && reservINT[RS_idx]->tom_execute_cycle == 0 && current_cycle > reservINT[RS_idx]->tom_issue_cycle){
+        // if(reservINT[RS_idx] != NULL){
+        // printf("inst: %p\n", reservINT[RS_idx]);
+        // printf("issue_cycle: %d\n", reservINT[RS_idx]->tom_issue_cycle);}
+        if (TAG_CLEAR(reservINT[RS_idx]) && reservINT[RS_idx]->tom_execute_cycle == 0 && current_cycle > (reservINT[RS_idx]->tom_issue_cycle) && reservINT[RS_idx]->tom_issue_cycle != 0){
           if (oldest_issueable_inst == NULL){
             oldest_issueable_inst = reservINT[RS_idx];
           } else if (oldest_issueable_inst->index > reservINT[RS_idx]->index) {
@@ -407,7 +410,7 @@ void issue_To_execute(int current_cycle) {
       oldest_issueable_inst = NULL;
       // Check if instructions in FP RS is issueable and issue the oldest one
       for (int RS_idx = 0; RS_idx < RESERV_FP_SIZE; RS_idx++){
-        if (TAG_CLEAR(reservFP[RS_idx]) && reservFP[RS_idx]->tom_execute_cycle == 0 && current_cycle > reservFP[RS_idx]->tom_issue_cycle){
+        if (TAG_CLEAR(reservFP[RS_idx]) && reservFP[RS_idx]->tom_execute_cycle == 0 && current_cycle > (reservFP[RS_idx]->tom_issue_cycle) && reservFP[RS_idx]->tom_issue_cycle != 0){
           if (oldest_issueable_inst == NULL){
             oldest_issueable_inst = reservFP[RS_idx];
           } else if (oldest_issueable_inst->index > reservFP[RS_idx]->index) {
@@ -593,6 +596,38 @@ counter_t runTomasulo(instruction_trace_t* trace)
     dispatch_To_issue(cycle);
     fetch_To_dispatch(trace, cycle); 
     /* ECE552 Assignment 3 - END CODE */
+    // printf("cycle: %d\n",cycle);
+    // for (i = 0; i < INSTR_QUEUE_SIZE; i++) {
+    //   printf("IFQ:\n");
+    //   printf("%p\n",instr_queue[i]);
+    // }
+
+    // for (i = 0; i < RESERV_INT_SIZE; i++) {
+    //   printf("reverINT:\n");
+    //   printf("%p\n",reservINT[i]);
+    // }
+
+    // for(i = 0; i < RESERV_FP_SIZE; i++) {
+    // printf("reservFP:\n");
+    // printf("%p\n",reservFP[i]);
+    // }
+
+    // //initialize functional units
+    // for (i = 0; i < FU_INT_SIZE; i++) {
+    // printf("FU_INT:\n");
+    // printf("%p\n",fuINT[i]);
+    // }
+
+    // for (i = 0; i < FU_FP_SIZE; i++) {
+    // printf("FU_FP:\n");
+    // printf("%p\n",fuFP[i]);
+    // }
+
+  //initialize map_table to no producers
+  int reg;
+  for (reg = 0; reg < MD_TOTAL_REGS; reg++) {
+    map_table[reg] = NULL;
+  }
 
     cycle++;
 
