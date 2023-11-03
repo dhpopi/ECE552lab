@@ -380,7 +380,7 @@ void issue_To_execute(int current_cycle) {
       oldest_issueable_inst = NULL;
       // Check if instructions in INT RS is issueable and issue the oldest one
       for (int RS_idx = 0; RS_idx < RESERV_INT_SIZE; RS_idx++){
-        if (TAG_CLEAR(reservINT[RS_idx]) && reservINT[RS_idx]->tom_execute_cycle == 0 && current_cycle > reservINT[RS_idx]->tom_issue_cycle){
+        if (TAG_CLEAR(reservINT[RS_idx]) && reservINT[RS_idx]->tom_execute_cycle == 0 && reservINT[RS_idx]->tom_issue_cycle != 0 && current_cycle > reservINT[RS_idx]->tom_issue_cycle){
           if (oldest_issueable_inst == NULL){
             oldest_issueable_inst = reservINT[RS_idx];
           } else if (oldest_issueable_inst->index > reservINT[RS_idx]->index) {
@@ -404,7 +404,7 @@ void issue_To_execute(int current_cycle) {
       oldest_issueable_inst = NULL;
       // Check if instructions in FP RS is issueable and issue the oldest one
       for (int RS_idx = 0; RS_idx < RESERV_FP_SIZE; RS_idx++){
-        if (TAG_CLEAR(reservFP[RS_idx]) && reservFP[RS_idx]->tom_execute_cycle == 0 && current_cycle > reservFP[RS_idx]->tom_issue_cycle){
+        if (TAG_CLEAR(reservFP[RS_idx]) && reservFP[RS_idx]->tom_execute_cycle == 0 && reservFP[RS_idx]->tom_issue_cycle != 0 && current_cycle > reservFP[RS_idx]->tom_issue_cycle){
           if (oldest_issueable_inst == NULL){
             oldest_issueable_inst = reservFP[RS_idx];
           } else if (oldest_issueable_inst->index > reservFP[RS_idx]->index) {
@@ -476,8 +476,8 @@ void fetch(instruction_trace_t* trace) {
   if (instr_queue_size < INSTR_QUEUE_SIZE && fetch_index <= sim_num_insn){
     // discard trap instructions
     do {
-      new_inst = get_instr(trace, fetch_index);
       fetch_index++;
+      new_inst = get_instr(trace, fetch_index);
     } while(IS_TRAP(new_inst->op));
     
     // add the new instruction to IFQ
@@ -592,13 +592,11 @@ counter_t runTomasulo(instruction_trace_t* trace)
     issue_To_execute(cycle);
     dispatch_To_issue(cycle);
     fetch_To_dispatch(trace, cycle); 
-    /* ECE552 Assignment 3 - END CODE */
 
     cycle++;
-
     if (is_simulation_done(sim_num_insn))
       break;
-  }
-  
+    }
+  /* ECE552 Assignment 3 - END CODE */
   return cycle;
 }
