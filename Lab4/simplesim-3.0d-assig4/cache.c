@@ -525,7 +525,7 @@ typedef struct rpt_entry {
   md_addr_t TAG;
   md_addr_t PREV_ADDR;
   int STRIDE;
-  int state; // 0 = init, 1 = transient, 2 = steady, 3 = nopred
+  int state; // 0 = init, 1 = transient, 2 = standby, 3 = nopred
 };
 
 int stride_rpt_size = 1024;
@@ -559,13 +559,28 @@ void stride_prefetcher(struct cache_t *cp, md_addr_t addr) {
   if(rpt_table[rpt_index].TAG == rpt_tag){
     int stride = addr - rpt_table[rpt_index].PREV_ADDR;
     if(stride == rpt_table[rpt_index].STRIDE){
+      hit = TRUE;
       if(rpt_table[rpt_index].state == 3){
         rpt_table[rpt_index].state = 1;
       }else{
         rpt_table[rpt_index].state = 2;
       }
     }else{
-      
+      if(rpt_table[rpt_index].state != 2){
+        rpt_table[rpt_index].STRIDE = stride;
+      }
+      if(rpt_table[rpt_index].state == 0){
+        rpt_table[rpt_index].state = 1;
+      }
+      if(rpt_table[rpt_index].state == 1){
+        rpt_table[rpt_index].state = 3;
+      }
+      if(rpt_table[rpt_index].state == 2){
+        rpt_table[rpt_index].state = 0;
+      }
+      if(rpt_table[rpt_index].state == 3){
+        rpt_table[rpt_index].state = 3;
+      }
     }
   }else{
     rpt_table[rpt_index].TAG = rpt_tag;
@@ -573,7 +588,16 @@ void stride_prefetcher(struct cache_t *cp, md_addr_t addr) {
     rpt_table[rpt_index].state = 0;
   }
   rpt_table[rpt_index].PREV_ADDR = addr;
-  return;
+  
+  //prefetch is not in nopred
+  if(rpt_table[rpt_index].state != 3){
+    md_addr_t next_addr = addr + rpt_table[rpt_index].stride;
+    md_addr_t tag = next_addr & cp->tagset_mask;
+
+    if(cache_probe(cp, next_addr)){
+      cache_access(cp, Read, tag, NULL, cp->bsize, NULL, NULL, NULL, 1);
+    }
+  }
 
 }
 
