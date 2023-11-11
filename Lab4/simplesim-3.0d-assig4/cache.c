@@ -526,10 +526,10 @@ typedef struct rpt_entry {
   md_addr_t PREV_ADDR;
   int STRIDE;
   int state; // 0 = init, 1 = transient, 2 = standby, 3 = nopred
-};
+}RPT;
 
 int stride_rpt_size = 1024;
-rpt_entry rpt_table[stride_rpt_size];
+RPT rpt_table[stride_rpt_size];
 void init_stride(int size){
   for(int i = 0; i < size; i++){
     rpt_table[i].TAG = 0;
