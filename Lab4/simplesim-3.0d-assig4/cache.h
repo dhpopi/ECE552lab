@@ -110,6 +110,9 @@ enum cache_policy {
 #define CACHE_BLK_VALID		0x00000001	/* block in valid, in use */
 #define CACHE_BLK_DIRTY		0x00000002	/* dirty block */
 
+
+#define STRIDE_RPT_SIZE 1024
+
 /* cache block (or line) definition */
 struct cache_blk_t
 {

@@ -52,6 +52,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <stdbool.h>
 
 #include "host.h"
 #include "misc.h"
@@ -511,7 +512,7 @@ void next_line_prefetcher(struct cache_t *cp, md_addr_t addr) {
   md_addr_t tag = CACHE_SET(cp, addr_next_line);
 
   if(!cache_probe(cp,addr_next_line)){
-    cache_access(cp, Read, tag, NULL, cp->size, NULL, NULL, NULL, 1);
+    cache_access(cp, Read, tag, NULL, cp->bsize, NULL, NULL, NULL, 1);
   }
 }
 
@@ -526,10 +527,9 @@ typedef struct rpt_entry {
   md_addr_t PREV_ADDR;
   int STRIDE;
   int state; // 0 = init, 1 = transient, 2 = standby, 3 = nopred
-}RPT;
+} RPT;
 
-int stride_rpt_size = 1024;
-RPT rpt_table[stride_rpt_size];
+RPT rpt_table[STRIDE_RPT_SIZE];
 void init_stride(int size){
   for(int i = 0; i < size; i++){
     rpt_table[i].TAG = 0;
@@ -543,16 +543,16 @@ void init_stride(int size){
 void stride_prefetcher(struct cache_t *cp, md_addr_t addr) {
 	if(stride_init){
     //init the stride_prefetcher
-    init_stride(stride_rpt_size)
+    init_stride(STRIDE_RPT_SIZE);
     stride_init = TRUE;
   }
   //update rpt
   md_addr_t pc = get_PC();
   //get tag and index
-  int rpt_index = 0
+  int rpt_index = 0;
   int rpt_tag = 0;
-  rpt_index = (pc & ((pow(2, log_base2(stride_rpt_size)) - 1) << log_base2(sizeof(md_inst_t)))) >> log_base2(sizeof(md_inst_t));
-  rpt_tag = pc >> (log_base2(stride_rpt_size) + log_base2(sizeof(md_inst_t)));
+  rpt_index = (pc & ((int)(pow(2, log_base2(STRIDE_RPT_SIZE)) - 1) << log_base2(sizeof(md_inst_t)))) >> log_base2(sizeof(md_inst_t));
+  rpt_tag = pc >> (log_base2(STRIDE_RPT_SIZE) + log_base2(sizeof(md_inst_t)));
 
   //update rpt table
   bool hit = FALSE;
@@ -591,7 +591,7 @@ void stride_prefetcher(struct cache_t *cp, md_addr_t addr) {
   
   //prefetch is not in nopred
   if(rpt_table[rpt_index].state != 3){
-    md_addr_t next_addr = addr + rpt_table[rpt_index].stride;
+    md_addr_t next_addr = addr + rpt_table[rpt_index].STRIDE;
     md_addr_t tag = next_addr & cp->tagset_mask;
 
     if(cache_probe(cp, next_addr)){
@@ -625,7 +625,6 @@ void generate_prefetch(struct cache_t *cp, md_addr_t addr) {
 
 }
 
-md_addr_t get_PC();
 
 /* print cache stats */
 void
