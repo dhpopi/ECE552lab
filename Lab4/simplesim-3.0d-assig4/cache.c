@@ -521,6 +521,10 @@ void open_ended_prefetcher(struct cache_t *cp, md_addr_t addr) {
 	; 
 }
 
+#define INIT 0
+#define TRANSIENT 1
+#define STANDBY 2
+#define NOPRED 3
 bool stride_init = FALSE;
 typedef struct rpt_entry {
   md_addr_t TAG;
@@ -535,13 +539,13 @@ void init_stride(int size){
     rpt_table[i].TAG = 0;
     rpt_table[i].PREV_ADDR = 0;
     rpt_table[i].STRIDE = 0;
-    rpt_table[i].state = 0;//init to init
+    rpt_table[i].state = INIT;
   }
   return;
 }
 /* Stride Prefetcher */
 void stride_prefetcher(struct cache_t *cp, md_addr_t addr) {
-	if(stride_init){
+	if(!stride_init){
     //init the stride_prefetcher
     init_stride(STRIDE_RPT_SIZE);
     stride_init = TRUE;
@@ -560,37 +564,37 @@ void stride_prefetcher(struct cache_t *cp, md_addr_t addr) {
     int stride = addr - rpt_table[rpt_index].PREV_ADDR;
     if(stride == rpt_table[rpt_index].STRIDE){
       hit = TRUE;
-      if(rpt_table[rpt_index].state == 3){
-        rpt_table[rpt_index].state = 1;
+      if(rpt_table[rpt_index].state == NOPRED){
+        rpt_table[rpt_index].state = TRANSIENT;
       }else{
-        rpt_table[rpt_index].state = 2;
+        rpt_table[rpt_index].state = STANDBY;
       }
     }else{
-      if(rpt_table[rpt_index].state != 2){
+      if(rpt_table[rpt_index].state != STANDBY){
         rpt_table[rpt_index].STRIDE = stride;
       }
-      if(rpt_table[rpt_index].state == 0){
-        rpt_table[rpt_index].state = 1;
+      if(rpt_table[rpt_index].state == INIT){
+        rpt_table[rpt_index].state = TRANSIENT;
       }
-      if(rpt_table[rpt_index].state == 1){
-        rpt_table[rpt_index].state = 3;
+      if(rpt_table[rpt_index].state == TRANSIENT){
+        rpt_table[rpt_index].state = NOPRED;
       }
-      if(rpt_table[rpt_index].state == 2){
-        rpt_table[rpt_index].state = 0;
+      if(rpt_table[rpt_index].state == STANDBY){
+        rpt_table[rpt_index].state = INIT;
       }
-      if(rpt_table[rpt_index].state == 3){
-        rpt_table[rpt_index].state = 3;
+      if(rpt_table[rpt_index].state == NOPRED){
+        rpt_table[rpt_index].state = NOPRED;
       }
     }
   }else{
     rpt_table[rpt_index].TAG = rpt_tag;
     rpt_table[rpt_index].STRIDE = 0;
-    rpt_table[rpt_index].state = 0;
+    rpt_table[rpt_index].state = INIT;
   }
   rpt_table[rpt_index].PREV_ADDR = addr;
   
   //prefetch is not in nopred
-  if(rpt_table[rpt_index].state != 3){
+  if(rpt_table[rpt_index].state != NOPRED){
     md_addr_t next_addr = addr + rpt_table[rpt_index].STRIDE;
     md_addr_t tag = next_addr & cp->tagset_mask;
 
