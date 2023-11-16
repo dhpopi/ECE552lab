@@ -525,7 +525,7 @@ void open_ended_prefetcher(struct cache_t *cp, md_addr_t addr) {
 #define TRANSIENT 1
 #define STEADY 2
 #define NOPRED 3
-#define STRIDE_RPT_SIZE 1
+#define STRIDE_RPT_SIZE 1024
 bool stride_init = FALSE;
 typedef struct rpt_entry {
   md_addr_t tag;
@@ -546,6 +546,7 @@ void init_stride(int size){
 }
 /* Stride Prefetcher */
 void stride_prefetcher(struct cache_t *cp, md_addr_t addr) {
+  int rpt_table_size = cp->prefetch_type;
 	if(!stride_init){
     //init the stride_prefetcher
     init_stride(STRIDE_RPT_SIZE);
@@ -597,7 +598,7 @@ void stride_prefetcher(struct cache_t *cp, md_addr_t addr) {
     md_addr_t next_addr = addr + rpt_table[rpt_index].stride;
     md_addr_t tag = CACHE_TAGSET(cp, next_addr);
 
-    if(cache_probe(cp, next_addr)){
+    if(!cache_probe(cp, next_addr)){
       cache_access(cp, Read, tag, NULL, cp->bsize, NULL, NULL, NULL, 1);
     }
   }
