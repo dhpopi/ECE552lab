@@ -1,4 +1,3 @@
-make clean
 make sim-cache
 true > temp_test_out
 true > temp_test_out1
