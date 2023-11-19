@@ -525,7 +525,6 @@ void open_ended_prefetcher(struct cache_t *cp, md_addr_t addr) {
 #define TRANSIENT 1
 #define STEADY 2
 #define NOPRED 3
-#define STRIDE_RPT_SIZE 1024
 bool stride_init = FALSE;
 typedef struct rpt_entry {
   md_addr_t tag;
@@ -534,7 +533,7 @@ typedef struct rpt_entry {
   int state; // 0 = init, 1 = transient, 2 = standby, 3 = nopred
 } RPT;
 
-RPT rpt_table[STRIDE_RPT_SIZE];
+static RPT* rpt_table;
 void init_stride(int size){
   for(int i = 0; i < size; i++){
     rpt_table[i].tag = 0;
@@ -548,17 +547,19 @@ void init_stride(int size){
 void stride_prefetcher(struct cache_t *cp, md_addr_t addr) {
   int rpt_table_size = cp->prefetch_type;
 	if(!stride_init){
+    rpt_table = (RPT*) malloc((rpt_table_size*sizeof(RPT)));
     //init the stride_prefetcher
-    init_stride(STRIDE_RPT_SIZE);
+    init_stride(rpt_table_size);
     stride_init = TRUE;
   }
+
   //update rpt
   md_addr_t pc = get_PC();
   //get tag and index
   int rpt_index = 0;
   int rpt_tag = 0;
-  rpt_index = (pc & ((int)(pow(2, log_base2(STRIDE_RPT_SIZE)) - 1) << log_base2(sizeof(md_inst_t)))) >> log_base2(sizeof(md_inst_t));
-  rpt_tag = pc >> (log_base2(STRIDE_RPT_SIZE) + log_base2(sizeof(md_inst_t)));
+  rpt_index = (pc & ((int)(pow(2, log_base2(rpt_table_size)) - 1) << log_base2(sizeof(md_inst_t)))) >> log_base2(sizeof(md_inst_t));
+  rpt_tag = pc >> (log_base2(rpt_table_size) + log_base2(sizeof(md_inst_t)));
 
   //update rpt table
   bool hit = FALSE;
