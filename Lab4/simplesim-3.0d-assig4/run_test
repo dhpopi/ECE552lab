@@ -1,4 +1,21 @@
 make sim-cache
+
+true > temp_test_results
+
+true > temp_test_out
+true > temp_test_out1
+true > temp_test_out2
+true > temp_test_out3
+
+./sim-cache -config cache-config/cache-lru-nextline.cfg -redir:sim temp_test_out1 /cad2/ece552f/benchmarks/compress.eio 
+cat temp_test_out1 >> temp_test_out
+./sim-cache -config cache-config/cache-lru-nextline.cfg -redir:sim temp_test_out2 /cad2/ece552f/benchmarks/gcc.eio 
+cat temp_test_out2 >> temp_test_out
+./sim-cache -config cache-config/cache-lru-nextline.cfg -redir:sim temp_test_out3 /cad2/ece552f/benchmarks/go.eio 
+cat temp_test_out3 >> temp_test_out
+
+cat temp_test_out | grep "dl1.miss_rate" | grep -Eo '[0-9]+\.[0-9]+' | awk 'BEGIN{s=0;}{s+=$1;}END{print s/NR*100;}' | xargs printf 'Open prefetcher average L1 Data cache miss rate: %.2f%%\n' >> temp_test_results
+
 true > temp_test_out
 true > temp_test_out1
 true > temp_test_out2
@@ -11,4 +28,20 @@ cat temp_test_out2 >> temp_test_out
 ./sim-cache -config cache-config/cache-lru-stride.cfg -redir:sim temp_test_out3 /cad2/ece552f/benchmarks/go.eio 
 cat temp_test_out3 >> temp_test_out
 
-cat temp_test_out | grep "dl1.miss_rate" | grep -Eo '[0-9]+\.[0-9]+' | awk 'BEGIN{s=0;}{s+=$1;}END{print s/NR;}' | xargs printf 'Average L1 Data cache miss rate: %f\n'
+cat temp_test_out | grep "dl1.miss_rate" | grep -Eo '[0-9]+\.[0-9]+' | awk 'BEGIN{s=0;}{s+=$1;}END{print s/NR*100;}' | xargs printf 'Open prefetcher average L1 Data cache miss rate: %.2f%%\n' >> temp_test_results
+
+true > temp_test_out
+true > temp_test_out1
+true > temp_test_out2
+true > temp_test_out3
+
+./sim-cache -config cache-config/cache-lru-open.cfg -redir:sim temp_test_out1 /cad2/ece552f/benchmarks/compress.eio 
+cat temp_test_out1 >> temp_test_out
+./sim-cache -config cache-config/cache-lru-open.cfg -redir:sim temp_test_out2 /cad2/ece552f/benchmarks/gcc.eio 
+cat temp_test_out2 >> temp_test_out
+./sim-cache -config cache-config/cache-lru-open.cfg -redir:sim temp_test_out3 /cad2/ece552f/benchmarks/go.eio 
+cat temp_test_out3 >> temp_test_out
+
+cat temp_test_out | grep "dl1.miss_rate" | grep -Eo '[0-9]+\.[0-9]+' | awk 'BEGIN{s=0;}{s+=$1;}END{print s/NR*100;}' | xargs printf 'Open prefetcher average L1 Data cache miss rate: %.2f%%\n' >> temp_test_results
+
+cat temp_test_results
