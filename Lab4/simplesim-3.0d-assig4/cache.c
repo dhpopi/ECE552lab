@@ -512,13 +512,13 @@ void next_line_prefetcher(struct cache_t *cp, md_addr_t addr) {
   md_addr_t tag = CACHE_TAGSET(cp, addr_next_line);
 
   if(!cache_probe(cp,addr_next_line)){
-    cache_access(cp, Read, tag, NULL, cp->bsize, NULL, NULL, NULL, 1);
+    cache_access(cp, Read, tag, NULL, cp->bsize, 0, NULL, NULL, 1);
   }
 }
 
 /* Open Ended Prefetcher */
 void open_ended_prefetcher(struct cache_t *cp, md_addr_t addr) {
-	; 
+	stride_prefetcher(cp, addr); 
 }
 
 #define INIT 0
@@ -596,11 +596,11 @@ void stride_prefetcher(struct cache_t *cp, md_addr_t addr) {
   
   //prefetch is not in nopred
   if(rpt_table[rpt_index].state != NOPRED){
-    md_addr_t next_addr = addr + rpt_table[rpt_index].stride;
-    md_addr_t tag = CACHE_TAGSET(cp, next_addr);
+    md_addr_t next_addr = rpt_table[rpt_index].prev_addr + rpt_table[rpt_index].stride;
+    next_addr -= next_addr % cp->bsize;
 
     if(!cache_probe(cp, next_addr)){
-      cache_access(cp, Read, tag, NULL, cp->bsize, NULL, NULL, NULL, 1);
+      cache_access(cp, Read, next_addr, NULL, cp->bsize, NULL, NULL, NULL, 1);
     }
   }
 
