@@ -515,12 +515,6 @@ void next_line_prefetcher(struct cache_t *cp, md_addr_t addr) {
     cache_access(cp, Read, tag, NULL, cp->bsize, 0, NULL, NULL, 1);
   }
 }
-
-/* Open Ended Prefetcher */
-void open_ended_prefetcher(struct cache_t *cp, md_addr_t addr) {
-	stride_prefetcher(cp, addr); 
-}
-
 #define INIT 0
 #define TRANSIENT 1
 #define STEADY 2
@@ -532,7 +526,6 @@ typedef struct rpt_entry {
   int stride;
   int state; // 0 = init, 1 = transient, 2 = standby, 3 = nopred
 } RPT;
-
 static RPT* rpt_table;
 void init_stride(int size){
   for(int i = 0; i < size; i++){
@@ -543,6 +536,72 @@ void init_stride(int size){
   }
   return;
 }
+
+/* Open Ended Prefetcher */
+void open_ended_prefetcher(struct cache_t *cp, md_addr_t addr) {
+	int rpt_table_size = 1024;
+	if(!stride_init){
+    rpt_table = (RPT*) malloc((rpt_table_size*sizeof(RPT)));
+    //init the stride_prefetcher
+    init_stride(rpt_table_size);
+    stride_init = TRUE;
+  }
+
+  //update rpt
+  md_addr_t pc = get_PC();
+  //get tag and index
+  int rpt_index = 0;
+  int rpt_tag = 0;
+  rpt_index = (pc & ((int)(pow(2, log_base2(rpt_table_size)) - 1) << log_base2(sizeof(md_inst_t)))) >> log_base2(sizeof(md_inst_t));
+  rpt_tag = pc >> (log_base2(rpt_table_size) + log_base2(sizeof(md_inst_t)));
+
+  //update rpt table
+  bool hit = FALSE;
+  if(rpt_table[rpt_index].tag == rpt_tag){
+    int stride = addr - rpt_table[rpt_index].prev_addr;
+    if(stride == rpt_table[rpt_index].stride){
+      hit = TRUE;
+      if(rpt_table[rpt_index].state == NOPRED){
+        rpt_table[rpt_index].state = TRANSIENT;
+      }else{
+        rpt_table[rpt_index].state = STEADY;
+      }
+    }else{
+      if(rpt_table[rpt_index].state != STEADY){
+        rpt_table[rpt_index].stride = stride;
+      }
+
+      if(rpt_table[rpt_index].state == INIT){
+        rpt_table[rpt_index].state = TRANSIENT;
+      }else if(rpt_table[rpt_index].state == TRANSIENT){
+        rpt_table[rpt_index].state = NOPRED;
+      }else if(rpt_table[rpt_index].state == STEADY){
+        rpt_table[rpt_index].state = INIT;
+      }else if(rpt_table[rpt_index].state == NOPRED){
+        rpt_table[rpt_index].state = NOPRED;
+      }
+    }
+  }else{
+    rpt_table[rpt_index].tag = rpt_tag;
+    rpt_table[rpt_index].stride = 0;
+    rpt_table[rpt_index].state = INIT;
+  }
+  rpt_table[rpt_index].prev_addr = addr;
+  
+  //prefetch is not in nopred
+  if(rpt_table[rpt_index].state == STEADY){
+    md_addr_t next_addr = rpt_table[rpt_index].prev_addr + rpt_table[rpt_index].stride;
+    next_addr -= next_addr % cp->bsize;
+
+    if(!cache_probe(cp, next_addr)){
+      cache_access(cp, Read, next_addr, NULL, cp->bsize, NULL, NULL, NULL, 1);
+    }
+  } 
+}
+
+
+
+
 /* Stride Prefetcher */
 void stride_prefetcher(struct cache_t *cp, md_addr_t addr) {
   int rpt_table_size = cp->prefetch_type;
