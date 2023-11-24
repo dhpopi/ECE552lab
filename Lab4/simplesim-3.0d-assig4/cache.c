@@ -52,7 +52,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+/* ECE552 Assignment 3 - BEGIN CODE */
 #include <stdbool.h>
+/* ECE552 Assignment 3 - END CODE */
 
 #include "host.h"
 #include "misc.h"
@@ -506,6 +508,7 @@ cache_reg_stats(struct cache_t *cp,	/* cache instance */
 
 }
 
+/* ECE552 Assignment 3 - BEGIN CODE */
 /* Next Line Prefetcher */
 void next_line_prefetcher(struct cache_t *cp, md_addr_t addr) {
 	md_addr_t addr_next_line = addr + cp->bsize; 
@@ -664,7 +667,7 @@ void stride_prefetcher(struct cache_t *cp, md_addr_t addr) {
   }
 
 }
-
+/* ECE552 Assignment 3 - END CODE */
 
 /* cache x might generate a prefetch after a regular cache access to address addr */
 void generate_prefetch(struct cache_t *cp, md_addr_t addr) {
