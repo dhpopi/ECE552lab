@@ -8,12 +8,12 @@ int main(){
     int pat = 10;
     
     int i = 0;
-    for(i = 0; i < 1000000; i = i + 1){
+    for(i = 0; i < (1000000 - 64); i = i + 1){
         
         test[i + stride] = 1;
         
          //comment this line for fixing the stride, we should have miss rate = 0; if we have alternating stride, we should have higher missrate
-        if(1 % 10 < 3){
+        if(i % 10 < 3){
             stride = 10;
         }else{
             stride = 64;
