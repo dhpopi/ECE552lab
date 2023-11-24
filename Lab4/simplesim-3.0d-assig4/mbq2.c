@@ -11,13 +11,12 @@ int main(){
         test[i] = 1;
         
         
-        if(i % 2){
+        if(stride != 64){
             stride = 64;
         }else{
             stride = 128;
         }
         //uncomment this line for fixing the stride, we should have miss rate = 0; if we have alternating stride, we should have higher missrate
-        // stride = 10;
     }
     return 0;
 }
