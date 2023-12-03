@@ -539,76 +539,76 @@ getDirectoryEntry(address).Sharers);
   }
 
 
-  // =============================================================================
-  // TRANSITIONS
-  // =============================================================================
+    // =============================================================================
+    // TRANSITIONS
+    // =============================================================================
 
-  /* ECE552 Assignment 5 - BEGIN CODE */
-  /* ECE552: Complete this section here */
+    /* ECE552 Assignment 5 - BEGIN CODE */
+    /* ECE552: Complete this section here */
 
-  // =============================================================================
-  // Transitions From State I
-  // =============================================================================
+    // =============================================================================
+    // Transitions From State I
+    // =============================================================================
 
-  transition(I, GETS, IS_MD){
-    vv_allocateTBEFromRequestNet;
-    ars1_addRequestorToSharers;
-    qf_queueMemoryFetchRequest;
-    i_popIncomingRequestQueue;
+    transition(I, GETS, IS_MD){
+        vv_allocateTBEFromRequestNet;
+        ars1_addRequestorToSharers;
+        qf_queueMemoryFetchRequest;
+        i_popIncomingRequestQueue;
 	}
 
-  transition(I, GETM, IM_MD){
-    vv_allocateTBEFromRequestNet;
-    e_ownerIsRequestor;
-    qf_queueMemoryFetchRequest;
-    i_popIncomingRequestQueue;
+    transition(I, GETM, IM_MD){
+        vv_allocateTBEFromRequestNet;
+        e_ownerIsRequestor;
+        qf_queueMemoryFetchRequest;
+        i_popIncomingRequestQueue;
 	}
 
-  transition(I, {PUTS_NotLast, PUTS_Last, PUTM_NotOwner}){
-    a_sendWriteBackAck;
-    i_popIncomingRequestQueue;
+    transition(I, {PUTS_NotLast, PUTS_Last, PUTM_NotOwner}){
+        a_sendWriteBackAck;
+        i_popIncomingRequestQueue;
 	}
 
   // =============================================================================
   // Transitions From State IS_MD
   // =============================================================================
 
-  transition(IS_MD, Memory_Data, S){
-    d_sendData;
-    w_writeDataToDirectoryFromTBE;
-    w_deallocateTBE;
-    qm_popMemQueue;
+    transition(IS_MD, Memory_Data, S){
+        d_sendData;
+        w_writeDataToDirectoryFromTBE;
+        w_deallocateTBE;
+        qm_popMemQueue;
 	}
 
-  transition(IS_MD, {GETS, GETM}){
-    z_stall;
+    transition(IS_MD, {GETS, GETM}){
+        z_stall;
 	}
 
   // =============================================================================
   // Transitions From State S
   // =============================================================================
 
-  transition(S, GETS){
-    ds_sendSharedData;
-    ars2_addRequestorToSharers;
-    i_popIncomingRequestQueue;
+    transition(S, GETS){
+        ds_sendSharedData;
+        ars2_addRequestorToSharers;
+        i_popIncomingRequestQueue;
 	}
 
-  transition(S, GETM, M){
-    ds2_sendSharedData;
-    fwm_sendFwdInvToSharersMinusRequestor;
-    cs_clearSharers;
-    e_ownerIsRequestor;
-    i_popIncomingRequestQueue;
+    transition(S, GETM, M){
+        ds2_sendSharedData;
+        fwm_sendFwdInvToSharersMinusRequestor;
+        cs_clearSharers;
+        e_ownerIsRequestor;
+        i_popIncomingRequestQueue;
 	}
 
-  transition(S, {PUTS_NotLast, PUTM_NotOwner}){
+    transition(S, {PUTS_NotLast, PUTM_NotOwner}){
 		kk_removeRequestSharer;
 		a_sendWriteBackAck;
 		i_popIncomingRequestQueue;
 	}
 
-  transition(S, PUTS_Last, I){
+    transition(S, PUTS_Last, I){
 		kk_removeRequestSharer;
 		a_sendWriteBackAck;
 		i_popIncomingRequestQueue;
@@ -618,13 +618,13 @@ getDirectoryEntry(address).Sharers);
   // Transitions From State IM_MD
   // =============================================================================
 
-  transition(IM_MD, Memory_Data, M){
-    d_sendData;
-    w_deallocateTBE;
-    qm_popMemQueue;
+    transition(IM_MD, Memory_Data, M){
+        d_sendData;
+        w_deallocateTBE;
+        qm_popMemQueue;
 	}
 
-  transition(IM_MD, {GETS, GETM}){
+    transition(IM_MD, {GETS, GETM}){
 		z_stall;
 	}
 
@@ -632,89 +632,89 @@ getDirectoryEntry(address).Sharers);
   // Transitions From State M
   // =============================================================================
 
-  transition(M, GETS, MS_OD){
-    vv_allocateTBEFromRequestNet;
+    transition(M, GETS, MS_OD){
+        vv_allocateTBEFromRequestNet;
 		f_forwardRequest;
-    aos_addOwnertoSharers;
-    ars2_addRequestorToSharers;
-    c_clearOwner;
-    i_popIncomingRequestQueue;
+        aos_addOwnertoSharers;
+        ars2_addRequestorToSharers;
+        c_clearOwner;
+        i_popIncomingRequestQueue;
 	}
 
-  transition(M, GETM){
+    transition(M, GETM){
 		f_forwardRequest;
-    c_clearOwner;
-    e_ownerIsRequestor;
-    i_popIncomingRequestQueue;
+        c_clearOwner;
+        e_ownerIsRequestor;
+        i_popIncomingRequestQueue;
 	}
 
-  transition(M, {PUTS_NotLast, PUTS_Last, PUTM_NotOwner}){
+    transition(M, {PUTS_NotLast, PUTS_Last, PUTM_NotOwner}){
 		a_sendWriteBackAck;
 		i_popIncomingRequestQueue;
 	}
 
-  transition(M, PUTM_Owner, MI_MA){
-    vv_allocateTBEFromRequestNet;
-		lq_queueMemoryWBRequest;
-    pl_writeDataToDirectory;
-		i_popIncomingRequestQueue;
+    transition(M, PUTM_Owner, MI_MA){
+        vv_allocateTBEFromRequestNet;
+        lq_queueMemoryWBRequest;
+        pl_writeDataToDirectory;
+        i_popIncomingRequestQueue;
 	}
 
-  // =============================================================================
-  // Transitions From State MS_OD
-  // =============================================================================
+    // =============================================================================
+    // Transitions From State MS_OD
+    // =============================================================================
 
-  transition(MS_OD, Data, MS_MA){
-    lq2_queueMemoryWBRequest;
-    pl2_writeDataToDirectory;
-    pr_popIncomingResponseQueue;
+    transition(MS_OD, Data, MS_MA){
+        lq2_queueMemoryWBRequest;
+        pl2_writeDataToDirectory;
+        pr_popIncomingResponseQueue;
 	}
 
-  transition(MS_OD, {GETS, GETM, PUTS_Last}){
-    z_stall;
+    transition(MS_OD, {GETS, GETM, PUTS_Last}){
+        z_stall;
 	}
 
-  transition(MS_OD, {PUTS_NotLast, PUTM_NotOwner, PUTM_Owner}){
-    a_sendWriteBackAck;
-    kk_removeRequestSharer;
-    i_popIncomingRequestQueue;
+    transition(MS_OD, {PUTS_NotLast, PUTM_NotOwner, PUTM_Owner}){
+        a_sendWriteBackAck;
+        kk_removeRequestSharer;
+        i_popIncomingRequestQueue;
 	}
   
-  // =============================================================================
-  // Transitions From State MS_MA
-  // =============================================================================
+    // =============================================================================
+    // Transitions From State MS_MA
+    // =============================================================================
 
-  transition(MS_MA, Memory_Ack, S){
-    w_deallocateTBE;
-    qm_popMemQueue;
-	}
+    transition(MS_MA, Memory_Ack, S){
+        w_deallocateTBE;
+        qm_popMemQueue;
+    }
 
-  transition(MS_MA, GETS){
+    transition(MS_MA, GETS){
 		ds_sendSharedData;
-    ars2_addRequestorToSharers;
-    i_popIncomingRequestQueue;
+        ars2_addRequestorToSharers;
+        i_popIncomingRequestQueue;
 	}
 
-  transition(MS_MA, GETM){
-		z_stall;
+    transition(MS_MA, GETM){
+        z_stall;
 	}
 
-  // =============================================================================
-  // Transitions From State MI_MA
-  // =============================================================================
+    // =============================================================================
+    // Transitions From State MI_MA
+    // =============================================================================
 
-  transition(MI_MA, Memory_Ack, I){
-    la_sendWriteBackAck;
-    w_deallocateTBE;
-    c_clearOwner;
+    transition(MI_MA, Memory_Ack, I){
+        la_sendWriteBackAck;
+        w_deallocateTBE;
+        c_clearOwner;
 		qm_popMemQueue;
 	}
 
-  transition(MI_MA, {GETS, GETM}){
+    transition(MI_MA, {GETS, GETM}){
 		z_stall;
 	}
 
-  /* ECE552 Assignment 5 - END CODE */
+    /* ECE552 Assignment 5 - END CODE */
 
 
 }
