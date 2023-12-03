@@ -841,7 +841,7 @@ machine(L1Cache, "MSI L1 Cache")
     o_popForwardedRequestQueue;
 	}	
 
-  transition(MI_A, PUT_Ack, I){
+  transition(MI_A, WB_Ack, I){
     forward_eviction_to_cpu;
     h_deallocateL1CacheBlock;
     w_deallocateTBE;
@@ -861,7 +861,7 @@ machine(L1Cache, "MSI L1 Cache")
     n_popResponseQueue;
 	}	
 
-  transition(SI_A, PUT_Ack, I){
+  transition(SI_A, WB_Ack, I){
     forward_eviction_to_cpu;
     h_deallocateL1CacheBlock;
     w_deallocateTBE;
@@ -876,7 +876,7 @@ machine(L1Cache, "MSI L1 Cache")
     z_stall;
 	}	
 
-  transition(II_A, PUT_Ack, I){
+  transition(II_A, WB_Ack, I){
     forward_eviction_to_cpu;
     h_deallocateL1CacheBlock;
     w_deallocateTBE;

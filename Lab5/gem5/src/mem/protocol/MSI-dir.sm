@@ -550,14 +550,14 @@ getDirectoryEntry(address).Sharers);
   // Transitions From State I
   // =============================================================================
 
-  transition(I, GetS, IS_MD){
+  transition(I, GETS, IS_MD){
     vv_allocateTBEFromRequestNet;
     ars1_addRequestorToSharers;
     qf_queueMemoryFetchRequest;
     i_popIncomingRequestQueue;
 	}
 
-  transition(I, GetM, IM_MD){
+  transition(I, GETM, IM_MD){
     vv_allocateTBEFromRequestNet;
     e_ownerIsRequestor;
     qf_queueMemoryFetchRequest;
@@ -580,7 +580,7 @@ getDirectoryEntry(address).Sharers);
     qm_popMemQueue;
 	}
 
-  transition(IS_MD, {GetS, GetM}){
+  transition(IS_MD, {GETS, GETM}){
     z_stall;
 	}
 
@@ -588,13 +588,13 @@ getDirectoryEntry(address).Sharers);
   // Transitions From State S
   // =============================================================================
 
-  transition(S, GetS){
+  transition(S, GETS){
     ds_sendSharedData;
     ars2_addRequestorToSharers;
     i_popIncomingRequestQueue;
 	}
 
-  transition(S, GetM, M){
+  transition(S, GETM, M){
     ds2_sendSharedData;
     fwm_sendFwdInvToSharersMinusRequestor;
     cs_clearSharers;
@@ -632,7 +632,7 @@ getDirectoryEntry(address).Sharers);
   // Transitions From State M
   // =============================================================================
 
-  transition(M, GetS, MS_OD){
+  transition(M, GETS, MS_OD){
     vv_allocateTBEFromRequestNet;
 		f_forwardRequest;
     aos_addOwnertoSharers;
@@ -641,7 +641,7 @@ getDirectoryEntry(address).Sharers);
     i_popIncomingRequestQueue;
 	}
 
-  transition(M, GetM){
+  transition(M, GETM){
 		f_forwardRequest;
     c_clearOwner;
     e_ownerIsRequestor;
@@ -670,7 +670,7 @@ getDirectoryEntry(address).Sharers);
     pr_popIncomingResponseQueue;
 	}
 
-  transition(MS_OD, {GetS, GetM, PUTS_Last}){
+  transition(MS_OD, {GETS, GETM, PUTS_Last}){
     z_stall;
 	}
 
@@ -689,13 +689,13 @@ getDirectoryEntry(address).Sharers);
     qm_popMemQueue;
 	}
 
-  transition(MS_MA, GetS){
+  transition(MS_MA, GETS){
 		ds_sendSharedData;
     ars2_addRequestorToSharers;
     i_popIncomingRequestQueue;
 	}
 
-  transition(MS_MA, GetM){
+  transition(MS_MA, GETM){
 		z_stall;
 	}
 
@@ -710,7 +710,7 @@ getDirectoryEntry(address).Sharers);
 		qm_popMemQueue;
 	}
 
-  transition(MI_A, {GETS, GETM}){
+  transition(MI_MA, {GETS, GETM}){
 		z_stall;
 	}
 
