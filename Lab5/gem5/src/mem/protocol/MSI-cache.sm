@@ -26,7 +26,7 @@ machine(L1Cache, "MSI L1 Cache")
 
   MessageBuffer forwardToCache, network="From", virtual_network="3", ordered="true", vnet_type="forward";
   MessageBuffer responseToCache, network="From", virtual_network="4", ordered="true", vnet_type="response";
-
+  
   //=============================================================
   // STATES
   // ======
@@ -36,6 +36,7 @@ machine(L1Cache, "MSI L1 Cache")
   // ECE552: Invalid Data: Invalid, NotPresent, Busy
   //=============================================================
 
+  /* ECE552 Assignment 5 - BEGIN CODE */
   state_declaration(State, desc="Cache states", default="L1Cache_State_I") { //ECE552: All cache blocks are initially in Invalid State
 
     //=====================
@@ -45,14 +46,25 @@ machine(L1Cache, "MSI L1 Cache")
     I, AccessPermission:Invalid, desc="Not Present/Invalid";
 
     /* ECE552: Complete this section here */
-   
+    S, AccessPermission:Read_Only, desc="Is Present/Is Shared";
+    M, AccessPermission:Read_Write, desc="Is Present/Is Modified";
+
     //========================
     //ECE552: Transient States
     //========================
 
     /* ECE552: Complete this section here */
+    IS_D,  AccessPermission:Busy, desc="Transitioning from Invalid to Shared,   Waiting for Data";
+    IM_AD, AccessPermission:Busy, desc="Transitioning from Invalid to Modified, Waiting for Acknowledgement and Data";
+    IM_A,  AccessPermission:Busy, desc="Transitioning from Invalid to Modified, Waiting for Acknowledgement";
+    SM_AD, AccessPermission:Busy, desc="Transitioning from Shared to Modified,  Waiting for Acknowledgement and Data";
+    SM_A,  AccessPermission:Busy, desc="Transitioning from Shared to Modified,  Waiting for Acknowledgement";
+    MI_A,  AccessPermission:Busy, desc="Transitioning from Modified to Invalid, Waiting for Acknowledgement";
+    SI_A,  AccessPermission:Busy, desc="Transitioning from Shared to Invalid,   Waiting for Acknowledgement";
+    II_A,  AccessPermission:Busy, desc="Transitioning from Invalid to Invalid,  Waiting for Acknowledgement";
 
   }
+  /* ECE552 Assignment 5 - END CODE */
 
   // =============================================================================
   // EVENTS
@@ -600,7 +612,276 @@ machine(L1Cache, "MSI L1 Cache")
   // TRANSITIONS
   // =============================================================================
 
+  /* ECE552 Assignment 5 - BEGIN CODE */
   /* ECE552: Complete this section here */
- 
 
+  // =============================================================================
+  // Transitions From State I
+  // =============================================================================
+  
+  transition(I, {Load, Ifetch}, IS_D){
+    i_allocateL1CacheBlock;
+    v_allocateTBE;
+    p_profileMiss;
+    as_issueGetS;
+    m_popMandatoryQueue;
+	}	
+
+  transition(I, Store, IM_AD){
+    i_allocateL1CacheBlock;
+    v_allocateTBE;
+    p_profileMiss;
+    am_issueGetM;
+    m_popMandatoryQueue;
+	}	
+
+  // =============================================================================
+  // Transitions From State IS_D
+  // =============================================================================
+
+  transition(IS_D, {Load, Ifetch, Store, Replacement, Inv}){
+    z_stall;
+	}	
+
+  transition(IS_D, {Data_from_Dir_No_Acks, Data_from_Owner}, S){
+    u_writeDataToCache;
+    rx_load_hit;
+    w_deallocateTBE;
+    n_popResponseQueue;
+	}	
+
+  // =============================================================================
+  // Transitions From State IM_AD
+  // =============================================================================
+
+  transition(IM_AD, {Load, Ifetch, Store, Replacement, Fwd_GetS, Fwd_GetM}){
+    z_stall;
+	}	
+
+  transition(IM_AD, {Data_from_Dir_No_Acks, Data_from_Owner}, M){
+    u_writeDataToCache;
+    sx_store_hit;
+    w_deallocateTBE;
+    n_popResponseQueue;
+	}	
+
+  transition(IM_AD, {Data_from_Dir_Ack_Cnt}, IM_A){
+    u_writeDataToCache;
+    q_updateAckCount;
+    n_popResponseQueue;
+	}	
+
+  transition(IM_AD, Inv_Ack){
+    q_updateAckCount;
+    n_popResponseQueue;
+	}	
+
+  // =============================================================================
+  // Transitions From State IM_A
+  // =============================================================================
+
+  transition(IM_A, {Load, Ifetch, Store, Replacement, Fwd_GetS, Fwd_GetM}){
+    z_stall;
+	}	
+
+  transition(IM_A, Inv_Ack){
+    q_updateAckCount;
+    n_popResponseQueue;
+	}	
+
+  transition(IM_A, Inv_Ack_all, M){
+    q_updateAckCount;
+    sx_store_hit;
+    w_deallocateTBE;
+    n_popResponseQueue;
+	}	
+
+  // =============================================================================
+  // Transitions From State S
+  // =============================================================================
+
+  transition(S, {Load, Ifetch}){
+    r_load_hit;
+    m_popMandatoryQueue;
+	}	
+
+  transition(S, Store, SM_AD){
+    v_allocateTBE;
+    p_profileMiss;
+    am_issueGetM;
+    m_popMandatoryQueue;
+	}	
+
+  transition(S, Replacement, SI_A){
+    v_allocateTBE;
+    p_profileMiss;
+    bs_issuePUTS;
+    m_popMandatoryQueue;
+	}	
+
+  transition(S, Inv, I){
+    forward_eviction_to_cpu;
+    fi_sendInvAck;
+    h_deallocateL1CacheBlock;
+    n_popResponseQueue;
+	}	
+
+  // =============================================================================
+  // Transitions From State SM_AD
+  // =============================================================================
+
+  transition(SM_AD, {Load, Ifetch}){
+    r_load_hit;
+    m_popMandatoryQueue;
+	}	
+
+  transition(SM_AD, {Store, Replacement, Fwd_GetS, Fwd_GetM}){
+    z_stall;
+	}	
+
+  transition(SM_AD, Inv, IM_AD){
+    fi_sendInvAck;
+    n_popResponseQueue;
+	}	
+
+  transition(SM_AD, Data_from_Dir_No_Acks, M){
+    u_writeDataToCache;
+    sx_store_hit;
+    w_deallocateTBE;
+    n_popResponseQueue;
+	}	
+
+  transition(SM_AD, Data_from_Dir_Ack_Cnt, SM_A){
+    u_writeDataToCache;
+    q_updateAckCount;
+    n_popResponseQueue;
+	}	
+
+  transition(SM_AD, Inv_Ack){
+    q_updateAckCount;
+    n_popResponseQueue;
+	}	
+
+  // =============================================================================
+  // Transitions From State SM_A
+  // =============================================================================
+
+  transition(SM_A, {Load, Ifetch}){
+    r_load_hit;
+    m_popMandatoryQueue;
+	}	
+
+  transition(SM_A, {Store, Replacement, Fwd_GetS, Fwd_GetM}){
+    z_stall;
+	}	
+
+  transition(SM_A, Inv_Ack){
+    q_updateAckCount;
+    n_popResponseQueue;
+	}	
+
+  transition(SM_A, Inv_Ack_all, M){
+    q_updateAckCount;
+    sx_store_hit;
+    w_deallocateTBE;
+    n_popResponseQueue;
+	}	
+
+  // =============================================================================
+  // Transitions From State M
+  // =============================================================================
+
+  transition(M, {Load, Ifetch}){
+    r_load_hit;
+    m_popMandatoryQueue;
+	}
+
+  transition(M, Store){
+    s_store_hit;
+    m_popMandatoryQueue;
+	}	
+
+  transition(M, Replacement, MI_A){
+    v_allocateTBE;
+    p_profileMiss;
+    bm_issuePUTM;
+    de_sendDataFromCacheToDir;
+    x_copyDataFromCacheToTBE;
+    m_popMandatoryQueue;
+	}	
+
+  transition(M, Fwd_GetS, S){
+    e_sendDataFromCacheToRequestor;
+    o_popForwardedRequestQueue;
+	}	
+
+  transition(M, Fwd_GetM, I){
+    e_sendDataFromCacheToRequestor;
+    forward_eviction_to_cpu;
+    h_deallocateL1CacheBlock;
+    w_deallocateTBE;
+    o_popForwardedRequestQueue;
+	}	
+
+  // =============================================================================
+  // Transitions From State MI_A
+  // =============================================================================
+  
+  transition(MI_A, {Load, Ifetch, Store, Replacement}){
+    z_stall;
+	}	
+
+  transition(MI_A, Fwd_GetS, SI_A){
+    ee_sendDataFromTBEToRequestor;
+    o_popForwardedRequestQueue;
+	}	
+
+  transition(MI_A, Fwd_GetM, II_A){
+    ee_sendDataFromTBEToRequestor;
+    o_popForwardedRequestQueue;
+	}	
+
+  transition(MI_A, PUT_Ack, I){
+    forward_eviction_to_cpu;
+    h_deallocateL1CacheBlock;
+    w_deallocateTBE;
+    n_popResponseQueue;
+	}	
+
+  // =============================================================================
+  // Transitions From State SI_A
+  // =============================================================================
+
+  transition(SI_A, {Load, Ifetch, Store, Replacement}){
+    z_stall;
+	}	
+
+  transition(SI_A, Inv, II_A){
+    fi_sendInvAck;
+    n_popResponseQueue;
+	}	
+
+  transition(SI_A, PUT_Ack, I){
+    forward_eviction_to_cpu;
+    h_deallocateL1CacheBlock;
+    w_deallocateTBE;
+    n_popResponseQueue;
+	}	
+
+  // =============================================================================
+  // Transitions From State II_A
+  // =============================================================================
+
+  transition(II_A, {Load, Ifetch, Store, Replacement}){
+    z_stall;
+	}	
+
+  transition(II_A, PUT_Ack, I){
+    forward_eviction_to_cpu;
+    h_deallocateL1CacheBlock;
+    w_deallocateTBE;
+    n_popResponseQueue;
+	}	
+
+  /* ECE552 Assignment 5 - END CODE */
 }
