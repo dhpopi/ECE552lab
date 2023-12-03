@@ -634,7 +634,16 @@ machine(L1Cache, "MSI L1 Cache")
         am_issueGetM;
         m_popMandatoryQueue;
 	}	
+/*
+    transition(I, Inv) {
+        fi_sendInvAck;
+        o_popForwardedRequestQueue;
+    }
 
+    transition(I, WB_Ack) {
+        o_popForwardedRequestQueue;
+    }
+*/
     // =============================================================================
     // Transitions From State IS_D
     // =============================================================================
@@ -670,7 +679,7 @@ machine(L1Cache, "MSI L1 Cache")
         q_updateAckCount;
         n_popResponseQueue;
 	}	
-/*
+
     transition(IM_AD, Data_from_Dir_Ack_Cnt_Last, M){
 		u_writeDataToCache;
 		q_updateAckCount;
@@ -678,7 +687,7 @@ machine(L1Cache, "MSI L1 Cache")
 		w_deallocateTBE;
 		n_popResponseQueue;
 	}
-*/
+
     transition(IM_AD, Inv_Ack){
         q_updateAckCount;
         n_popResponseQueue;
@@ -765,7 +774,7 @@ machine(L1Cache, "MSI L1 Cache")
         q_updateAckCount;
         n_popResponseQueue;
 	}	
-/*
+
     transition(SM_AD, Data_from_Dir_Ack_Cnt_Last, M) {
 		q_updateAckCount;
 		u_writeDataToCache;
@@ -773,7 +782,7 @@ machine(L1Cache, "MSI L1 Cache")
 		sx_store_hit;
 		n_popResponseQueue;
 	}
-*/
+
     transition(SM_AD, Inv_Ack){
         q_updateAckCount;
         n_popResponseQueue;
