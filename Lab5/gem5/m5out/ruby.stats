@@ -34,7 +34,7 @@ periodic_stats_period: 1000000
 ================ End RubySystem Configuration Print ================
 
 
-Real time: Dec/03/2023 02:32:16
+Real time: Dec/03/2023 03:45:38
 
 Profiler Stats
 --------------
@@ -43,18 +43,18 @@ Elapsed_time_in_minutes: 0
 Elapsed_time_in_hours: 0
 Elapsed_time_in_days: 0
 
-Virtual_time_in_seconds: 0.1
-Virtual_time_in_minutes: 0.00166667
-Virtual_time_in_hours:   2.77778e-05
-Virtual_time_in_days:    1.15741e-06
+Virtual_time_in_seconds: 0.08
+Virtual_time_in_minutes: 0.00133333
+Virtual_time_in_hours:   2.22222e-05
+Virtual_time_in_days:    9.25926e-07
 
 Ruby_current_time: 466051
 Ruby_start_time: 0
 Ruby_cycles: 466051
 
-mbytes_resident: 48.5156
+mbytes_resident: 48.3828
 mbytes_total: 185.617
-resident_ratio: 0.261375
+resident_ratio: 0.260659
 
 ruby_cycles_executed: [ 466052 ]
 
@@ -120,11 +120,11 @@ Resource Usage
 page_size: 4096
 user_time: 0
 system_time: 0
-page_reclaims: 5956
+page_reclaims: 5957
 page_faults: 0
 swaps: 0
 block_inputs: 0
-block_outputs: 112
+block_outputs: 96
 
 Network Stats
 -------------
@@ -169,17 +169,17 @@ links_utilized_percent_switch_2: 0.995546
   outgoing_messages_switch_2_link_1_Data: 927 66744 [ 0 0 927 0 0 0 0 0 0 0 ] base_latency: 1
 
 Cache Stats: system.l1_cntrl0.cacheMemory
-  system.l1_cntrl0.cacheMemory_total_misses: 929
-  system.l1_cntrl0.cacheMemory_total_demand_misses: 929
+  system.l1_cntrl0.cacheMemory_total_misses: 1856
+  system.l1_cntrl0.cacheMemory_total_demand_misses: 1856
   system.l1_cntrl0.cacheMemory_total_prefetches: 0
   system.l1_cntrl0.cacheMemory_total_sw_prefetches: 0
   system.l1_cntrl0.cacheMemory_total_hw_prefetches: 0
 
-  system.l1_cntrl0.cacheMemory_request_type_LD:   4.73628%
-  system.l1_cntrl0.cacheMemory_request_type_ST:   89.3434%
-  system.l1_cntrl0.cacheMemory_request_type_IFETCH:   5.92034%
+  system.l1_cntrl0.cacheMemory_request_type_LD:   4.74138%
+  system.l1_cntrl0.cacheMemory_request_type_ST:   89.3319%
+  system.l1_cntrl0.cacheMemory_request_type_IFETCH:   5.92672%
 
-  system.l1_cntrl0.cacheMemory_access_mode_type_Supervisor:   929    100%
+  system.l1_cntrl0.cacheMemory_access_mode_type_Supervisor:   1856    100%
 
  --- L1Cache ---
  - Event Counts -
@@ -222,21 +222,20 @@ IS_D  Data_from_Owner [0 ] 0
 IM_AD  Inv_Ack [0 ] 0
 IM_AD  Data_from_Dir_No_Acks [830 ] 830
 IM_AD  Data_from_Dir_Ack_Cnt [0 ] 0
-IM_AD  Data_from_Dir_Ack_Cnt_Last [0 ] 0
 IM_AD  Data_from_Owner [0 ] 0
 
 IM_A  Inv_Ack [0 ] 0
 IM_A  Inv_Ack_all [0 ] 0
 
 SM_AD  Load [0 ] 0
+SM_AD  Ifetch [0 ] 0
 SM_AD  Inv [0 ] 0
 SM_AD  Inv_Ack [0 ] 0
 SM_AD  Data_from_Dir_No_Acks [0 ] 0
 SM_AD  Data_from_Dir_Ack_Cnt [0 ] 0
-SM_AD  Data_from_Dir_Ack_Cnt_Last [0 ] 0
-SM_AD  Data_from_Owner [0 ] 0
 
 SM_A  Load [0 ] 0
+SM_A  Ifetch [0 ] 0
 SM_A  Inv_Ack [0 ] 0
 SM_A  Inv_Ack_all [0 ] 0
 
@@ -303,16 +302,17 @@ S  PUTM_NotOwner [0 ] 0
 S  PUTS_NotLast [0 ] 0
 S  PUTS_Last [98 ] 98
 
-IS_D  Memory_Data [99 ] 99
+IS_MD  Memory_Data [99 ] 99
 
-IM_D  Memory_Data [830 ] 830
+IM_MD  Memory_Data [830 ] 830
 
-MS_D  PUTM_Owner [0 ] 0
-MS_D  PUTM_NotOwner [0 ] 0
-MS_D  PUTS_NotLast [0 ] 0
-MS_D  Data [0 ] 0
+MS_OD  PUTM_Owner [0 ] 0
+MS_OD  PUTM_NotOwner [0 ] 0
+MS_OD  PUTS_NotLast [0 ] 0
+MS_OD  Data [0 ] 0
 
-MS_A  Memory_Ack [0 ] 0
+MS_MA  GETS [0 ] 0
+MS_MA  Memory_Ack [0 ] 0
 
-MI_A  Memory_Ack [828 ] 828
+MI_MA  Memory_Ack [828 ] 828
 

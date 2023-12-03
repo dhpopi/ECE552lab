@@ -552,7 +552,7 @@ getDirectoryEntry(address).Sharers);
 
     transition(I, GETS, IS_MD){
         vv_allocateTBEFromRequestNet;
-        ars1_addRequestorToSharers;
+        ars2_addRequestorToSharers;
         qf_queueMemoryFetchRequest;
         i_popIncomingRequestQueue;
 	}
@@ -620,6 +620,7 @@ getDirectoryEntry(address).Sharers);
 
     transition(IM_MD, Memory_Data, M){
         d_sendData;
+        w_writeDataToDirectoryFromTBE;
         w_deallocateTBE;
         qm_popMemQueue;
 	}

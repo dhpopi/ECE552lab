@@ -709,6 +709,7 @@ machine(L1Cache, "MSI L1 Cache")
         v_allocateTBE;
         p_profileMiss;
         am_issueGetM;
+        x_copyDataFromCacheToTBE;
         m_popMandatoryQueue;
 	}	
 
@@ -716,14 +717,14 @@ machine(L1Cache, "MSI L1 Cache")
         v_allocateTBE;
         p_profileMiss;
         bs_issuePUTS;
-        m_popMandatoryQueue;
+        x_copyDataFromCacheToTBE;
 	}	
 
     transition(S, Inv, I){
         forward_eviction_to_cpu;
         fi_sendInvAck;
         h_deallocateL1CacheBlock;
-        n_popResponseQueue;
+        o_popForwardedRequestQueue;
 	}	
 
     // =============================================================================
@@ -805,13 +806,12 @@ machine(L1Cache, "MSI L1 Cache")
         v_allocateTBE;
         p_profileMiss;
         bm_issuePUTM;
-        de_sendDataFromCacheToDir;
         x_copyDataFromCacheToTBE;
-        m_popMandatoryQueue;
 	}	
 
     transition(M, Fwd_GetS, S){
         e_sendDataFromCacheToRequestor;
+        de_sendDataFromCacheToDir;
         o_popForwardedRequestQueue;
 	}	
 
@@ -833,6 +833,7 @@ machine(L1Cache, "MSI L1 Cache")
 
     transition(MI_A, Fwd_GetS, SI_A){
         ee_sendDataFromTBEToRequestor;
+        dee_sendDataFromTBEToDir;
         o_popForwardedRequestQueue;
 	}	
 
@@ -845,12 +846,12 @@ machine(L1Cache, "MSI L1 Cache")
         forward_eviction_to_cpu;
         h_deallocateL1CacheBlock;
         w_deallocateTBE;
-        n_popResponseQueue;
+        o_popForwardedRequestQueue;
 	}	
 
-  // =============================================================================
-  // Transitions From State SI_A
-  // =============================================================================
+    // =============================================================================
+    // Transitions From State SI_A
+    // =============================================================================
 
     transition(SI_A, {Load, Ifetch, Store, Replacement}){
         z_stall;
@@ -858,14 +859,14 @@ machine(L1Cache, "MSI L1 Cache")
 
     transition(SI_A, Inv, II_A){
         fi_sendInvAck;
-        n_popResponseQueue;
+        o_popForwardedRequestQueue;
 	}	
 
     transition(SI_A, WB_Ack, I){
         forward_eviction_to_cpu;
         h_deallocateL1CacheBlock;
         w_deallocateTBE;
-        n_popResponseQueue;
+        o_popForwardedRequestQueue;
 	}	
 
     // =============================================================================
@@ -880,7 +881,7 @@ machine(L1Cache, "MSI L1 Cache")
         forward_eviction_to_cpu;
         h_deallocateL1CacheBlock;
         w_deallocateTBE;
-        n_popResponseQueue;
+        o_popForwardedRequestQueue;
 	}	
 
     /* ECE552 Assignment 5 - END CODE */
