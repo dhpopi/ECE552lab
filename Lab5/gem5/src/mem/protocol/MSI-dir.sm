@@ -575,7 +575,7 @@ getDirectoryEntry(address).Sharers);
 
     transition(IS_MD, Memory_Data, S){
         d_sendData;
-        w_writeDataToDirectoryFromTBE;
+        w_writeDataToDirectoryFromTBE; //?
         w_deallocateTBE;
         qm_popMemQueue;
 	}
@@ -620,7 +620,7 @@ getDirectoryEntry(address).Sharers);
 
     transition(IM_MD, Memory_Data, M){
         d_sendData;
-        w_writeDataToDirectoryFromTBE;
+        w_writeDataToDirectoryFromTBE; // ?
         w_deallocateTBE;
         qm_popMemQueue;
 	}
@@ -644,7 +644,7 @@ getDirectoryEntry(address).Sharers);
 
     transition(M, GETM){
 		f_forwardRequest;
-        c_clearOwner;
+        c_clearOwner; //?
         e_ownerIsRequestor;
         i_popIncomingRequestQueue;
 	}
@@ -689,7 +689,7 @@ getDirectoryEntry(address).Sharers);
         w_deallocateTBE;
         qm_popMemQueue;
     }
-
+//?
     transition(MS_MA, GETS){
 		ds_sendSharedData;
         ars2_addRequestorToSharers;
