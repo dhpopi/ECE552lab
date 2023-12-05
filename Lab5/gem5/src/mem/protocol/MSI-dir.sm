@@ -234,7 +234,6 @@ machine(Directory, "Directory protocol")
             trigger(Event:PUTM_NotOwner, in_msg.Address, tbe);
           }
         } else if (in_msg.Type == CoherenceRequestType:PUTS) {
-          //if ((getDirectoryEntry(in_msg.Address).Sharers.count() < 2) && (getDirectoryEntry(in_msg.Address).Sharers.isElement(in_msg.Requestor))) { //if we have one sharer or none at all (i.e., the block became modified)	  
           if (getDirectoryEntry(in_msg.Address).Sharers.count() < 2) { //if we have one sharer or none at all (i.e., the block became modified)
 	    DPRINTF(RubySlicc, "Directory - requestQueue_in port: PUTS_LAST for address %s from machine %s\n", in_msg.Address, in_msg.Requestor);
             trigger(Event:PUTS_Last, in_msg.Address, tbe);
@@ -576,12 +575,12 @@ getDirectoryEntry(address).Sharers);
 
     transition(IS_MD, Memory_Data, S){
         d_sendData;
-        w_writeDataToDirectoryFromTBE; //?
+        w_writeDataToDirectoryFromTBE;
         w_deallocateTBE;
         qm_popMemQueue;
 	}
 
-    transition(IS_MD, {GETS, GETM}){
+    transition(IS_MD, {GETS, GETM, PUTM_NotOwner}){
         z_stall;
 	}
 
@@ -621,12 +620,12 @@ getDirectoryEntry(address).Sharers);
 
     transition(IM_MD, Memory_Data, M){
         d_sendData;
-        w_writeDataToDirectoryFromTBE; // ?
+        w_writeDataToDirectoryFromTBE;
         w_deallocateTBE;
         qm_popMemQueue;
 	}
 
-    transition(IM_MD, {GETS, GETM}){
+    transition(IM_MD, {GETS, GETM, PUTM_NotOwner}){
 		z_stall;
 	}
 
@@ -639,13 +638,13 @@ getDirectoryEntry(address).Sharers);
 		f_forwardRequest;
         aos_addOwnertoSharers;
         ars2_addRequestorToSharers;
-        c_clearOwner; //?
+        c_clearOwner;
         i_popIncomingRequestQueue;
 	}
 
     transition(M, GETM){
 		f_forwardRequest;
-        c_clearOwner; //?
+        c_clearOwner;
         e_ownerIsRequestor;
         i_popIncomingRequestQueue;
 	}
@@ -688,7 +687,7 @@ getDirectoryEntry(address).Sharers);
 
     transition(MS_MA, Memory_Ack, S){
         w_deallocateTBE;
-        //c_clearOwner;
+        c_clearOwner;
         qm_popMemQueue;
     }
 
@@ -713,7 +712,7 @@ getDirectoryEntry(address).Sharers);
 		qm_popMemQueue;
 	}
 
-    transition(MI_MA, {GETS, GETM}){
+  	transition(MI_MA, {GETS, GETM, PUTS_Last}){
 		z_stall;
 	}
 
