@@ -1,9 +1,475 @@
 {
     "name": null, 
     "system": {
-        "system_port": {
-            "peer": "system.sys_port_proxy.slave[0]", 
-            "role": "MASTER"
+        "l1_cntrl41": {
+            "cacheMemory": {
+                "latency": 3, 
+                "is_icache": false, 
+                "name": "cacheMemory", 
+                "assoc": 2, 
+                "start_index_bit": 6, 
+                "cxx_class": "CacheMemory", 
+                "path": "system.l1_cntrl41.cacheMemory", 
+                "type": "RubyCache", 
+                "size": 256
+            }, 
+            "cntrl_id": 41, 
+            "recycle_latency": 10, 
+            "name": "l1_cntrl41", 
+            "number_of_TBEs": 256, 
+            "transitions_per_cycle": 32, 
+            "cxx_class": "L1Cache_Controller", 
+            "cache_response_latency": 12, 
+            "version": 41, 
+            "sequencer": {
+                "access_phys_mem": false, 
+                "support_inst_reqs": true, 
+                "slave": {
+                    "peer": [
+                        "system.tester.cpuDataPort[41]", 
+                        "system.tester.cpuInstPort[41]"
+                    ], 
+                    "role": "SLAVE"
+                }, 
+                "name": "sequencer", 
+                "max_outstanding_requests": 16, 
+                "support_data_reqs": true, 
+                "deadlock_threshold": 500000, 
+                "using_ruby_tester": true, 
+                "version": 41, 
+                "cxx_class": "Sequencer", 
+                "path": "system.l1_cntrl41.sequencer", 
+                "using_network_tester": false, 
+                "type": "RubySequencer"
+            }, 
+            "buffer_size": 0, 
+            "path": "system.l1_cntrl41", 
+            "send_evictions": false, 
+            "type": "L1Cache_Controller", 
+            "issue_latency": 2
+        }, 
+        "l1_cntrl40": {
+            "cacheMemory": {
+                "latency": 3, 
+                "is_icache": false, 
+                "name": "cacheMemory", 
+                "assoc": 2, 
+                "start_index_bit": 6, 
+                "cxx_class": "CacheMemory", 
+                "path": "system.l1_cntrl40.cacheMemory", 
+                "type": "RubyCache", 
+                "size": 256
+            }, 
+            "cntrl_id": 40, 
+            "recycle_latency": 10, 
+            "name": "l1_cntrl40", 
+            "number_of_TBEs": 256, 
+            "transitions_per_cycle": 32, 
+            "cxx_class": "L1Cache_Controller", 
+            "cache_response_latency": 12, 
+            "version": 40, 
+            "sequencer": {
+                "access_phys_mem": false, 
+                "support_inst_reqs": true, 
+                "slave": {
+                    "peer": [
+                        "system.tester.cpuDataPort[40]", 
+                        "system.tester.cpuInstPort[40]"
+                    ], 
+                    "role": "SLAVE"
+                }, 
+                "name": "sequencer", 
+                "max_outstanding_requests": 16, 
+                "support_data_reqs": true, 
+                "deadlock_threshold": 500000, 
+                "using_ruby_tester": true, 
+                "version": 40, 
+                "cxx_class": "Sequencer", 
+                "path": "system.l1_cntrl40.sequencer", 
+                "using_network_tester": false, 
+                "type": "RubySequencer"
+            }, 
+            "buffer_size": 0, 
+            "path": "system.l1_cntrl40", 
+            "send_evictions": false, 
+            "type": "L1Cache_Controller", 
+            "issue_latency": 2
+        }, 
+        "l1_cntrl43": {
+            "cacheMemory": {
+                "latency": 3, 
+                "is_icache": false, 
+                "name": "cacheMemory", 
+                "assoc": 2, 
+                "start_index_bit": 6, 
+                "cxx_class": "CacheMemory", 
+                "path": "system.l1_cntrl43.cacheMemory", 
+                "type": "RubyCache", 
+                "size": 256
+            }, 
+            "cntrl_id": 43, 
+            "recycle_latency": 10, 
+            "name": "l1_cntrl43", 
+            "number_of_TBEs": 256, 
+            "transitions_per_cycle": 32, 
+            "cxx_class": "L1Cache_Controller", 
+            "cache_response_latency": 12, 
+            "version": 43, 
+            "sequencer": {
+                "access_phys_mem": false, 
+                "support_inst_reqs": true, 
+                "slave": {
+                    "peer": [
+                        "system.tester.cpuDataPort[43]", 
+                        "system.tester.cpuInstPort[43]"
+                    ], 
+                    "role": "SLAVE"
+                }, 
+                "name": "sequencer", 
+                "max_outstanding_requests": 16, 
+                "support_data_reqs": true, 
+                "deadlock_threshold": 500000, 
+                "using_ruby_tester": true, 
+                "version": 43, 
+                "cxx_class": "Sequencer", 
+                "path": "system.l1_cntrl43.sequencer", 
+                "using_network_tester": false, 
+                "type": "RubySequencer"
+            }, 
+            "buffer_size": 0, 
+            "path": "system.l1_cntrl43", 
+            "send_evictions": false, 
+            "type": "L1Cache_Controller", 
+            "issue_latency": 2
+        }, 
+        "l1_cntrl42": {
+            "cacheMemory": {
+                "latency": 3, 
+                "is_icache": false, 
+                "name": "cacheMemory", 
+                "assoc": 2, 
+                "start_index_bit": 6, 
+                "cxx_class": "CacheMemory", 
+                "path": "system.l1_cntrl42.cacheMemory", 
+                "type": "RubyCache", 
+                "size": 256
+            }, 
+            "cntrl_id": 42, 
+            "recycle_latency": 10, 
+            "name": "l1_cntrl42", 
+            "number_of_TBEs": 256, 
+            "transitions_per_cycle": 32, 
+            "cxx_class": "L1Cache_Controller", 
+            "cache_response_latency": 12, 
+            "version": 42, 
+            "sequencer": {
+                "access_phys_mem": false, 
+                "support_inst_reqs": true, 
+                "slave": {
+                    "peer": [
+                        "system.tester.cpuDataPort[42]", 
+                        "system.tester.cpuInstPort[42]"
+                    ], 
+                    "role": "SLAVE"
+                }, 
+                "name": "sequencer", 
+                "max_outstanding_requests": 16, 
+                "support_data_reqs": true, 
+                "deadlock_threshold": 500000, 
+                "using_ruby_tester": true, 
+                "version": 42, 
+                "cxx_class": "Sequencer", 
+                "path": "system.l1_cntrl42.sequencer", 
+                "using_network_tester": false, 
+                "type": "RubySequencer"
+            }, 
+            "buffer_size": 0, 
+            "path": "system.l1_cntrl42", 
+            "send_evictions": false, 
+            "type": "L1Cache_Controller", 
+            "issue_latency": 2
+        }, 
+        "l1_cntrl45": {
+            "cacheMemory": {
+                "latency": 3, 
+                "is_icache": false, 
+                "name": "cacheMemory", 
+                "assoc": 2, 
+                "start_index_bit": 6, 
+                "cxx_class": "CacheMemory", 
+                "path": "system.l1_cntrl45.cacheMemory", 
+                "type": "RubyCache", 
+                "size": 256
+            }, 
+            "cntrl_id": 45, 
+            "recycle_latency": 10, 
+            "name": "l1_cntrl45", 
+            "number_of_TBEs": 256, 
+            "transitions_per_cycle": 32, 
+            "cxx_class": "L1Cache_Controller", 
+            "cache_response_latency": 12, 
+            "version": 45, 
+            "sequencer": {
+                "access_phys_mem": false, 
+                "support_inst_reqs": true, 
+                "slave": {
+                    "peer": [
+                        "system.tester.cpuDataPort[45]", 
+                        "system.tester.cpuInstPort[45]"
+                    ], 
+                    "role": "SLAVE"
+                }, 
+                "name": "sequencer", 
+                "max_outstanding_requests": 16, 
+                "support_data_reqs": true, 
+                "deadlock_threshold": 500000, 
+                "using_ruby_tester": true, 
+                "version": 45, 
+                "cxx_class": "Sequencer", 
+                "path": "system.l1_cntrl45.sequencer", 
+                "using_network_tester": false, 
+                "type": "RubySequencer"
+            }, 
+            "buffer_size": 0, 
+            "path": "system.l1_cntrl45", 
+            "send_evictions": false, 
+            "type": "L1Cache_Controller", 
+            "issue_latency": 2
+        }, 
+        "l1_cntrl44": {
+            "cacheMemory": {
+                "latency": 3, 
+                "is_icache": false, 
+                "name": "cacheMemory", 
+                "assoc": 2, 
+                "start_index_bit": 6, 
+                "cxx_class": "CacheMemory", 
+                "path": "system.l1_cntrl44.cacheMemory", 
+                "type": "RubyCache", 
+                "size": 256
+            }, 
+            "cntrl_id": 44, 
+            "recycle_latency": 10, 
+            "name": "l1_cntrl44", 
+            "number_of_TBEs": 256, 
+            "transitions_per_cycle": 32, 
+            "cxx_class": "L1Cache_Controller", 
+            "cache_response_latency": 12, 
+            "version": 44, 
+            "sequencer": {
+                "access_phys_mem": false, 
+                "support_inst_reqs": true, 
+                "slave": {
+                    "peer": [
+                        "system.tester.cpuDataPort[44]", 
+                        "system.tester.cpuInstPort[44]"
+                    ], 
+                    "role": "SLAVE"
+                }, 
+                "name": "sequencer", 
+                "max_outstanding_requests": 16, 
+                "support_data_reqs": true, 
+                "deadlock_threshold": 500000, 
+                "using_ruby_tester": true, 
+                "version": 44, 
+                "cxx_class": "Sequencer", 
+                "path": "system.l1_cntrl44.sequencer", 
+                "using_network_tester": false, 
+                "type": "RubySequencer"
+            }, 
+            "buffer_size": 0, 
+            "path": "system.l1_cntrl44", 
+            "send_evictions": false, 
+            "type": "L1Cache_Controller", 
+            "issue_latency": 2
+        }, 
+        "l1_cntrl47": {
+            "cacheMemory": {
+                "latency": 3, 
+                "is_icache": false, 
+                "name": "cacheMemory", 
+                "assoc": 2, 
+                "start_index_bit": 6, 
+                "cxx_class": "CacheMemory", 
+                "path": "system.l1_cntrl47.cacheMemory", 
+                "type": "RubyCache", 
+                "size": 256
+            }, 
+            "cntrl_id": 47, 
+            "recycle_latency": 10, 
+            "name": "l1_cntrl47", 
+            "number_of_TBEs": 256, 
+            "transitions_per_cycle": 32, 
+            "cxx_class": "L1Cache_Controller", 
+            "cache_response_latency": 12, 
+            "version": 47, 
+            "sequencer": {
+                "access_phys_mem": false, 
+                "support_inst_reqs": true, 
+                "slave": {
+                    "peer": [
+                        "system.tester.cpuDataPort[47]", 
+                        "system.tester.cpuInstPort[47]"
+                    ], 
+                    "role": "SLAVE"
+                }, 
+                "name": "sequencer", 
+                "max_outstanding_requests": 16, 
+                "support_data_reqs": true, 
+                "deadlock_threshold": 500000, 
+                "using_ruby_tester": true, 
+                "version": 47, 
+                "cxx_class": "Sequencer", 
+                "path": "system.l1_cntrl47.sequencer", 
+                "using_network_tester": false, 
+                "type": "RubySequencer"
+            }, 
+            "buffer_size": 0, 
+            "path": "system.l1_cntrl47", 
+            "send_evictions": false, 
+            "type": "L1Cache_Controller", 
+            "issue_latency": 2
+        }, 
+        "l1_cntrl46": {
+            "cacheMemory": {
+                "latency": 3, 
+                "is_icache": false, 
+                "name": "cacheMemory", 
+                "assoc": 2, 
+                "start_index_bit": 6, 
+                "cxx_class": "CacheMemory", 
+                "path": "system.l1_cntrl46.cacheMemory", 
+                "type": "RubyCache", 
+                "size": 256
+            }, 
+            "cntrl_id": 46, 
+            "recycle_latency": 10, 
+            "name": "l1_cntrl46", 
+            "number_of_TBEs": 256, 
+            "transitions_per_cycle": 32, 
+            "cxx_class": "L1Cache_Controller", 
+            "cache_response_latency": 12, 
+            "version": 46, 
+            "sequencer": {
+                "access_phys_mem": false, 
+                "support_inst_reqs": true, 
+                "slave": {
+                    "peer": [
+                        "system.tester.cpuDataPort[46]", 
+                        "system.tester.cpuInstPort[46]"
+                    ], 
+                    "role": "SLAVE"
+                }, 
+                "name": "sequencer", 
+                "max_outstanding_requests": 16, 
+                "support_data_reqs": true, 
+                "deadlock_threshold": 500000, 
+                "using_ruby_tester": true, 
+                "version": 46, 
+                "cxx_class": "Sequencer", 
+                "path": "system.l1_cntrl46.sequencer", 
+                "using_network_tester": false, 
+                "type": "RubySequencer"
+            }, 
+            "buffer_size": 0, 
+            "path": "system.l1_cntrl46", 
+            "send_evictions": false, 
+            "type": "L1Cache_Controller", 
+            "issue_latency": 2
+        }, 
+        "l1_cntrl49": {
+            "cacheMemory": {
+                "latency": 3, 
+                "is_icache": false, 
+                "name": "cacheMemory", 
+                "assoc": 2, 
+                "start_index_bit": 6, 
+                "cxx_class": "CacheMemory", 
+                "path": "system.l1_cntrl49.cacheMemory", 
+                "type": "RubyCache", 
+                "size": 256
+            }, 
+            "cntrl_id": 49, 
+            "recycle_latency": 10, 
+            "name": "l1_cntrl49", 
+            "number_of_TBEs": 256, 
+            "transitions_per_cycle": 32, 
+            "cxx_class": "L1Cache_Controller", 
+            "cache_response_latency": 12, 
+            "version": 49, 
+            "sequencer": {
+                "access_phys_mem": false, 
+                "support_inst_reqs": true, 
+                "slave": {
+                    "peer": [
+                        "system.tester.cpuDataPort[49]", 
+                        "system.tester.cpuInstPort[49]"
+                    ], 
+                    "role": "SLAVE"
+                }, 
+                "name": "sequencer", 
+                "max_outstanding_requests": 16, 
+                "support_data_reqs": true, 
+                "deadlock_threshold": 500000, 
+                "using_ruby_tester": true, 
+                "version": 49, 
+                "cxx_class": "Sequencer", 
+                "path": "system.l1_cntrl49.sequencer", 
+                "using_network_tester": false, 
+                "type": "RubySequencer"
+            }, 
+            "buffer_size": 0, 
+            "path": "system.l1_cntrl49", 
+            "send_evictions": false, 
+            "type": "L1Cache_Controller", 
+            "issue_latency": 2
+        }, 
+        "l1_cntrl48": {
+            "cacheMemory": {
+                "latency": 3, 
+                "is_icache": false, 
+                "name": "cacheMemory", 
+                "assoc": 2, 
+                "start_index_bit": 6, 
+                "cxx_class": "CacheMemory", 
+                "path": "system.l1_cntrl48.cacheMemory", 
+                "type": "RubyCache", 
+                "size": 256
+            }, 
+            "cntrl_id": 48, 
+            "recycle_latency": 10, 
+            "name": "l1_cntrl48", 
+            "number_of_TBEs": 256, 
+            "transitions_per_cycle": 32, 
+            "cxx_class": "L1Cache_Controller", 
+            "cache_response_latency": 12, 
+            "version": 48, 
+            "sequencer": {
+                "access_phys_mem": false, 
+                "support_inst_reqs": true, 
+                "slave": {
+                    "peer": [
+                        "system.tester.cpuDataPort[48]", 
+                        "system.tester.cpuInstPort[48]"
+                    ], 
+                    "role": "SLAVE"
+                }, 
+                "name": "sequencer", 
+                "max_outstanding_requests": 16, 
+                "support_data_reqs": true, 
+                "deadlock_threshold": 500000, 
+                "using_ruby_tester": true, 
+                "version": 48, 
+                "cxx_class": "Sequencer", 
+                "path": "system.l1_cntrl48.sequencer", 
+                "using_network_tester": false, 
+                "type": "RubySequencer"
+            }, 
+            "buffer_size": 0, 
+            "path": "system.l1_cntrl48", 
+            "send_evictions": false, 
+            "type": "L1Cache_Controller", 
+            "issue_latency": 2
         }, 
         "physmem": {
             "latency": 3.0000000000000004e-08, 
@@ -17,7 +483,101 @@
             "type": "SimpleMemory", 
             "name": "physmem"
         }, 
+        "l1_cntrl28": {
+            "cacheMemory": {
+                "latency": 3, 
+                "is_icache": false, 
+                "name": "cacheMemory", 
+                "assoc": 2, 
+                "start_index_bit": 6, 
+                "cxx_class": "CacheMemory", 
+                "path": "system.l1_cntrl28.cacheMemory", 
+                "type": "RubyCache", 
+                "size": 256
+            }, 
+            "cntrl_id": 28, 
+            "recycle_latency": 10, 
+            "name": "l1_cntrl28", 
+            "number_of_TBEs": 256, 
+            "transitions_per_cycle": 32, 
+            "cxx_class": "L1Cache_Controller", 
+            "cache_response_latency": 12, 
+            "version": 28, 
+            "sequencer": {
+                "access_phys_mem": false, 
+                "support_inst_reqs": true, 
+                "slave": {
+                    "peer": [
+                        "system.tester.cpuDataPort[28]", 
+                        "system.tester.cpuInstPort[28]"
+                    ], 
+                    "role": "SLAVE"
+                }, 
+                "name": "sequencer", 
+                "max_outstanding_requests": 16, 
+                "support_data_reqs": true, 
+                "deadlock_threshold": 500000, 
+                "using_ruby_tester": true, 
+                "version": 28, 
+                "cxx_class": "Sequencer", 
+                "path": "system.l1_cntrl28.sequencer", 
+                "using_network_tester": false, 
+                "type": "RubySequencer"
+            }, 
+            "buffer_size": 0, 
+            "path": "system.l1_cntrl28", 
+            "send_evictions": false, 
+            "type": "L1Cache_Controller", 
+            "issue_latency": 2
+        }, 
         "cxx_class": "System", 
+        "l1_cntrl57": {
+            "cacheMemory": {
+                "latency": 3, 
+                "is_icache": false, 
+                "name": "cacheMemory", 
+                "assoc": 2, 
+                "start_index_bit": 6, 
+                "cxx_class": "CacheMemory", 
+                "path": "system.l1_cntrl57.cacheMemory", 
+                "type": "RubyCache", 
+                "size": 256
+            }, 
+            "cntrl_id": 57, 
+            "recycle_latency": 10, 
+            "name": "l1_cntrl57", 
+            "number_of_TBEs": 256, 
+            "transitions_per_cycle": 32, 
+            "cxx_class": "L1Cache_Controller", 
+            "cache_response_latency": 12, 
+            "version": 57, 
+            "sequencer": {
+                "access_phys_mem": false, 
+                "support_inst_reqs": true, 
+                "slave": {
+                    "peer": [
+                        "system.tester.cpuDataPort[57]", 
+                        "system.tester.cpuInstPort[57]"
+                    ], 
+                    "role": "SLAVE"
+                }, 
+                "name": "sequencer", 
+                "max_outstanding_requests": 16, 
+                "support_data_reqs": true, 
+                "deadlock_threshold": 500000, 
+                "using_ruby_tester": true, 
+                "version": 57, 
+                "cxx_class": "Sequencer", 
+                "path": "system.l1_cntrl57.sequencer", 
+                "using_network_tester": false, 
+                "type": "RubySequencer"
+            }, 
+            "buffer_size": 0, 
+            "path": "system.l1_cntrl57", 
+            "send_evictions": false, 
+            "type": "L1Cache_Controller", 
+            "issue_latency": 2
+        }, 
         "l1_cntrl4": {
             "cacheMemory": {
                 "latency": 3, 
@@ -443,6 +1003,476 @@
             "type": "L1Cache_Controller", 
             "issue_latency": 2
         }, 
+        "l1_cntrl30": {
+            "cacheMemory": {
+                "latency": 3, 
+                "is_icache": false, 
+                "name": "cacheMemory", 
+                "assoc": 2, 
+                "start_index_bit": 6, 
+                "cxx_class": "CacheMemory", 
+                "path": "system.l1_cntrl30.cacheMemory", 
+                "type": "RubyCache", 
+                "size": 256
+            }, 
+            "cntrl_id": 30, 
+            "recycle_latency": 10, 
+            "name": "l1_cntrl30", 
+            "number_of_TBEs": 256, 
+            "transitions_per_cycle": 32, 
+            "cxx_class": "L1Cache_Controller", 
+            "cache_response_latency": 12, 
+            "version": 30, 
+            "sequencer": {
+                "access_phys_mem": false, 
+                "support_inst_reqs": true, 
+                "slave": {
+                    "peer": [
+                        "system.tester.cpuDataPort[30]", 
+                        "system.tester.cpuInstPort[30]"
+                    ], 
+                    "role": "SLAVE"
+                }, 
+                "name": "sequencer", 
+                "max_outstanding_requests": 16, 
+                "support_data_reqs": true, 
+                "deadlock_threshold": 500000, 
+                "using_ruby_tester": true, 
+                "version": 30, 
+                "cxx_class": "Sequencer", 
+                "path": "system.l1_cntrl30.sequencer", 
+                "using_network_tester": false, 
+                "type": "RubySequencer"
+            }, 
+            "buffer_size": 0, 
+            "path": "system.l1_cntrl30", 
+            "send_evictions": false, 
+            "type": "L1Cache_Controller", 
+            "issue_latency": 2
+        }, 
+        "l1_cntrl31": {
+            "cacheMemory": {
+                "latency": 3, 
+                "is_icache": false, 
+                "name": "cacheMemory", 
+                "assoc": 2, 
+                "start_index_bit": 6, 
+                "cxx_class": "CacheMemory", 
+                "path": "system.l1_cntrl31.cacheMemory", 
+                "type": "RubyCache", 
+                "size": 256
+            }, 
+            "cntrl_id": 31, 
+            "recycle_latency": 10, 
+            "name": "l1_cntrl31", 
+            "number_of_TBEs": 256, 
+            "transitions_per_cycle": 32, 
+            "cxx_class": "L1Cache_Controller", 
+            "cache_response_latency": 12, 
+            "version": 31, 
+            "sequencer": {
+                "access_phys_mem": false, 
+                "support_inst_reqs": true, 
+                "slave": {
+                    "peer": [
+                        "system.tester.cpuDataPort[31]", 
+                        "system.tester.cpuInstPort[31]"
+                    ], 
+                    "role": "SLAVE"
+                }, 
+                "name": "sequencer", 
+                "max_outstanding_requests": 16, 
+                "support_data_reqs": true, 
+                "deadlock_threshold": 500000, 
+                "using_ruby_tester": true, 
+                "version": 31, 
+                "cxx_class": "Sequencer", 
+                "path": "system.l1_cntrl31.sequencer", 
+                "using_network_tester": false, 
+                "type": "RubySequencer"
+            }, 
+            "buffer_size": 0, 
+            "path": "system.l1_cntrl31", 
+            "send_evictions": false, 
+            "type": "L1Cache_Controller", 
+            "issue_latency": 2
+        }, 
+        "l1_cntrl32": {
+            "cacheMemory": {
+                "latency": 3, 
+                "is_icache": false, 
+                "name": "cacheMemory", 
+                "assoc": 2, 
+                "start_index_bit": 6, 
+                "cxx_class": "CacheMemory", 
+                "path": "system.l1_cntrl32.cacheMemory", 
+                "type": "RubyCache", 
+                "size": 256
+            }, 
+            "cntrl_id": 32, 
+            "recycle_latency": 10, 
+            "name": "l1_cntrl32", 
+            "number_of_TBEs": 256, 
+            "transitions_per_cycle": 32, 
+            "cxx_class": "L1Cache_Controller", 
+            "cache_response_latency": 12, 
+            "version": 32, 
+            "sequencer": {
+                "access_phys_mem": false, 
+                "support_inst_reqs": true, 
+                "slave": {
+                    "peer": [
+                        "system.tester.cpuDataPort[32]", 
+                        "system.tester.cpuInstPort[32]"
+                    ], 
+                    "role": "SLAVE"
+                }, 
+                "name": "sequencer", 
+                "max_outstanding_requests": 16, 
+                "support_data_reqs": true, 
+                "deadlock_threshold": 500000, 
+                "using_ruby_tester": true, 
+                "version": 32, 
+                "cxx_class": "Sequencer", 
+                "path": "system.l1_cntrl32.sequencer", 
+                "using_network_tester": false, 
+                "type": "RubySequencer"
+            }, 
+            "buffer_size": 0, 
+            "path": "system.l1_cntrl32", 
+            "send_evictions": false, 
+            "type": "L1Cache_Controller", 
+            "issue_latency": 2
+        }, 
+        "l1_cntrl33": {
+            "cacheMemory": {
+                "latency": 3, 
+                "is_icache": false, 
+                "name": "cacheMemory", 
+                "assoc": 2, 
+                "start_index_bit": 6, 
+                "cxx_class": "CacheMemory", 
+                "path": "system.l1_cntrl33.cacheMemory", 
+                "type": "RubyCache", 
+                "size": 256
+            }, 
+            "cntrl_id": 33, 
+            "recycle_latency": 10, 
+            "name": "l1_cntrl33", 
+            "number_of_TBEs": 256, 
+            "transitions_per_cycle": 32, 
+            "cxx_class": "L1Cache_Controller", 
+            "cache_response_latency": 12, 
+            "version": 33, 
+            "sequencer": {
+                "access_phys_mem": false, 
+                "support_inst_reqs": true, 
+                "slave": {
+                    "peer": [
+                        "system.tester.cpuDataPort[33]", 
+                        "system.tester.cpuInstPort[33]"
+                    ], 
+                    "role": "SLAVE"
+                }, 
+                "name": "sequencer", 
+                "max_outstanding_requests": 16, 
+                "support_data_reqs": true, 
+                "deadlock_threshold": 500000, 
+                "using_ruby_tester": true, 
+                "version": 33, 
+                "cxx_class": "Sequencer", 
+                "path": "system.l1_cntrl33.sequencer", 
+                "using_network_tester": false, 
+                "type": "RubySequencer"
+            }, 
+            "buffer_size": 0, 
+            "path": "system.l1_cntrl33", 
+            "send_evictions": false, 
+            "type": "L1Cache_Controller", 
+            "issue_latency": 2
+        }, 
+        "l1_cntrl34": {
+            "cacheMemory": {
+                "latency": 3, 
+                "is_icache": false, 
+                "name": "cacheMemory", 
+                "assoc": 2, 
+                "start_index_bit": 6, 
+                "cxx_class": "CacheMemory", 
+                "path": "system.l1_cntrl34.cacheMemory", 
+                "type": "RubyCache", 
+                "size": 256
+            }, 
+            "cntrl_id": 34, 
+            "recycle_latency": 10, 
+            "name": "l1_cntrl34", 
+            "number_of_TBEs": 256, 
+            "transitions_per_cycle": 32, 
+            "cxx_class": "L1Cache_Controller", 
+            "cache_response_latency": 12, 
+            "version": 34, 
+            "sequencer": {
+                "access_phys_mem": false, 
+                "support_inst_reqs": true, 
+                "slave": {
+                    "peer": [
+                        "system.tester.cpuDataPort[34]", 
+                        "system.tester.cpuInstPort[34]"
+                    ], 
+                    "role": "SLAVE"
+                }, 
+                "name": "sequencer", 
+                "max_outstanding_requests": 16, 
+                "support_data_reqs": true, 
+                "deadlock_threshold": 500000, 
+                "using_ruby_tester": true, 
+                "version": 34, 
+                "cxx_class": "Sequencer", 
+                "path": "system.l1_cntrl34.sequencer", 
+                "using_network_tester": false, 
+                "type": "RubySequencer"
+            }, 
+            "buffer_size": 0, 
+            "path": "system.l1_cntrl34", 
+            "send_evictions": false, 
+            "type": "L1Cache_Controller", 
+            "issue_latency": 2
+        }, 
+        "l1_cntrl35": {
+            "cacheMemory": {
+                "latency": 3, 
+                "is_icache": false, 
+                "name": "cacheMemory", 
+                "assoc": 2, 
+                "start_index_bit": 6, 
+                "cxx_class": "CacheMemory", 
+                "path": "system.l1_cntrl35.cacheMemory", 
+                "type": "RubyCache", 
+                "size": 256
+            }, 
+            "cntrl_id": 35, 
+            "recycle_latency": 10, 
+            "name": "l1_cntrl35", 
+            "number_of_TBEs": 256, 
+            "transitions_per_cycle": 32, 
+            "cxx_class": "L1Cache_Controller", 
+            "cache_response_latency": 12, 
+            "version": 35, 
+            "sequencer": {
+                "access_phys_mem": false, 
+                "support_inst_reqs": true, 
+                "slave": {
+                    "peer": [
+                        "system.tester.cpuDataPort[35]", 
+                        "system.tester.cpuInstPort[35]"
+                    ], 
+                    "role": "SLAVE"
+                }, 
+                "name": "sequencer", 
+                "max_outstanding_requests": 16, 
+                "support_data_reqs": true, 
+                "deadlock_threshold": 500000, 
+                "using_ruby_tester": true, 
+                "version": 35, 
+                "cxx_class": "Sequencer", 
+                "path": "system.l1_cntrl35.sequencer", 
+                "using_network_tester": false, 
+                "type": "RubySequencer"
+            }, 
+            "buffer_size": 0, 
+            "path": "system.l1_cntrl35", 
+            "send_evictions": false, 
+            "type": "L1Cache_Controller", 
+            "issue_latency": 2
+        }, 
+        "l1_cntrl18": {
+            "cacheMemory": {
+                "latency": 3, 
+                "is_icache": false, 
+                "name": "cacheMemory", 
+                "assoc": 2, 
+                "start_index_bit": 6, 
+                "cxx_class": "CacheMemory", 
+                "path": "system.l1_cntrl18.cacheMemory", 
+                "type": "RubyCache", 
+                "size": 256
+            }, 
+            "cntrl_id": 18, 
+            "recycle_latency": 10, 
+            "name": "l1_cntrl18", 
+            "number_of_TBEs": 256, 
+            "transitions_per_cycle": 32, 
+            "cxx_class": "L1Cache_Controller", 
+            "cache_response_latency": 12, 
+            "version": 18, 
+            "sequencer": {
+                "access_phys_mem": false, 
+                "support_inst_reqs": true, 
+                "slave": {
+                    "peer": [
+                        "system.tester.cpuDataPort[18]", 
+                        "system.tester.cpuInstPort[18]"
+                    ], 
+                    "role": "SLAVE"
+                }, 
+                "name": "sequencer", 
+                "max_outstanding_requests": 16, 
+                "support_data_reqs": true, 
+                "deadlock_threshold": 500000, 
+                "using_ruby_tester": true, 
+                "version": 18, 
+                "cxx_class": "Sequencer", 
+                "path": "system.l1_cntrl18.sequencer", 
+                "using_network_tester": false, 
+                "type": "RubySequencer"
+            }, 
+            "buffer_size": 0, 
+            "path": "system.l1_cntrl18", 
+            "send_evictions": false, 
+            "type": "L1Cache_Controller", 
+            "issue_latency": 2
+        }, 
+        "l1_cntrl19": {
+            "cacheMemory": {
+                "latency": 3, 
+                "is_icache": false, 
+                "name": "cacheMemory", 
+                "assoc": 2, 
+                "start_index_bit": 6, 
+                "cxx_class": "CacheMemory", 
+                "path": "system.l1_cntrl19.cacheMemory", 
+                "type": "RubyCache", 
+                "size": 256
+            }, 
+            "cntrl_id": 19, 
+            "recycle_latency": 10, 
+            "name": "l1_cntrl19", 
+            "number_of_TBEs": 256, 
+            "transitions_per_cycle": 32, 
+            "cxx_class": "L1Cache_Controller", 
+            "cache_response_latency": 12, 
+            "version": 19, 
+            "sequencer": {
+                "access_phys_mem": false, 
+                "support_inst_reqs": true, 
+                "slave": {
+                    "peer": [
+                        "system.tester.cpuDataPort[19]", 
+                        "system.tester.cpuInstPort[19]"
+                    ], 
+                    "role": "SLAVE"
+                }, 
+                "name": "sequencer", 
+                "max_outstanding_requests": 16, 
+                "support_data_reqs": true, 
+                "deadlock_threshold": 500000, 
+                "using_ruby_tester": true, 
+                "version": 19, 
+                "cxx_class": "Sequencer", 
+                "path": "system.l1_cntrl19.sequencer", 
+                "using_network_tester": false, 
+                "type": "RubySequencer"
+            }, 
+            "buffer_size": 0, 
+            "path": "system.l1_cntrl19", 
+            "send_evictions": false, 
+            "type": "L1Cache_Controller", 
+            "issue_latency": 2
+        }, 
+        "l1_cntrl16": {
+            "cacheMemory": {
+                "latency": 3, 
+                "is_icache": false, 
+                "name": "cacheMemory", 
+                "assoc": 2, 
+                "start_index_bit": 6, 
+                "cxx_class": "CacheMemory", 
+                "path": "system.l1_cntrl16.cacheMemory", 
+                "type": "RubyCache", 
+                "size": 256
+            }, 
+            "cntrl_id": 16, 
+            "recycle_latency": 10, 
+            "name": "l1_cntrl16", 
+            "number_of_TBEs": 256, 
+            "transitions_per_cycle": 32, 
+            "cxx_class": "L1Cache_Controller", 
+            "cache_response_latency": 12, 
+            "version": 16, 
+            "sequencer": {
+                "access_phys_mem": false, 
+                "support_inst_reqs": true, 
+                "slave": {
+                    "peer": [
+                        "system.tester.cpuDataPort[16]", 
+                        "system.tester.cpuInstPort[16]"
+                    ], 
+                    "role": "SLAVE"
+                }, 
+                "name": "sequencer", 
+                "max_outstanding_requests": 16, 
+                "support_data_reqs": true, 
+                "deadlock_threshold": 500000, 
+                "using_ruby_tester": true, 
+                "version": 16, 
+                "cxx_class": "Sequencer", 
+                "path": "system.l1_cntrl16.sequencer", 
+                "using_network_tester": false, 
+                "type": "RubySequencer"
+            }, 
+            "buffer_size": 0, 
+            "path": "system.l1_cntrl16", 
+            "send_evictions": false, 
+            "type": "L1Cache_Controller", 
+            "issue_latency": 2
+        }, 
+        "l1_cntrl17": {
+            "cacheMemory": {
+                "latency": 3, 
+                "is_icache": false, 
+                "name": "cacheMemory", 
+                "assoc": 2, 
+                "start_index_bit": 6, 
+                "cxx_class": "CacheMemory", 
+                "path": "system.l1_cntrl17.cacheMemory", 
+                "type": "RubyCache", 
+                "size": 256
+            }, 
+            "cntrl_id": 17, 
+            "recycle_latency": 10, 
+            "name": "l1_cntrl17", 
+            "number_of_TBEs": 256, 
+            "transitions_per_cycle": 32, 
+            "cxx_class": "L1Cache_Controller", 
+            "cache_response_latency": 12, 
+            "version": 17, 
+            "sequencer": {
+                "access_phys_mem": false, 
+                "support_inst_reqs": true, 
+                "slave": {
+                    "peer": [
+                        "system.tester.cpuDataPort[17]", 
+                        "system.tester.cpuInstPort[17]"
+                    ], 
+                    "role": "SLAVE"
+                }, 
+                "name": "sequencer", 
+                "max_outstanding_requests": 16, 
+                "support_data_reqs": true, 
+                "deadlock_threshold": 500000, 
+                "using_ruby_tester": true, 
+                "version": 17, 
+                "cxx_class": "Sequencer", 
+                "path": "system.l1_cntrl17.sequencer", 
+                "using_network_tester": false, 
+                "type": "RubySequencer"
+            }, 
+            "buffer_size": 0, 
+            "path": "system.l1_cntrl17", 
+            "send_evictions": false, 
+            "type": "L1Cache_Controller", 
+            "issue_latency": 2
+        }, 
         "l1_cntrl14": {
             "cacheMemory": {
                 "latency": 3, 
@@ -679,58 +1709,381 @@
             "type": "L1Cache_Controller", 
             "issue_latency": 2
         }, 
-        "tester": {
-            "name": "tester", 
-            "num_cpus": 16, 
-            "cpuDataPort": {
-                "peer": [
-                    "system.l1_cntrl0.sequencer.slave[0]", 
-                    "system.l1_cntrl1.sequencer.slave[0]", 
-                    "system.l1_cntrl2.sequencer.slave[0]", 
-                    "system.l1_cntrl3.sequencer.slave[0]", 
-                    "system.l1_cntrl4.sequencer.slave[0]", 
-                    "system.l1_cntrl5.sequencer.slave[0]", 
-                    "system.l1_cntrl6.sequencer.slave[0]", 
-                    "system.l1_cntrl7.sequencer.slave[0]", 
-                    "system.l1_cntrl8.sequencer.slave[0]", 
-                    "system.l1_cntrl9.sequencer.slave[0]", 
-                    "system.l1_cntrl10.sequencer.slave[0]", 
-                    "system.l1_cntrl11.sequencer.slave[0]", 
-                    "system.l1_cntrl12.sequencer.slave[0]", 
-                    "system.l1_cntrl13.sequencer.slave[0]", 
-                    "system.l1_cntrl14.sequencer.slave[0]", 
-                    "system.l1_cntrl15.sequencer.slave[0]"
-                ], 
-                "role": "MASTER"
+        "l1_cntrl52": {
+            "cacheMemory": {
+                "latency": 3, 
+                "is_icache": false, 
+                "name": "cacheMemory", 
+                "assoc": 2, 
+                "start_index_bit": 6, 
+                "cxx_class": "CacheMemory", 
+                "path": "system.l1_cntrl52.cacheMemory", 
+                "type": "RubyCache", 
+                "size": 256
             }, 
-            "deadlock_threshold": 50000, 
-            "check_flush": false, 
-            "cxx_class": "RubyTester", 
-            "wakeup_frequency": 10, 
-            "path": "system.tester", 
-            "cpuInstPort": {
-                "peer": [
-                    "system.l1_cntrl0.sequencer.slave[1]", 
-                    "system.l1_cntrl1.sequencer.slave[1]", 
-                    "system.l1_cntrl2.sequencer.slave[1]", 
-                    "system.l1_cntrl3.sequencer.slave[1]", 
-                    "system.l1_cntrl4.sequencer.slave[1]", 
-                    "system.l1_cntrl5.sequencer.slave[1]", 
-                    "system.l1_cntrl6.sequencer.slave[1]", 
-                    "system.l1_cntrl7.sequencer.slave[1]", 
-                    "system.l1_cntrl8.sequencer.slave[1]", 
-                    "system.l1_cntrl9.sequencer.slave[1]", 
-                    "system.l1_cntrl10.sequencer.slave[1]", 
-                    "system.l1_cntrl11.sequencer.slave[1]", 
-                    "system.l1_cntrl12.sequencer.slave[1]", 
-                    "system.l1_cntrl13.sequencer.slave[1]", 
-                    "system.l1_cntrl14.sequencer.slave[1]", 
-                    "system.l1_cntrl15.sequencer.slave[1]"
-                ], 
-                "role": "MASTER"
+            "cntrl_id": 52, 
+            "recycle_latency": 10, 
+            "name": "l1_cntrl52", 
+            "number_of_TBEs": 256, 
+            "transitions_per_cycle": 32, 
+            "cxx_class": "L1Cache_Controller", 
+            "cache_response_latency": 12, 
+            "version": 52, 
+            "sequencer": {
+                "access_phys_mem": false, 
+                "support_inst_reqs": true, 
+                "slave": {
+                    "peer": [
+                        "system.tester.cpuDataPort[52]", 
+                        "system.tester.cpuInstPort[52]"
+                    ], 
+                    "role": "SLAVE"
+                }, 
+                "name": "sequencer", 
+                "max_outstanding_requests": 16, 
+                "support_data_reqs": true, 
+                "deadlock_threshold": 500000, 
+                "using_ruby_tester": true, 
+                "version": 52, 
+                "cxx_class": "Sequencer", 
+                "path": "system.l1_cntrl52.sequencer", 
+                "using_network_tester": false, 
+                "type": "RubySequencer"
             }, 
-            "type": "RubyTester", 
-            "checks_to_complete": 1000000
+            "buffer_size": 0, 
+            "path": "system.l1_cntrl52", 
+            "send_evictions": false, 
+            "type": "L1Cache_Controller", 
+            "issue_latency": 2
+        }, 
+        "l1_cntrl53": {
+            "cacheMemory": {
+                "latency": 3, 
+                "is_icache": false, 
+                "name": "cacheMemory", 
+                "assoc": 2, 
+                "start_index_bit": 6, 
+                "cxx_class": "CacheMemory", 
+                "path": "system.l1_cntrl53.cacheMemory", 
+                "type": "RubyCache", 
+                "size": 256
+            }, 
+            "cntrl_id": 53, 
+            "recycle_latency": 10, 
+            "name": "l1_cntrl53", 
+            "number_of_TBEs": 256, 
+            "transitions_per_cycle": 32, 
+            "cxx_class": "L1Cache_Controller", 
+            "cache_response_latency": 12, 
+            "version": 53, 
+            "sequencer": {
+                "access_phys_mem": false, 
+                "support_inst_reqs": true, 
+                "slave": {
+                    "peer": [
+                        "system.tester.cpuDataPort[53]", 
+                        "system.tester.cpuInstPort[53]"
+                    ], 
+                    "role": "SLAVE"
+                }, 
+                "name": "sequencer", 
+                "max_outstanding_requests": 16, 
+                "support_data_reqs": true, 
+                "deadlock_threshold": 500000, 
+                "using_ruby_tester": true, 
+                "version": 53, 
+                "cxx_class": "Sequencer", 
+                "path": "system.l1_cntrl53.sequencer", 
+                "using_network_tester": false, 
+                "type": "RubySequencer"
+            }, 
+            "buffer_size": 0, 
+            "path": "system.l1_cntrl53", 
+            "send_evictions": false, 
+            "type": "L1Cache_Controller", 
+            "issue_latency": 2
+        }, 
+        "l1_cntrl50": {
+            "cacheMemory": {
+                "latency": 3, 
+                "is_icache": false, 
+                "name": "cacheMemory", 
+                "assoc": 2, 
+                "start_index_bit": 6, 
+                "cxx_class": "CacheMemory", 
+                "path": "system.l1_cntrl50.cacheMemory", 
+                "type": "RubyCache", 
+                "size": 256
+            }, 
+            "cntrl_id": 50, 
+            "recycle_latency": 10, 
+            "name": "l1_cntrl50", 
+            "number_of_TBEs": 256, 
+            "transitions_per_cycle": 32, 
+            "cxx_class": "L1Cache_Controller", 
+            "cache_response_latency": 12, 
+            "version": 50, 
+            "sequencer": {
+                "access_phys_mem": false, 
+                "support_inst_reqs": true, 
+                "slave": {
+                    "peer": [
+                        "system.tester.cpuDataPort[50]", 
+                        "system.tester.cpuInstPort[50]"
+                    ], 
+                    "role": "SLAVE"
+                }, 
+                "name": "sequencer", 
+                "max_outstanding_requests": 16, 
+                "support_data_reqs": true, 
+                "deadlock_threshold": 500000, 
+                "using_ruby_tester": true, 
+                "version": 50, 
+                "cxx_class": "Sequencer", 
+                "path": "system.l1_cntrl50.sequencer", 
+                "using_network_tester": false, 
+                "type": "RubySequencer"
+            }, 
+            "buffer_size": 0, 
+            "path": "system.l1_cntrl50", 
+            "send_evictions": false, 
+            "type": "L1Cache_Controller", 
+            "issue_latency": 2
+        }, 
+        "l1_cntrl51": {
+            "cacheMemory": {
+                "latency": 3, 
+                "is_icache": false, 
+                "name": "cacheMemory", 
+                "assoc": 2, 
+                "start_index_bit": 6, 
+                "cxx_class": "CacheMemory", 
+                "path": "system.l1_cntrl51.cacheMemory", 
+                "type": "RubyCache", 
+                "size": 256
+            }, 
+            "cntrl_id": 51, 
+            "recycle_latency": 10, 
+            "name": "l1_cntrl51", 
+            "number_of_TBEs": 256, 
+            "transitions_per_cycle": 32, 
+            "cxx_class": "L1Cache_Controller", 
+            "cache_response_latency": 12, 
+            "version": 51, 
+            "sequencer": {
+                "access_phys_mem": false, 
+                "support_inst_reqs": true, 
+                "slave": {
+                    "peer": [
+                        "system.tester.cpuDataPort[51]", 
+                        "system.tester.cpuInstPort[51]"
+                    ], 
+                    "role": "SLAVE"
+                }, 
+                "name": "sequencer", 
+                "max_outstanding_requests": 16, 
+                "support_data_reqs": true, 
+                "deadlock_threshold": 500000, 
+                "using_ruby_tester": true, 
+                "version": 51, 
+                "cxx_class": "Sequencer", 
+                "path": "system.l1_cntrl51.sequencer", 
+                "using_network_tester": false, 
+                "type": "RubySequencer"
+            }, 
+            "buffer_size": 0, 
+            "path": "system.l1_cntrl51", 
+            "send_evictions": false, 
+            "type": "L1Cache_Controller", 
+            "issue_latency": 2
+        }, 
+        "l1_cntrl56": {
+            "cacheMemory": {
+                "latency": 3, 
+                "is_icache": false, 
+                "name": "cacheMemory", 
+                "assoc": 2, 
+                "start_index_bit": 6, 
+                "cxx_class": "CacheMemory", 
+                "path": "system.l1_cntrl56.cacheMemory", 
+                "type": "RubyCache", 
+                "size": 256
+            }, 
+            "cntrl_id": 56, 
+            "recycle_latency": 10, 
+            "name": "l1_cntrl56", 
+            "number_of_TBEs": 256, 
+            "transitions_per_cycle": 32, 
+            "cxx_class": "L1Cache_Controller", 
+            "cache_response_latency": 12, 
+            "version": 56, 
+            "sequencer": {
+                "access_phys_mem": false, 
+                "support_inst_reqs": true, 
+                "slave": {
+                    "peer": [
+                        "system.tester.cpuDataPort[56]", 
+                        "system.tester.cpuInstPort[56]"
+                    ], 
+                    "role": "SLAVE"
+                }, 
+                "name": "sequencer", 
+                "max_outstanding_requests": 16, 
+                "support_data_reqs": true, 
+                "deadlock_threshold": 500000, 
+                "using_ruby_tester": true, 
+                "version": 56, 
+                "cxx_class": "Sequencer", 
+                "path": "system.l1_cntrl56.sequencer", 
+                "using_network_tester": false, 
+                "type": "RubySequencer"
+            }, 
+            "buffer_size": 0, 
+            "path": "system.l1_cntrl56", 
+            "send_evictions": false, 
+            "type": "L1Cache_Controller", 
+            "issue_latency": 2
+        }, 
+        "l1_cntrl36": {
+            "cacheMemory": {
+                "latency": 3, 
+                "is_icache": false, 
+                "name": "cacheMemory", 
+                "assoc": 2, 
+                "start_index_bit": 6, 
+                "cxx_class": "CacheMemory", 
+                "path": "system.l1_cntrl36.cacheMemory", 
+                "type": "RubyCache", 
+                "size": 256
+            }, 
+            "cntrl_id": 36, 
+            "recycle_latency": 10, 
+            "name": "l1_cntrl36", 
+            "number_of_TBEs": 256, 
+            "transitions_per_cycle": 32, 
+            "cxx_class": "L1Cache_Controller", 
+            "cache_response_latency": 12, 
+            "version": 36, 
+            "sequencer": {
+                "access_phys_mem": false, 
+                "support_inst_reqs": true, 
+                "slave": {
+                    "peer": [
+                        "system.tester.cpuDataPort[36]", 
+                        "system.tester.cpuInstPort[36]"
+                    ], 
+                    "role": "SLAVE"
+                }, 
+                "name": "sequencer", 
+                "max_outstanding_requests": 16, 
+                "support_data_reqs": true, 
+                "deadlock_threshold": 500000, 
+                "using_ruby_tester": true, 
+                "version": 36, 
+                "cxx_class": "Sequencer", 
+                "path": "system.l1_cntrl36.sequencer", 
+                "using_network_tester": false, 
+                "type": "RubySequencer"
+            }, 
+            "buffer_size": 0, 
+            "path": "system.l1_cntrl36", 
+            "send_evictions": false, 
+            "type": "L1Cache_Controller", 
+            "issue_latency": 2
+        }, 
+        "l1_cntrl54": {
+            "cacheMemory": {
+                "latency": 3, 
+                "is_icache": false, 
+                "name": "cacheMemory", 
+                "assoc": 2, 
+                "start_index_bit": 6, 
+                "cxx_class": "CacheMemory", 
+                "path": "system.l1_cntrl54.cacheMemory", 
+                "type": "RubyCache", 
+                "size": 256
+            }, 
+            "cntrl_id": 54, 
+            "recycle_latency": 10, 
+            "name": "l1_cntrl54", 
+            "number_of_TBEs": 256, 
+            "transitions_per_cycle": 32, 
+            "cxx_class": "L1Cache_Controller", 
+            "cache_response_latency": 12, 
+            "version": 54, 
+            "sequencer": {
+                "access_phys_mem": false, 
+                "support_inst_reqs": true, 
+                "slave": {
+                    "peer": [
+                        "system.tester.cpuDataPort[54]", 
+                        "system.tester.cpuInstPort[54]"
+                    ], 
+                    "role": "SLAVE"
+                }, 
+                "name": "sequencer", 
+                "max_outstanding_requests": 16, 
+                "support_data_reqs": true, 
+                "deadlock_threshold": 500000, 
+                "using_ruby_tester": true, 
+                "version": 54, 
+                "cxx_class": "Sequencer", 
+                "path": "system.l1_cntrl54.sequencer", 
+                "using_network_tester": false, 
+                "type": "RubySequencer"
+            }, 
+            "buffer_size": 0, 
+            "path": "system.l1_cntrl54", 
+            "send_evictions": false, 
+            "type": "L1Cache_Controller", 
+            "issue_latency": 2
+        }, 
+        "l1_cntrl55": {
+            "cacheMemory": {
+                "latency": 3, 
+                "is_icache": false, 
+                "name": "cacheMemory", 
+                "assoc": 2, 
+                "start_index_bit": 6, 
+                "cxx_class": "CacheMemory", 
+                "path": "system.l1_cntrl55.cacheMemory", 
+                "type": "RubyCache", 
+                "size": 256
+            }, 
+            "cntrl_id": 55, 
+            "recycle_latency": 10, 
+            "name": "l1_cntrl55", 
+            "number_of_TBEs": 256, 
+            "transitions_per_cycle": 32, 
+            "cxx_class": "L1Cache_Controller", 
+            "cache_response_latency": 12, 
+            "version": 55, 
+            "sequencer": {
+                "access_phys_mem": false, 
+                "support_inst_reqs": true, 
+                "slave": {
+                    "peer": [
+                        "system.tester.cpuDataPort[55]", 
+                        "system.tester.cpuInstPort[55]"
+                    ], 
+                    "role": "SLAVE"
+                }, 
+                "name": "sequencer", 
+                "max_outstanding_requests": 16, 
+                "support_data_reqs": true, 
+                "deadlock_threshold": 500000, 
+                "using_ruby_tester": true, 
+                "version": 55, 
+                "cxx_class": "Sequencer", 
+                "path": "system.l1_cntrl55.sequencer", 
+                "using_network_tester": false, 
+                "type": "RubySequencer"
+            }, 
+            "buffer_size": 0, 
+            "path": "system.l1_cntrl55", 
+            "send_evictions": false, 
+            "type": "L1Cache_Controller", 
+            "issue_latency": 2
         }, 
         "sys_port_proxy": {
             "access_phys_mem": true, 
@@ -750,6 +2103,288 @@
             "using_network_tester": false, 
             "type": "RubyPortProxy"
         }, 
+        "l1_cntrl39": {
+            "cacheMemory": {
+                "latency": 3, 
+                "is_icache": false, 
+                "name": "cacheMemory", 
+                "assoc": 2, 
+                "start_index_bit": 6, 
+                "cxx_class": "CacheMemory", 
+                "path": "system.l1_cntrl39.cacheMemory", 
+                "type": "RubyCache", 
+                "size": 256
+            }, 
+            "cntrl_id": 39, 
+            "recycle_latency": 10, 
+            "name": "l1_cntrl39", 
+            "number_of_TBEs": 256, 
+            "transitions_per_cycle": 32, 
+            "cxx_class": "L1Cache_Controller", 
+            "cache_response_latency": 12, 
+            "version": 39, 
+            "sequencer": {
+                "access_phys_mem": false, 
+                "support_inst_reqs": true, 
+                "slave": {
+                    "peer": [
+                        "system.tester.cpuDataPort[39]", 
+                        "system.tester.cpuInstPort[39]"
+                    ], 
+                    "role": "SLAVE"
+                }, 
+                "name": "sequencer", 
+                "max_outstanding_requests": 16, 
+                "support_data_reqs": true, 
+                "deadlock_threshold": 500000, 
+                "using_ruby_tester": true, 
+                "version": 39, 
+                "cxx_class": "Sequencer", 
+                "path": "system.l1_cntrl39.sequencer", 
+                "using_network_tester": false, 
+                "type": "RubySequencer"
+            }, 
+            "buffer_size": 0, 
+            "path": "system.l1_cntrl39", 
+            "send_evictions": false, 
+            "type": "L1Cache_Controller", 
+            "issue_latency": 2
+        }, 
+        "l1_cntrl58": {
+            "cacheMemory": {
+                "latency": 3, 
+                "is_icache": false, 
+                "name": "cacheMemory", 
+                "assoc": 2, 
+                "start_index_bit": 6, 
+                "cxx_class": "CacheMemory", 
+                "path": "system.l1_cntrl58.cacheMemory", 
+                "type": "RubyCache", 
+                "size": 256
+            }, 
+            "cntrl_id": 58, 
+            "recycle_latency": 10, 
+            "name": "l1_cntrl58", 
+            "number_of_TBEs": 256, 
+            "transitions_per_cycle": 32, 
+            "cxx_class": "L1Cache_Controller", 
+            "cache_response_latency": 12, 
+            "version": 58, 
+            "sequencer": {
+                "access_phys_mem": false, 
+                "support_inst_reqs": true, 
+                "slave": {
+                    "peer": [
+                        "system.tester.cpuDataPort[58]", 
+                        "system.tester.cpuInstPort[58]"
+                    ], 
+                    "role": "SLAVE"
+                }, 
+                "name": "sequencer", 
+                "max_outstanding_requests": 16, 
+                "support_data_reqs": true, 
+                "deadlock_threshold": 500000, 
+                "using_ruby_tester": true, 
+                "version": 58, 
+                "cxx_class": "Sequencer", 
+                "path": "system.l1_cntrl58.sequencer", 
+                "using_network_tester": false, 
+                "type": "RubySequencer"
+            }, 
+            "buffer_size": 0, 
+            "path": "system.l1_cntrl58", 
+            "send_evictions": false, 
+            "type": "L1Cache_Controller", 
+            "issue_latency": 2
+        }, 
+        "l1_cntrl37": {
+            "cacheMemory": {
+                "latency": 3, 
+                "is_icache": false, 
+                "name": "cacheMemory", 
+                "assoc": 2, 
+                "start_index_bit": 6, 
+                "cxx_class": "CacheMemory", 
+                "path": "system.l1_cntrl37.cacheMemory", 
+                "type": "RubyCache", 
+                "size": 256
+            }, 
+            "cntrl_id": 37, 
+            "recycle_latency": 10, 
+            "name": "l1_cntrl37", 
+            "number_of_TBEs": 256, 
+            "transitions_per_cycle": 32, 
+            "cxx_class": "L1Cache_Controller", 
+            "cache_response_latency": 12, 
+            "version": 37, 
+            "sequencer": {
+                "access_phys_mem": false, 
+                "support_inst_reqs": true, 
+                "slave": {
+                    "peer": [
+                        "system.tester.cpuDataPort[37]", 
+                        "system.tester.cpuInstPort[37]"
+                    ], 
+                    "role": "SLAVE"
+                }, 
+                "name": "sequencer", 
+                "max_outstanding_requests": 16, 
+                "support_data_reqs": true, 
+                "deadlock_threshold": 500000, 
+                "using_ruby_tester": true, 
+                "version": 37, 
+                "cxx_class": "Sequencer", 
+                "path": "system.l1_cntrl37.sequencer", 
+                "using_network_tester": false, 
+                "type": "RubySequencer"
+            }, 
+            "buffer_size": 0, 
+            "path": "system.l1_cntrl37", 
+            "send_evictions": false, 
+            "type": "L1Cache_Controller", 
+            "issue_latency": 2
+        }, 
+        "l1_cntrl59": {
+            "cacheMemory": {
+                "latency": 3, 
+                "is_icache": false, 
+                "name": "cacheMemory", 
+                "assoc": 2, 
+                "start_index_bit": 6, 
+                "cxx_class": "CacheMemory", 
+                "path": "system.l1_cntrl59.cacheMemory", 
+                "type": "RubyCache", 
+                "size": 256
+            }, 
+            "cntrl_id": 59, 
+            "recycle_latency": 10, 
+            "name": "l1_cntrl59", 
+            "number_of_TBEs": 256, 
+            "transitions_per_cycle": 32, 
+            "cxx_class": "L1Cache_Controller", 
+            "cache_response_latency": 12, 
+            "version": 59, 
+            "sequencer": {
+                "access_phys_mem": false, 
+                "support_inst_reqs": true, 
+                "slave": {
+                    "peer": [
+                        "system.tester.cpuDataPort[59]", 
+                        "system.tester.cpuInstPort[59]"
+                    ], 
+                    "role": "SLAVE"
+                }, 
+                "name": "sequencer", 
+                "max_outstanding_requests": 16, 
+                "support_data_reqs": true, 
+                "deadlock_threshold": 500000, 
+                "using_ruby_tester": true, 
+                "version": 59, 
+                "cxx_class": "Sequencer", 
+                "path": "system.l1_cntrl59.sequencer", 
+                "using_network_tester": false, 
+                "type": "RubySequencer"
+            }, 
+            "buffer_size": 0, 
+            "path": "system.l1_cntrl59", 
+            "send_evictions": false, 
+            "type": "L1Cache_Controller", 
+            "issue_latency": 2
+        }, 
+        "l1_cntrl60": {
+            "cacheMemory": {
+                "latency": 3, 
+                "is_icache": false, 
+                "name": "cacheMemory", 
+                "assoc": 2, 
+                "start_index_bit": 6, 
+                "cxx_class": "CacheMemory", 
+                "path": "system.l1_cntrl60.cacheMemory", 
+                "type": "RubyCache", 
+                "size": 256
+            }, 
+            "cntrl_id": 60, 
+            "recycle_latency": 10, 
+            "name": "l1_cntrl60", 
+            "number_of_TBEs": 256, 
+            "transitions_per_cycle": 32, 
+            "cxx_class": "L1Cache_Controller", 
+            "cache_response_latency": 12, 
+            "version": 60, 
+            "sequencer": {
+                "access_phys_mem": false, 
+                "support_inst_reqs": true, 
+                "slave": {
+                    "peer": [
+                        "system.tester.cpuDataPort[60]", 
+                        "system.tester.cpuInstPort[60]"
+                    ], 
+                    "role": "SLAVE"
+                }, 
+                "name": "sequencer", 
+                "max_outstanding_requests": 16, 
+                "support_data_reqs": true, 
+                "deadlock_threshold": 500000, 
+                "using_ruby_tester": true, 
+                "version": 60, 
+                "cxx_class": "Sequencer", 
+                "path": "system.l1_cntrl60.sequencer", 
+                "using_network_tester": false, 
+                "type": "RubySequencer"
+            }, 
+            "buffer_size": 0, 
+            "path": "system.l1_cntrl60", 
+            "send_evictions": false, 
+            "type": "L1Cache_Controller", 
+            "issue_latency": 2
+        }, 
+        "l1_cntrl38": {
+            "cacheMemory": {
+                "latency": 3, 
+                "is_icache": false, 
+                "name": "cacheMemory", 
+                "assoc": 2, 
+                "start_index_bit": 6, 
+                "cxx_class": "CacheMemory", 
+                "path": "system.l1_cntrl38.cacheMemory", 
+                "type": "RubyCache", 
+                "size": 256
+            }, 
+            "cntrl_id": 38, 
+            "recycle_latency": 10, 
+            "name": "l1_cntrl38", 
+            "number_of_TBEs": 256, 
+            "transitions_per_cycle": 32, 
+            "cxx_class": "L1Cache_Controller", 
+            "cache_response_latency": 12, 
+            "version": 38, 
+            "sequencer": {
+                "access_phys_mem": false, 
+                "support_inst_reqs": true, 
+                "slave": {
+                    "peer": [
+                        "system.tester.cpuDataPort[38]", 
+                        "system.tester.cpuInstPort[38]"
+                    ], 
+                    "role": "SLAVE"
+                }, 
+                "name": "sequencer", 
+                "max_outstanding_requests": 16, 
+                "support_data_reqs": true, 
+                "deadlock_threshold": 500000, 
+                "using_ruby_tester": true, 
+                "version": 38, 
+                "cxx_class": "Sequencer", 
+                "path": "system.l1_cntrl38.sequencer", 
+                "using_network_tester": false, 
+                "type": "RubySequencer"
+            }, 
+            "buffer_size": 0, 
+            "path": "system.l1_cntrl38", 
+            "send_evictions": false, 
+            "type": "L1Cache_Controller", 
+            "issue_latency": 2
+        }, 
         "work_cpus_ckpt_count": 0, 
         "work_begin_exit_count": 0, 
         "num_work_ids": 16, 
@@ -764,7 +2399,7 @@
                 "name": "profiler", 
                 "hot_lines": false, 
                 "all_instructions": false, 
-                "num_of_sequencers": 16, 
+                "num_of_sequencers": 64, 
                 "cxx_class": "Profiler", 
                 "path": "system.ruby.profiler", 
                 "type": "RubyProfiler"
@@ -791,7 +2426,7 @@
                             "latency": 1, 
                             "name": "int_links00", 
                             "weight": 1, 
-                            "link_id": 17, 
+                            "link_id": 65, 
                             "cxx_class": "SimpleIntLink", 
                             "path": "system.ruby.network.topology.int_links00", 
                             "type": "SimpleIntLink", 
@@ -801,7 +2436,7 @@
                             "latency": 1, 
                             "name": "int_links01", 
                             "weight": 1, 
-                            "link_id": 18, 
+                            "link_id": 66, 
                             "cxx_class": "SimpleIntLink", 
                             "path": "system.ruby.network.topology.int_links01", 
                             "type": "SimpleIntLink", 
@@ -811,7 +2446,7 @@
                             "latency": 1, 
                             "name": "int_links02", 
                             "weight": 1, 
-                            "link_id": 19, 
+                            "link_id": 67, 
                             "cxx_class": "SimpleIntLink", 
                             "path": "system.ruby.network.topology.int_links02", 
                             "type": "SimpleIntLink", 
@@ -821,7 +2456,7 @@
                             "latency": 1, 
                             "name": "int_links03", 
                             "weight": 1, 
-                            "link_id": 20, 
+                            "link_id": 68, 
                             "cxx_class": "SimpleIntLink", 
                             "path": "system.ruby.network.topology.int_links03", 
                             "type": "SimpleIntLink", 
@@ -831,7 +2466,7 @@
                             "latency": 1, 
                             "name": "int_links04", 
                             "weight": 1, 
-                            "link_id": 21, 
+                            "link_id": 69, 
                             "cxx_class": "SimpleIntLink", 
                             "path": "system.ruby.network.topology.int_links04", 
                             "type": "SimpleIntLink", 
@@ -841,7 +2476,7 @@
                             "latency": 1, 
                             "name": "int_links05", 
                             "weight": 1, 
-                            "link_id": 22, 
+                            "link_id": 70, 
                             "cxx_class": "SimpleIntLink", 
                             "path": "system.ruby.network.topology.int_links05", 
                             "type": "SimpleIntLink", 
@@ -851,7 +2486,7 @@
                             "latency": 1, 
                             "name": "int_links06", 
                             "weight": 1, 
-                            "link_id": 23, 
+                            "link_id": 71, 
                             "cxx_class": "SimpleIntLink", 
                             "path": "system.ruby.network.topology.int_links06", 
                             "type": "SimpleIntLink", 
@@ -861,7 +2496,7 @@
                             "latency": 1, 
                             "name": "int_links07", 
                             "weight": 1, 
-                            "link_id": 24, 
+                            "link_id": 72, 
                             "cxx_class": "SimpleIntLink", 
                             "path": "system.ruby.network.topology.int_links07", 
                             "type": "SimpleIntLink", 
@@ -871,7 +2506,7 @@
                             "latency": 1, 
                             "name": "int_links08", 
                             "weight": 1, 
-                            "link_id": 25, 
+                            "link_id": 73, 
                             "cxx_class": "SimpleIntLink", 
                             "path": "system.ruby.network.topology.int_links08", 
                             "type": "SimpleIntLink", 
@@ -881,7 +2516,7 @@
                             "latency": 1, 
                             "name": "int_links09", 
                             "weight": 1, 
-                            "link_id": 26, 
+                            "link_id": 74, 
                             "cxx_class": "SimpleIntLink", 
                             "path": "system.ruby.network.topology.int_links09", 
                             "type": "SimpleIntLink", 
@@ -891,7 +2526,7 @@
                             "latency": 1, 
                             "name": "int_links10", 
                             "weight": 1, 
-                            "link_id": 27, 
+                            "link_id": 75, 
                             "cxx_class": "SimpleIntLink", 
                             "path": "system.ruby.network.topology.int_links10", 
                             "type": "SimpleIntLink", 
@@ -901,7 +2536,7 @@
                             "latency": 1, 
                             "name": "int_links11", 
                             "weight": 1, 
-                            "link_id": 28, 
+                            "link_id": 76, 
                             "cxx_class": "SimpleIntLink", 
                             "path": "system.ruby.network.topology.int_links11", 
                             "type": "SimpleIntLink", 
@@ -911,7 +2546,7 @@
                             "latency": 1, 
                             "name": "int_links12", 
                             "weight": 1, 
-                            "link_id": 29, 
+                            "link_id": 77, 
                             "cxx_class": "SimpleIntLink", 
                             "path": "system.ruby.network.topology.int_links12", 
                             "type": "SimpleIntLink", 
@@ -921,7 +2556,7 @@
                             "latency": 1, 
                             "name": "int_links13", 
                             "weight": 1, 
-                            "link_id": 30, 
+                            "link_id": 78, 
                             "cxx_class": "SimpleIntLink", 
                             "path": "system.ruby.network.topology.int_links13", 
                             "type": "SimpleIntLink", 
@@ -931,7 +2566,7 @@
                             "latency": 1, 
                             "name": "int_links14", 
                             "weight": 1, 
-                            "link_id": 31, 
+                            "link_id": 79, 
                             "cxx_class": "SimpleIntLink", 
                             "path": "system.ruby.network.topology.int_links14", 
                             "type": "SimpleIntLink", 
@@ -941,7 +2576,7 @@
                             "latency": 1, 
                             "name": "int_links15", 
                             "weight": 1, 
-                            "link_id": 32, 
+                            "link_id": 80, 
                             "cxx_class": "SimpleIntLink", 
                             "path": "system.ruby.network.topology.int_links15", 
                             "type": "SimpleIntLink", 
@@ -951,9 +2586,489 @@
                             "latency": 1, 
                             "name": "int_links16", 
                             "weight": 1, 
-                            "link_id": 33, 
+                            "link_id": 81, 
                             "cxx_class": "SimpleIntLink", 
                             "path": "system.ruby.network.topology.int_links16", 
+                            "type": "SimpleIntLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "int_links17", 
+                            "weight": 1, 
+                            "link_id": 82, 
+                            "cxx_class": "SimpleIntLink", 
+                            "path": "system.ruby.network.topology.int_links17", 
+                            "type": "SimpleIntLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "int_links18", 
+                            "weight": 1, 
+                            "link_id": 83, 
+                            "cxx_class": "SimpleIntLink", 
+                            "path": "system.ruby.network.topology.int_links18", 
+                            "type": "SimpleIntLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "int_links19", 
+                            "weight": 1, 
+                            "link_id": 84, 
+                            "cxx_class": "SimpleIntLink", 
+                            "path": "system.ruby.network.topology.int_links19", 
+                            "type": "SimpleIntLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "int_links20", 
+                            "weight": 1, 
+                            "link_id": 85, 
+                            "cxx_class": "SimpleIntLink", 
+                            "path": "system.ruby.network.topology.int_links20", 
+                            "type": "SimpleIntLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "int_links21", 
+                            "weight": 1, 
+                            "link_id": 86, 
+                            "cxx_class": "SimpleIntLink", 
+                            "path": "system.ruby.network.topology.int_links21", 
+                            "type": "SimpleIntLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "int_links22", 
+                            "weight": 1, 
+                            "link_id": 87, 
+                            "cxx_class": "SimpleIntLink", 
+                            "path": "system.ruby.network.topology.int_links22", 
+                            "type": "SimpleIntLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "int_links23", 
+                            "weight": 1, 
+                            "link_id": 88, 
+                            "cxx_class": "SimpleIntLink", 
+                            "path": "system.ruby.network.topology.int_links23", 
+                            "type": "SimpleIntLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "int_links24", 
+                            "weight": 1, 
+                            "link_id": 89, 
+                            "cxx_class": "SimpleIntLink", 
+                            "path": "system.ruby.network.topology.int_links24", 
+                            "type": "SimpleIntLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "int_links25", 
+                            "weight": 1, 
+                            "link_id": 90, 
+                            "cxx_class": "SimpleIntLink", 
+                            "path": "system.ruby.network.topology.int_links25", 
+                            "type": "SimpleIntLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "int_links26", 
+                            "weight": 1, 
+                            "link_id": 91, 
+                            "cxx_class": "SimpleIntLink", 
+                            "path": "system.ruby.network.topology.int_links26", 
+                            "type": "SimpleIntLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "int_links27", 
+                            "weight": 1, 
+                            "link_id": 92, 
+                            "cxx_class": "SimpleIntLink", 
+                            "path": "system.ruby.network.topology.int_links27", 
+                            "type": "SimpleIntLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "int_links28", 
+                            "weight": 1, 
+                            "link_id": 93, 
+                            "cxx_class": "SimpleIntLink", 
+                            "path": "system.ruby.network.topology.int_links28", 
+                            "type": "SimpleIntLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "int_links29", 
+                            "weight": 1, 
+                            "link_id": 94, 
+                            "cxx_class": "SimpleIntLink", 
+                            "path": "system.ruby.network.topology.int_links29", 
+                            "type": "SimpleIntLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "int_links30", 
+                            "weight": 1, 
+                            "link_id": 95, 
+                            "cxx_class": "SimpleIntLink", 
+                            "path": "system.ruby.network.topology.int_links30", 
+                            "type": "SimpleIntLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "int_links31", 
+                            "weight": 1, 
+                            "link_id": 96, 
+                            "cxx_class": "SimpleIntLink", 
+                            "path": "system.ruby.network.topology.int_links31", 
+                            "type": "SimpleIntLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "int_links32", 
+                            "weight": 1, 
+                            "link_id": 97, 
+                            "cxx_class": "SimpleIntLink", 
+                            "path": "system.ruby.network.topology.int_links32", 
+                            "type": "SimpleIntLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "int_links33", 
+                            "weight": 1, 
+                            "link_id": 98, 
+                            "cxx_class": "SimpleIntLink", 
+                            "path": "system.ruby.network.topology.int_links33", 
+                            "type": "SimpleIntLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "int_links34", 
+                            "weight": 1, 
+                            "link_id": 99, 
+                            "cxx_class": "SimpleIntLink", 
+                            "path": "system.ruby.network.topology.int_links34", 
+                            "type": "SimpleIntLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "int_links35", 
+                            "weight": 1, 
+                            "link_id": 100, 
+                            "cxx_class": "SimpleIntLink", 
+                            "path": "system.ruby.network.topology.int_links35", 
+                            "type": "SimpleIntLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "int_links36", 
+                            "weight": 1, 
+                            "link_id": 101, 
+                            "cxx_class": "SimpleIntLink", 
+                            "path": "system.ruby.network.topology.int_links36", 
+                            "type": "SimpleIntLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "int_links37", 
+                            "weight": 1, 
+                            "link_id": 102, 
+                            "cxx_class": "SimpleIntLink", 
+                            "path": "system.ruby.network.topology.int_links37", 
+                            "type": "SimpleIntLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "int_links38", 
+                            "weight": 1, 
+                            "link_id": 103, 
+                            "cxx_class": "SimpleIntLink", 
+                            "path": "system.ruby.network.topology.int_links38", 
+                            "type": "SimpleIntLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "int_links39", 
+                            "weight": 1, 
+                            "link_id": 104, 
+                            "cxx_class": "SimpleIntLink", 
+                            "path": "system.ruby.network.topology.int_links39", 
+                            "type": "SimpleIntLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "int_links40", 
+                            "weight": 1, 
+                            "link_id": 105, 
+                            "cxx_class": "SimpleIntLink", 
+                            "path": "system.ruby.network.topology.int_links40", 
+                            "type": "SimpleIntLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "int_links41", 
+                            "weight": 1, 
+                            "link_id": 106, 
+                            "cxx_class": "SimpleIntLink", 
+                            "path": "system.ruby.network.topology.int_links41", 
+                            "type": "SimpleIntLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "int_links42", 
+                            "weight": 1, 
+                            "link_id": 107, 
+                            "cxx_class": "SimpleIntLink", 
+                            "path": "system.ruby.network.topology.int_links42", 
+                            "type": "SimpleIntLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "int_links43", 
+                            "weight": 1, 
+                            "link_id": 108, 
+                            "cxx_class": "SimpleIntLink", 
+                            "path": "system.ruby.network.topology.int_links43", 
+                            "type": "SimpleIntLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "int_links44", 
+                            "weight": 1, 
+                            "link_id": 109, 
+                            "cxx_class": "SimpleIntLink", 
+                            "path": "system.ruby.network.topology.int_links44", 
+                            "type": "SimpleIntLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "int_links45", 
+                            "weight": 1, 
+                            "link_id": 110, 
+                            "cxx_class": "SimpleIntLink", 
+                            "path": "system.ruby.network.topology.int_links45", 
+                            "type": "SimpleIntLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "int_links46", 
+                            "weight": 1, 
+                            "link_id": 111, 
+                            "cxx_class": "SimpleIntLink", 
+                            "path": "system.ruby.network.topology.int_links46", 
+                            "type": "SimpleIntLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "int_links47", 
+                            "weight": 1, 
+                            "link_id": 112, 
+                            "cxx_class": "SimpleIntLink", 
+                            "path": "system.ruby.network.topology.int_links47", 
+                            "type": "SimpleIntLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "int_links48", 
+                            "weight": 1, 
+                            "link_id": 113, 
+                            "cxx_class": "SimpleIntLink", 
+                            "path": "system.ruby.network.topology.int_links48", 
+                            "type": "SimpleIntLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "int_links49", 
+                            "weight": 1, 
+                            "link_id": 114, 
+                            "cxx_class": "SimpleIntLink", 
+                            "path": "system.ruby.network.topology.int_links49", 
+                            "type": "SimpleIntLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "int_links50", 
+                            "weight": 1, 
+                            "link_id": 115, 
+                            "cxx_class": "SimpleIntLink", 
+                            "path": "system.ruby.network.topology.int_links50", 
+                            "type": "SimpleIntLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "int_links51", 
+                            "weight": 1, 
+                            "link_id": 116, 
+                            "cxx_class": "SimpleIntLink", 
+                            "path": "system.ruby.network.topology.int_links51", 
+                            "type": "SimpleIntLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "int_links52", 
+                            "weight": 1, 
+                            "link_id": 117, 
+                            "cxx_class": "SimpleIntLink", 
+                            "path": "system.ruby.network.topology.int_links52", 
+                            "type": "SimpleIntLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "int_links53", 
+                            "weight": 1, 
+                            "link_id": 118, 
+                            "cxx_class": "SimpleIntLink", 
+                            "path": "system.ruby.network.topology.int_links53", 
+                            "type": "SimpleIntLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "int_links54", 
+                            "weight": 1, 
+                            "link_id": 119, 
+                            "cxx_class": "SimpleIntLink", 
+                            "path": "system.ruby.network.topology.int_links54", 
+                            "type": "SimpleIntLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "int_links55", 
+                            "weight": 1, 
+                            "link_id": 120, 
+                            "cxx_class": "SimpleIntLink", 
+                            "path": "system.ruby.network.topology.int_links55", 
+                            "type": "SimpleIntLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "int_links56", 
+                            "weight": 1, 
+                            "link_id": 121, 
+                            "cxx_class": "SimpleIntLink", 
+                            "path": "system.ruby.network.topology.int_links56", 
+                            "type": "SimpleIntLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "int_links57", 
+                            "weight": 1, 
+                            "link_id": 122, 
+                            "cxx_class": "SimpleIntLink", 
+                            "path": "system.ruby.network.topology.int_links57", 
+                            "type": "SimpleIntLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "int_links58", 
+                            "weight": 1, 
+                            "link_id": 123, 
+                            "cxx_class": "SimpleIntLink", 
+                            "path": "system.ruby.network.topology.int_links58", 
+                            "type": "SimpleIntLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "int_links59", 
+                            "weight": 1, 
+                            "link_id": 124, 
+                            "cxx_class": "SimpleIntLink", 
+                            "path": "system.ruby.network.topology.int_links59", 
+                            "type": "SimpleIntLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "int_links60", 
+                            "weight": 1, 
+                            "link_id": 125, 
+                            "cxx_class": "SimpleIntLink", 
+                            "path": "system.ruby.network.topology.int_links60", 
+                            "type": "SimpleIntLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "int_links61", 
+                            "weight": 1, 
+                            "link_id": 126, 
+                            "cxx_class": "SimpleIntLink", 
+                            "path": "system.ruby.network.topology.int_links61", 
+                            "type": "SimpleIntLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "int_links62", 
+                            "weight": 1, 
+                            "link_id": 127, 
+                            "cxx_class": "SimpleIntLink", 
+                            "path": "system.ruby.network.topology.int_links62", 
+                            "type": "SimpleIntLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "int_links63", 
+                            "weight": 1, 
+                            "link_id": 128, 
+                            "cxx_class": "SimpleIntLink", 
+                            "path": "system.ruby.network.topology.int_links63", 
+                            "type": "SimpleIntLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "int_links64", 
+                            "weight": 1, 
+                            "link_id": 129, 
+                            "cxx_class": "SimpleIntLink", 
+                            "path": "system.ruby.network.topology.int_links64", 
                             "type": "SimpleIntLink", 
                             "bandwidth_factor": 16
                         }
@@ -1083,6 +3198,342 @@
                             "path": "system.ruby.network.topology.routers17", 
                             "type": "BasicRouter", 
                             "name": "routers17", 
+                            "cxx_class": "BasicRouter"
+                        }, 
+                        {
+                            "router_id": 18, 
+                            "path": "system.ruby.network.topology.routers18", 
+                            "type": "BasicRouter", 
+                            "name": "routers18", 
+                            "cxx_class": "BasicRouter"
+                        }, 
+                        {
+                            "router_id": 19, 
+                            "path": "system.ruby.network.topology.routers19", 
+                            "type": "BasicRouter", 
+                            "name": "routers19", 
+                            "cxx_class": "BasicRouter"
+                        }, 
+                        {
+                            "router_id": 20, 
+                            "path": "system.ruby.network.topology.routers20", 
+                            "type": "BasicRouter", 
+                            "name": "routers20", 
+                            "cxx_class": "BasicRouter"
+                        }, 
+                        {
+                            "router_id": 21, 
+                            "path": "system.ruby.network.topology.routers21", 
+                            "type": "BasicRouter", 
+                            "name": "routers21", 
+                            "cxx_class": "BasicRouter"
+                        }, 
+                        {
+                            "router_id": 22, 
+                            "path": "system.ruby.network.topology.routers22", 
+                            "type": "BasicRouter", 
+                            "name": "routers22", 
+                            "cxx_class": "BasicRouter"
+                        }, 
+                        {
+                            "router_id": 23, 
+                            "path": "system.ruby.network.topology.routers23", 
+                            "type": "BasicRouter", 
+                            "name": "routers23", 
+                            "cxx_class": "BasicRouter"
+                        }, 
+                        {
+                            "router_id": 24, 
+                            "path": "system.ruby.network.topology.routers24", 
+                            "type": "BasicRouter", 
+                            "name": "routers24", 
+                            "cxx_class": "BasicRouter"
+                        }, 
+                        {
+                            "router_id": 25, 
+                            "path": "system.ruby.network.topology.routers25", 
+                            "type": "BasicRouter", 
+                            "name": "routers25", 
+                            "cxx_class": "BasicRouter"
+                        }, 
+                        {
+                            "router_id": 26, 
+                            "path": "system.ruby.network.topology.routers26", 
+                            "type": "BasicRouter", 
+                            "name": "routers26", 
+                            "cxx_class": "BasicRouter"
+                        }, 
+                        {
+                            "router_id": 27, 
+                            "path": "system.ruby.network.topology.routers27", 
+                            "type": "BasicRouter", 
+                            "name": "routers27", 
+                            "cxx_class": "BasicRouter"
+                        }, 
+                        {
+                            "router_id": 28, 
+                            "path": "system.ruby.network.topology.routers28", 
+                            "type": "BasicRouter", 
+                            "name": "routers28", 
+                            "cxx_class": "BasicRouter"
+                        }, 
+                        {
+                            "router_id": 29, 
+                            "path": "system.ruby.network.topology.routers29", 
+                            "type": "BasicRouter", 
+                            "name": "routers29", 
+                            "cxx_class": "BasicRouter"
+                        }, 
+                        {
+                            "router_id": 30, 
+                            "path": "system.ruby.network.topology.routers30", 
+                            "type": "BasicRouter", 
+                            "name": "routers30", 
+                            "cxx_class": "BasicRouter"
+                        }, 
+                        {
+                            "router_id": 31, 
+                            "path": "system.ruby.network.topology.routers31", 
+                            "type": "BasicRouter", 
+                            "name": "routers31", 
+                            "cxx_class": "BasicRouter"
+                        }, 
+                        {
+                            "router_id": 32, 
+                            "path": "system.ruby.network.topology.routers32", 
+                            "type": "BasicRouter", 
+                            "name": "routers32", 
+                            "cxx_class": "BasicRouter"
+                        }, 
+                        {
+                            "router_id": 33, 
+                            "path": "system.ruby.network.topology.routers33", 
+                            "type": "BasicRouter", 
+                            "name": "routers33", 
+                            "cxx_class": "BasicRouter"
+                        }, 
+                        {
+                            "router_id": 34, 
+                            "path": "system.ruby.network.topology.routers34", 
+                            "type": "BasicRouter", 
+                            "name": "routers34", 
+                            "cxx_class": "BasicRouter"
+                        }, 
+                        {
+                            "router_id": 35, 
+                            "path": "system.ruby.network.topology.routers35", 
+                            "type": "BasicRouter", 
+                            "name": "routers35", 
+                            "cxx_class": "BasicRouter"
+                        }, 
+                        {
+                            "router_id": 36, 
+                            "path": "system.ruby.network.topology.routers36", 
+                            "type": "BasicRouter", 
+                            "name": "routers36", 
+                            "cxx_class": "BasicRouter"
+                        }, 
+                        {
+                            "router_id": 37, 
+                            "path": "system.ruby.network.topology.routers37", 
+                            "type": "BasicRouter", 
+                            "name": "routers37", 
+                            "cxx_class": "BasicRouter"
+                        }, 
+                        {
+                            "router_id": 38, 
+                            "path": "system.ruby.network.topology.routers38", 
+                            "type": "BasicRouter", 
+                            "name": "routers38", 
+                            "cxx_class": "BasicRouter"
+                        }, 
+                        {
+                            "router_id": 39, 
+                            "path": "system.ruby.network.topology.routers39", 
+                            "type": "BasicRouter", 
+                            "name": "routers39", 
+                            "cxx_class": "BasicRouter"
+                        }, 
+                        {
+                            "router_id": 40, 
+                            "path": "system.ruby.network.topology.routers40", 
+                            "type": "BasicRouter", 
+                            "name": "routers40", 
+                            "cxx_class": "BasicRouter"
+                        }, 
+                        {
+                            "router_id": 41, 
+                            "path": "system.ruby.network.topology.routers41", 
+                            "type": "BasicRouter", 
+                            "name": "routers41", 
+                            "cxx_class": "BasicRouter"
+                        }, 
+                        {
+                            "router_id": 42, 
+                            "path": "system.ruby.network.topology.routers42", 
+                            "type": "BasicRouter", 
+                            "name": "routers42", 
+                            "cxx_class": "BasicRouter"
+                        }, 
+                        {
+                            "router_id": 43, 
+                            "path": "system.ruby.network.topology.routers43", 
+                            "type": "BasicRouter", 
+                            "name": "routers43", 
+                            "cxx_class": "BasicRouter"
+                        }, 
+                        {
+                            "router_id": 44, 
+                            "path": "system.ruby.network.topology.routers44", 
+                            "type": "BasicRouter", 
+                            "name": "routers44", 
+                            "cxx_class": "BasicRouter"
+                        }, 
+                        {
+                            "router_id": 45, 
+                            "path": "system.ruby.network.topology.routers45", 
+                            "type": "BasicRouter", 
+                            "name": "routers45", 
+                            "cxx_class": "BasicRouter"
+                        }, 
+                        {
+                            "router_id": 46, 
+                            "path": "system.ruby.network.topology.routers46", 
+                            "type": "BasicRouter", 
+                            "name": "routers46", 
+                            "cxx_class": "BasicRouter"
+                        }, 
+                        {
+                            "router_id": 47, 
+                            "path": "system.ruby.network.topology.routers47", 
+                            "type": "BasicRouter", 
+                            "name": "routers47", 
+                            "cxx_class": "BasicRouter"
+                        }, 
+                        {
+                            "router_id": 48, 
+                            "path": "system.ruby.network.topology.routers48", 
+                            "type": "BasicRouter", 
+                            "name": "routers48", 
+                            "cxx_class": "BasicRouter"
+                        }, 
+                        {
+                            "router_id": 49, 
+                            "path": "system.ruby.network.topology.routers49", 
+                            "type": "BasicRouter", 
+                            "name": "routers49", 
+                            "cxx_class": "BasicRouter"
+                        }, 
+                        {
+                            "router_id": 50, 
+                            "path": "system.ruby.network.topology.routers50", 
+                            "type": "BasicRouter", 
+                            "name": "routers50", 
+                            "cxx_class": "BasicRouter"
+                        }, 
+                        {
+                            "router_id": 51, 
+                            "path": "system.ruby.network.topology.routers51", 
+                            "type": "BasicRouter", 
+                            "name": "routers51", 
+                            "cxx_class": "BasicRouter"
+                        }, 
+                        {
+                            "router_id": 52, 
+                            "path": "system.ruby.network.topology.routers52", 
+                            "type": "BasicRouter", 
+                            "name": "routers52", 
+                            "cxx_class": "BasicRouter"
+                        }, 
+                        {
+                            "router_id": 53, 
+                            "path": "system.ruby.network.topology.routers53", 
+                            "type": "BasicRouter", 
+                            "name": "routers53", 
+                            "cxx_class": "BasicRouter"
+                        }, 
+                        {
+                            "router_id": 54, 
+                            "path": "system.ruby.network.topology.routers54", 
+                            "type": "BasicRouter", 
+                            "name": "routers54", 
+                            "cxx_class": "BasicRouter"
+                        }, 
+                        {
+                            "router_id": 55, 
+                            "path": "system.ruby.network.topology.routers55", 
+                            "type": "BasicRouter", 
+                            "name": "routers55", 
+                            "cxx_class": "BasicRouter"
+                        }, 
+                        {
+                            "router_id": 56, 
+                            "path": "system.ruby.network.topology.routers56", 
+                            "type": "BasicRouter", 
+                            "name": "routers56", 
+                            "cxx_class": "BasicRouter"
+                        }, 
+                        {
+                            "router_id": 57, 
+                            "path": "system.ruby.network.topology.routers57", 
+                            "type": "BasicRouter", 
+                            "name": "routers57", 
+                            "cxx_class": "BasicRouter"
+                        }, 
+                        {
+                            "router_id": 58, 
+                            "path": "system.ruby.network.topology.routers58", 
+                            "type": "BasicRouter", 
+                            "name": "routers58", 
+                            "cxx_class": "BasicRouter"
+                        }, 
+                        {
+                            "router_id": 59, 
+                            "path": "system.ruby.network.topology.routers59", 
+                            "type": "BasicRouter", 
+                            "name": "routers59", 
+                            "cxx_class": "BasicRouter"
+                        }, 
+                        {
+                            "router_id": 60, 
+                            "path": "system.ruby.network.topology.routers60", 
+                            "type": "BasicRouter", 
+                            "name": "routers60", 
+                            "cxx_class": "BasicRouter"
+                        }, 
+                        {
+                            "router_id": 61, 
+                            "path": "system.ruby.network.topology.routers61", 
+                            "type": "BasicRouter", 
+                            "name": "routers61", 
+                            "cxx_class": "BasicRouter"
+                        }, 
+                        {
+                            "router_id": 62, 
+                            "path": "system.ruby.network.topology.routers62", 
+                            "type": "BasicRouter", 
+                            "name": "routers62", 
+                            "cxx_class": "BasicRouter"
+                        }, 
+                        {
+                            "router_id": 63, 
+                            "path": "system.ruby.network.topology.routers63", 
+                            "type": "BasicRouter", 
+                            "name": "routers63", 
+                            "cxx_class": "BasicRouter"
+                        }, 
+                        {
+                            "router_id": 64, 
+                            "path": "system.ruby.network.topology.routers64", 
+                            "type": "BasicRouter", 
+                            "name": "routers64", 
+                            "cxx_class": "BasicRouter"
+                        }, 
+                        {
+                            "router_id": 65, 
+                            "path": "system.ruby.network.topology.routers65", 
+                            "type": "BasicRouter", 
+                            "name": "routers65", 
                             "cxx_class": "BasicRouter"
                         }
                     ], 
@@ -1256,6 +3707,486 @@
                             "path": "system.ruby.network.topology.ext_links16", 
                             "type": "SimpleExtLink", 
                             "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "ext_links17", 
+                            "weight": 1, 
+                            "link_id": 17, 
+                            "cxx_class": "SimpleExtLink", 
+                            "path": "system.ruby.network.topology.ext_links17", 
+                            "type": "SimpleExtLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "ext_links18", 
+                            "weight": 1, 
+                            "link_id": 18, 
+                            "cxx_class": "SimpleExtLink", 
+                            "path": "system.ruby.network.topology.ext_links18", 
+                            "type": "SimpleExtLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "ext_links19", 
+                            "weight": 1, 
+                            "link_id": 19, 
+                            "cxx_class": "SimpleExtLink", 
+                            "path": "system.ruby.network.topology.ext_links19", 
+                            "type": "SimpleExtLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "ext_links20", 
+                            "weight": 1, 
+                            "link_id": 20, 
+                            "cxx_class": "SimpleExtLink", 
+                            "path": "system.ruby.network.topology.ext_links20", 
+                            "type": "SimpleExtLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "ext_links21", 
+                            "weight": 1, 
+                            "link_id": 21, 
+                            "cxx_class": "SimpleExtLink", 
+                            "path": "system.ruby.network.topology.ext_links21", 
+                            "type": "SimpleExtLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "ext_links22", 
+                            "weight": 1, 
+                            "link_id": 22, 
+                            "cxx_class": "SimpleExtLink", 
+                            "path": "system.ruby.network.topology.ext_links22", 
+                            "type": "SimpleExtLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "ext_links23", 
+                            "weight": 1, 
+                            "link_id": 23, 
+                            "cxx_class": "SimpleExtLink", 
+                            "path": "system.ruby.network.topology.ext_links23", 
+                            "type": "SimpleExtLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "ext_links24", 
+                            "weight": 1, 
+                            "link_id": 24, 
+                            "cxx_class": "SimpleExtLink", 
+                            "path": "system.ruby.network.topology.ext_links24", 
+                            "type": "SimpleExtLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "ext_links25", 
+                            "weight": 1, 
+                            "link_id": 25, 
+                            "cxx_class": "SimpleExtLink", 
+                            "path": "system.ruby.network.topology.ext_links25", 
+                            "type": "SimpleExtLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "ext_links26", 
+                            "weight": 1, 
+                            "link_id": 26, 
+                            "cxx_class": "SimpleExtLink", 
+                            "path": "system.ruby.network.topology.ext_links26", 
+                            "type": "SimpleExtLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "ext_links27", 
+                            "weight": 1, 
+                            "link_id": 27, 
+                            "cxx_class": "SimpleExtLink", 
+                            "path": "system.ruby.network.topology.ext_links27", 
+                            "type": "SimpleExtLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "ext_links28", 
+                            "weight": 1, 
+                            "link_id": 28, 
+                            "cxx_class": "SimpleExtLink", 
+                            "path": "system.ruby.network.topology.ext_links28", 
+                            "type": "SimpleExtLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "ext_links29", 
+                            "weight": 1, 
+                            "link_id": 29, 
+                            "cxx_class": "SimpleExtLink", 
+                            "path": "system.ruby.network.topology.ext_links29", 
+                            "type": "SimpleExtLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "ext_links30", 
+                            "weight": 1, 
+                            "link_id": 30, 
+                            "cxx_class": "SimpleExtLink", 
+                            "path": "system.ruby.network.topology.ext_links30", 
+                            "type": "SimpleExtLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "ext_links31", 
+                            "weight": 1, 
+                            "link_id": 31, 
+                            "cxx_class": "SimpleExtLink", 
+                            "path": "system.ruby.network.topology.ext_links31", 
+                            "type": "SimpleExtLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "ext_links32", 
+                            "weight": 1, 
+                            "link_id": 32, 
+                            "cxx_class": "SimpleExtLink", 
+                            "path": "system.ruby.network.topology.ext_links32", 
+                            "type": "SimpleExtLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "ext_links33", 
+                            "weight": 1, 
+                            "link_id": 33, 
+                            "cxx_class": "SimpleExtLink", 
+                            "path": "system.ruby.network.topology.ext_links33", 
+                            "type": "SimpleExtLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "ext_links34", 
+                            "weight": 1, 
+                            "link_id": 34, 
+                            "cxx_class": "SimpleExtLink", 
+                            "path": "system.ruby.network.topology.ext_links34", 
+                            "type": "SimpleExtLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "ext_links35", 
+                            "weight": 1, 
+                            "link_id": 35, 
+                            "cxx_class": "SimpleExtLink", 
+                            "path": "system.ruby.network.topology.ext_links35", 
+                            "type": "SimpleExtLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "ext_links36", 
+                            "weight": 1, 
+                            "link_id": 36, 
+                            "cxx_class": "SimpleExtLink", 
+                            "path": "system.ruby.network.topology.ext_links36", 
+                            "type": "SimpleExtLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "ext_links37", 
+                            "weight": 1, 
+                            "link_id": 37, 
+                            "cxx_class": "SimpleExtLink", 
+                            "path": "system.ruby.network.topology.ext_links37", 
+                            "type": "SimpleExtLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "ext_links38", 
+                            "weight": 1, 
+                            "link_id": 38, 
+                            "cxx_class": "SimpleExtLink", 
+                            "path": "system.ruby.network.topology.ext_links38", 
+                            "type": "SimpleExtLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "ext_links39", 
+                            "weight": 1, 
+                            "link_id": 39, 
+                            "cxx_class": "SimpleExtLink", 
+                            "path": "system.ruby.network.topology.ext_links39", 
+                            "type": "SimpleExtLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "ext_links40", 
+                            "weight": 1, 
+                            "link_id": 40, 
+                            "cxx_class": "SimpleExtLink", 
+                            "path": "system.ruby.network.topology.ext_links40", 
+                            "type": "SimpleExtLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "ext_links41", 
+                            "weight": 1, 
+                            "link_id": 41, 
+                            "cxx_class": "SimpleExtLink", 
+                            "path": "system.ruby.network.topology.ext_links41", 
+                            "type": "SimpleExtLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "ext_links42", 
+                            "weight": 1, 
+                            "link_id": 42, 
+                            "cxx_class": "SimpleExtLink", 
+                            "path": "system.ruby.network.topology.ext_links42", 
+                            "type": "SimpleExtLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "ext_links43", 
+                            "weight": 1, 
+                            "link_id": 43, 
+                            "cxx_class": "SimpleExtLink", 
+                            "path": "system.ruby.network.topology.ext_links43", 
+                            "type": "SimpleExtLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "ext_links44", 
+                            "weight": 1, 
+                            "link_id": 44, 
+                            "cxx_class": "SimpleExtLink", 
+                            "path": "system.ruby.network.topology.ext_links44", 
+                            "type": "SimpleExtLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "ext_links45", 
+                            "weight": 1, 
+                            "link_id": 45, 
+                            "cxx_class": "SimpleExtLink", 
+                            "path": "system.ruby.network.topology.ext_links45", 
+                            "type": "SimpleExtLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "ext_links46", 
+                            "weight": 1, 
+                            "link_id": 46, 
+                            "cxx_class": "SimpleExtLink", 
+                            "path": "system.ruby.network.topology.ext_links46", 
+                            "type": "SimpleExtLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "ext_links47", 
+                            "weight": 1, 
+                            "link_id": 47, 
+                            "cxx_class": "SimpleExtLink", 
+                            "path": "system.ruby.network.topology.ext_links47", 
+                            "type": "SimpleExtLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "ext_links48", 
+                            "weight": 1, 
+                            "link_id": 48, 
+                            "cxx_class": "SimpleExtLink", 
+                            "path": "system.ruby.network.topology.ext_links48", 
+                            "type": "SimpleExtLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "ext_links49", 
+                            "weight": 1, 
+                            "link_id": 49, 
+                            "cxx_class": "SimpleExtLink", 
+                            "path": "system.ruby.network.topology.ext_links49", 
+                            "type": "SimpleExtLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "ext_links50", 
+                            "weight": 1, 
+                            "link_id": 50, 
+                            "cxx_class": "SimpleExtLink", 
+                            "path": "system.ruby.network.topology.ext_links50", 
+                            "type": "SimpleExtLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "ext_links51", 
+                            "weight": 1, 
+                            "link_id": 51, 
+                            "cxx_class": "SimpleExtLink", 
+                            "path": "system.ruby.network.topology.ext_links51", 
+                            "type": "SimpleExtLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "ext_links52", 
+                            "weight": 1, 
+                            "link_id": 52, 
+                            "cxx_class": "SimpleExtLink", 
+                            "path": "system.ruby.network.topology.ext_links52", 
+                            "type": "SimpleExtLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "ext_links53", 
+                            "weight": 1, 
+                            "link_id": 53, 
+                            "cxx_class": "SimpleExtLink", 
+                            "path": "system.ruby.network.topology.ext_links53", 
+                            "type": "SimpleExtLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "ext_links54", 
+                            "weight": 1, 
+                            "link_id": 54, 
+                            "cxx_class": "SimpleExtLink", 
+                            "path": "system.ruby.network.topology.ext_links54", 
+                            "type": "SimpleExtLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "ext_links55", 
+                            "weight": 1, 
+                            "link_id": 55, 
+                            "cxx_class": "SimpleExtLink", 
+                            "path": "system.ruby.network.topology.ext_links55", 
+                            "type": "SimpleExtLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "ext_links56", 
+                            "weight": 1, 
+                            "link_id": 56, 
+                            "cxx_class": "SimpleExtLink", 
+                            "path": "system.ruby.network.topology.ext_links56", 
+                            "type": "SimpleExtLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "ext_links57", 
+                            "weight": 1, 
+                            "link_id": 57, 
+                            "cxx_class": "SimpleExtLink", 
+                            "path": "system.ruby.network.topology.ext_links57", 
+                            "type": "SimpleExtLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "ext_links58", 
+                            "weight": 1, 
+                            "link_id": 58, 
+                            "cxx_class": "SimpleExtLink", 
+                            "path": "system.ruby.network.topology.ext_links58", 
+                            "type": "SimpleExtLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "ext_links59", 
+                            "weight": 1, 
+                            "link_id": 59, 
+                            "cxx_class": "SimpleExtLink", 
+                            "path": "system.ruby.network.topology.ext_links59", 
+                            "type": "SimpleExtLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "ext_links60", 
+                            "weight": 1, 
+                            "link_id": 60, 
+                            "cxx_class": "SimpleExtLink", 
+                            "path": "system.ruby.network.topology.ext_links60", 
+                            "type": "SimpleExtLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "ext_links61", 
+                            "weight": 1, 
+                            "link_id": 61, 
+                            "cxx_class": "SimpleExtLink", 
+                            "path": "system.ruby.network.topology.ext_links61", 
+                            "type": "SimpleExtLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "ext_links62", 
+                            "weight": 1, 
+                            "link_id": 62, 
+                            "cxx_class": "SimpleExtLink", 
+                            "path": "system.ruby.network.topology.ext_links62", 
+                            "type": "SimpleExtLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "ext_links63", 
+                            "weight": 1, 
+                            "link_id": 63, 
+                            "cxx_class": "SimpleExtLink", 
+                            "path": "system.ruby.network.topology.ext_links63", 
+                            "type": "SimpleExtLink", 
+                            "bandwidth_factor": 16
+                        }, 
+                        {
+                            "latency": 1, 
+                            "name": "ext_links64", 
+                            "weight": 1, 
+                            "link_id": 64, 
+                            "cxx_class": "SimpleExtLink", 
+                            "path": "system.ruby.network.topology.ext_links64", 
+                            "type": "SimpleExtLink", 
+                            "bandwidth_factor": 16
                         }
                     ], 
                     "cxx_class": "Topology", 
@@ -1359,15 +4290,732 @@
             "type": "L1Cache_Controller", 
             "issue_latency": 2
         }, 
+        "tester": {
+            "name": "tester", 
+            "num_cpus": 64, 
+            "cpuDataPort": {
+                "peer": [
+                    "system.l1_cntrl0.sequencer.slave[0]", 
+                    "system.l1_cntrl1.sequencer.slave[0]", 
+                    "system.l1_cntrl2.sequencer.slave[0]", 
+                    "system.l1_cntrl3.sequencer.slave[0]", 
+                    "system.l1_cntrl4.sequencer.slave[0]", 
+                    "system.l1_cntrl5.sequencer.slave[0]", 
+                    "system.l1_cntrl6.sequencer.slave[0]", 
+                    "system.l1_cntrl7.sequencer.slave[0]", 
+                    "system.l1_cntrl8.sequencer.slave[0]", 
+                    "system.l1_cntrl9.sequencer.slave[0]", 
+                    "system.l1_cntrl10.sequencer.slave[0]", 
+                    "system.l1_cntrl11.sequencer.slave[0]", 
+                    "system.l1_cntrl12.sequencer.slave[0]", 
+                    "system.l1_cntrl13.sequencer.slave[0]", 
+                    "system.l1_cntrl14.sequencer.slave[0]", 
+                    "system.l1_cntrl15.sequencer.slave[0]", 
+                    "system.l1_cntrl16.sequencer.slave[0]", 
+                    "system.l1_cntrl17.sequencer.slave[0]", 
+                    "system.l1_cntrl18.sequencer.slave[0]", 
+                    "system.l1_cntrl19.sequencer.slave[0]", 
+                    "system.l1_cntrl20.sequencer.slave[0]", 
+                    "system.l1_cntrl21.sequencer.slave[0]", 
+                    "system.l1_cntrl22.sequencer.slave[0]", 
+                    "system.l1_cntrl23.sequencer.slave[0]", 
+                    "system.l1_cntrl24.sequencer.slave[0]", 
+                    "system.l1_cntrl25.sequencer.slave[0]", 
+                    "system.l1_cntrl26.sequencer.slave[0]", 
+                    "system.l1_cntrl27.sequencer.slave[0]", 
+                    "system.l1_cntrl28.sequencer.slave[0]", 
+                    "system.l1_cntrl29.sequencer.slave[0]", 
+                    "system.l1_cntrl30.sequencer.slave[0]", 
+                    "system.l1_cntrl31.sequencer.slave[0]", 
+                    "system.l1_cntrl32.sequencer.slave[0]", 
+                    "system.l1_cntrl33.sequencer.slave[0]", 
+                    "system.l1_cntrl34.sequencer.slave[0]", 
+                    "system.l1_cntrl35.sequencer.slave[0]", 
+                    "system.l1_cntrl36.sequencer.slave[0]", 
+                    "system.l1_cntrl37.sequencer.slave[0]", 
+                    "system.l1_cntrl38.sequencer.slave[0]", 
+                    "system.l1_cntrl39.sequencer.slave[0]", 
+                    "system.l1_cntrl40.sequencer.slave[0]", 
+                    "system.l1_cntrl41.sequencer.slave[0]", 
+                    "system.l1_cntrl42.sequencer.slave[0]", 
+                    "system.l1_cntrl43.sequencer.slave[0]", 
+                    "system.l1_cntrl44.sequencer.slave[0]", 
+                    "system.l1_cntrl45.sequencer.slave[0]", 
+                    "system.l1_cntrl46.sequencer.slave[0]", 
+                    "system.l1_cntrl47.sequencer.slave[0]", 
+                    "system.l1_cntrl48.sequencer.slave[0]", 
+                    "system.l1_cntrl49.sequencer.slave[0]", 
+                    "system.l1_cntrl50.sequencer.slave[0]", 
+                    "system.l1_cntrl51.sequencer.slave[0]", 
+                    "system.l1_cntrl52.sequencer.slave[0]", 
+                    "system.l1_cntrl53.sequencer.slave[0]", 
+                    "system.l1_cntrl54.sequencer.slave[0]", 
+                    "system.l1_cntrl55.sequencer.slave[0]", 
+                    "system.l1_cntrl56.sequencer.slave[0]", 
+                    "system.l1_cntrl57.sequencer.slave[0]", 
+                    "system.l1_cntrl58.sequencer.slave[0]", 
+                    "system.l1_cntrl59.sequencer.slave[0]", 
+                    "system.l1_cntrl60.sequencer.slave[0]", 
+                    "system.l1_cntrl61.sequencer.slave[0]", 
+                    "system.l1_cntrl62.sequencer.slave[0]", 
+                    "system.l1_cntrl63.sequencer.slave[0]"
+                ], 
+                "role": "MASTER"
+            }, 
+            "deadlock_threshold": 50000, 
+            "check_flush": false, 
+            "cxx_class": "RubyTester", 
+            "wakeup_frequency": 10, 
+            "path": "system.tester", 
+            "cpuInstPort": {
+                "peer": [
+                    "system.l1_cntrl0.sequencer.slave[1]", 
+                    "system.l1_cntrl1.sequencer.slave[1]", 
+                    "system.l1_cntrl2.sequencer.slave[1]", 
+                    "system.l1_cntrl3.sequencer.slave[1]", 
+                    "system.l1_cntrl4.sequencer.slave[1]", 
+                    "system.l1_cntrl5.sequencer.slave[1]", 
+                    "system.l1_cntrl6.sequencer.slave[1]", 
+                    "system.l1_cntrl7.sequencer.slave[1]", 
+                    "system.l1_cntrl8.sequencer.slave[1]", 
+                    "system.l1_cntrl9.sequencer.slave[1]", 
+                    "system.l1_cntrl10.sequencer.slave[1]", 
+                    "system.l1_cntrl11.sequencer.slave[1]", 
+                    "system.l1_cntrl12.sequencer.slave[1]", 
+                    "system.l1_cntrl13.sequencer.slave[1]", 
+                    "system.l1_cntrl14.sequencer.slave[1]", 
+                    "system.l1_cntrl15.sequencer.slave[1]", 
+                    "system.l1_cntrl16.sequencer.slave[1]", 
+                    "system.l1_cntrl17.sequencer.slave[1]", 
+                    "system.l1_cntrl18.sequencer.slave[1]", 
+                    "system.l1_cntrl19.sequencer.slave[1]", 
+                    "system.l1_cntrl20.sequencer.slave[1]", 
+                    "system.l1_cntrl21.sequencer.slave[1]", 
+                    "system.l1_cntrl22.sequencer.slave[1]", 
+                    "system.l1_cntrl23.sequencer.slave[1]", 
+                    "system.l1_cntrl24.sequencer.slave[1]", 
+                    "system.l1_cntrl25.sequencer.slave[1]", 
+                    "system.l1_cntrl26.sequencer.slave[1]", 
+                    "system.l1_cntrl27.sequencer.slave[1]", 
+                    "system.l1_cntrl28.sequencer.slave[1]", 
+                    "system.l1_cntrl29.sequencer.slave[1]", 
+                    "system.l1_cntrl30.sequencer.slave[1]", 
+                    "system.l1_cntrl31.sequencer.slave[1]", 
+                    "system.l1_cntrl32.sequencer.slave[1]", 
+                    "system.l1_cntrl33.sequencer.slave[1]", 
+                    "system.l1_cntrl34.sequencer.slave[1]", 
+                    "system.l1_cntrl35.sequencer.slave[1]", 
+                    "system.l1_cntrl36.sequencer.slave[1]", 
+                    "system.l1_cntrl37.sequencer.slave[1]", 
+                    "system.l1_cntrl38.sequencer.slave[1]", 
+                    "system.l1_cntrl39.sequencer.slave[1]", 
+                    "system.l1_cntrl40.sequencer.slave[1]", 
+                    "system.l1_cntrl41.sequencer.slave[1]", 
+                    "system.l1_cntrl42.sequencer.slave[1]", 
+                    "system.l1_cntrl43.sequencer.slave[1]", 
+                    "system.l1_cntrl44.sequencer.slave[1]", 
+                    "system.l1_cntrl45.sequencer.slave[1]", 
+                    "system.l1_cntrl46.sequencer.slave[1]", 
+                    "system.l1_cntrl47.sequencer.slave[1]", 
+                    "system.l1_cntrl48.sequencer.slave[1]", 
+                    "system.l1_cntrl49.sequencer.slave[1]", 
+                    "system.l1_cntrl50.sequencer.slave[1]", 
+                    "system.l1_cntrl51.sequencer.slave[1]", 
+                    "system.l1_cntrl52.sequencer.slave[1]", 
+                    "system.l1_cntrl53.sequencer.slave[1]", 
+                    "system.l1_cntrl54.sequencer.slave[1]", 
+                    "system.l1_cntrl55.sequencer.slave[1]", 
+                    "system.l1_cntrl56.sequencer.slave[1]", 
+                    "system.l1_cntrl57.sequencer.slave[1]", 
+                    "system.l1_cntrl58.sequencer.slave[1]", 
+                    "system.l1_cntrl59.sequencer.slave[1]", 
+                    "system.l1_cntrl60.sequencer.slave[1]", 
+                    "system.l1_cntrl61.sequencer.slave[1]", 
+                    "system.l1_cntrl62.sequencer.slave[1]", 
+                    "system.l1_cntrl63.sequencer.slave[1]"
+                ], 
+                "role": "MASTER"
+            }, 
+            "type": "RubyTester", 
+            "checks_to_complete": 10000000
+        }, 
         "mem_mode": "timing", 
         "name": "system", 
         "init_param": 0, 
         "type": "System", 
         "load_addr_mask": 1099511627775, 
+        "system_port": {
+            "peer": "system.sys_port_proxy.slave[0]", 
+            "role": "MASTER"
+        }, 
+        "l1_cntrl27": {
+            "cacheMemory": {
+                "latency": 3, 
+                "is_icache": false, 
+                "name": "cacheMemory", 
+                "assoc": 2, 
+                "start_index_bit": 6, 
+                "cxx_class": "CacheMemory", 
+                "path": "system.l1_cntrl27.cacheMemory", 
+                "type": "RubyCache", 
+                "size": 256
+            }, 
+            "cntrl_id": 27, 
+            "recycle_latency": 10, 
+            "name": "l1_cntrl27", 
+            "number_of_TBEs": 256, 
+            "transitions_per_cycle": 32, 
+            "cxx_class": "L1Cache_Controller", 
+            "cache_response_latency": 12, 
+            "version": 27, 
+            "sequencer": {
+                "access_phys_mem": false, 
+                "support_inst_reqs": true, 
+                "slave": {
+                    "peer": [
+                        "system.tester.cpuDataPort[27]", 
+                        "system.tester.cpuInstPort[27]"
+                    ], 
+                    "role": "SLAVE"
+                }, 
+                "name": "sequencer", 
+                "max_outstanding_requests": 16, 
+                "support_data_reqs": true, 
+                "deadlock_threshold": 500000, 
+                "using_ruby_tester": true, 
+                "version": 27, 
+                "cxx_class": "Sequencer", 
+                "path": "system.l1_cntrl27.sequencer", 
+                "using_network_tester": false, 
+                "type": "RubySequencer"
+            }, 
+            "buffer_size": 0, 
+            "path": "system.l1_cntrl27", 
+            "send_evictions": false, 
+            "type": "L1Cache_Controller", 
+            "issue_latency": 2
+        }, 
+        "l1_cntrl26": {
+            "cacheMemory": {
+                "latency": 3, 
+                "is_icache": false, 
+                "name": "cacheMemory", 
+                "assoc": 2, 
+                "start_index_bit": 6, 
+                "cxx_class": "CacheMemory", 
+                "path": "system.l1_cntrl26.cacheMemory", 
+                "type": "RubyCache", 
+                "size": 256
+            }, 
+            "cntrl_id": 26, 
+            "recycle_latency": 10, 
+            "name": "l1_cntrl26", 
+            "number_of_TBEs": 256, 
+            "transitions_per_cycle": 32, 
+            "cxx_class": "L1Cache_Controller", 
+            "cache_response_latency": 12, 
+            "version": 26, 
+            "sequencer": {
+                "access_phys_mem": false, 
+                "support_inst_reqs": true, 
+                "slave": {
+                    "peer": [
+                        "system.tester.cpuDataPort[26]", 
+                        "system.tester.cpuInstPort[26]"
+                    ], 
+                    "role": "SLAVE"
+                }, 
+                "name": "sequencer", 
+                "max_outstanding_requests": 16, 
+                "support_data_reqs": true, 
+                "deadlock_threshold": 500000, 
+                "using_ruby_tester": true, 
+                "version": 26, 
+                "cxx_class": "Sequencer", 
+                "path": "system.l1_cntrl26.sequencer", 
+                "using_network_tester": false, 
+                "type": "RubySequencer"
+            }, 
+            "buffer_size": 0, 
+            "path": "system.l1_cntrl26", 
+            "send_evictions": false, 
+            "type": "L1Cache_Controller", 
+            "issue_latency": 2
+        }, 
+        "l1_cntrl25": {
+            "cacheMemory": {
+                "latency": 3, 
+                "is_icache": false, 
+                "name": "cacheMemory", 
+                "assoc": 2, 
+                "start_index_bit": 6, 
+                "cxx_class": "CacheMemory", 
+                "path": "system.l1_cntrl25.cacheMemory", 
+                "type": "RubyCache", 
+                "size": 256
+            }, 
+            "cntrl_id": 25, 
+            "recycle_latency": 10, 
+            "name": "l1_cntrl25", 
+            "number_of_TBEs": 256, 
+            "transitions_per_cycle": 32, 
+            "cxx_class": "L1Cache_Controller", 
+            "cache_response_latency": 12, 
+            "version": 25, 
+            "sequencer": {
+                "access_phys_mem": false, 
+                "support_inst_reqs": true, 
+                "slave": {
+                    "peer": [
+                        "system.tester.cpuDataPort[25]", 
+                        "system.tester.cpuInstPort[25]"
+                    ], 
+                    "role": "SLAVE"
+                }, 
+                "name": "sequencer", 
+                "max_outstanding_requests": 16, 
+                "support_data_reqs": true, 
+                "deadlock_threshold": 500000, 
+                "using_ruby_tester": true, 
+                "version": 25, 
+                "cxx_class": "Sequencer", 
+                "path": "system.l1_cntrl25.sequencer", 
+                "using_network_tester": false, 
+                "type": "RubySequencer"
+            }, 
+            "buffer_size": 0, 
+            "path": "system.l1_cntrl25", 
+            "send_evictions": false, 
+            "type": "L1Cache_Controller", 
+            "issue_latency": 2
+        }, 
+        "l1_cntrl24": {
+            "cacheMemory": {
+                "latency": 3, 
+                "is_icache": false, 
+                "name": "cacheMemory", 
+                "assoc": 2, 
+                "start_index_bit": 6, 
+                "cxx_class": "CacheMemory", 
+                "path": "system.l1_cntrl24.cacheMemory", 
+                "type": "RubyCache", 
+                "size": 256
+            }, 
+            "cntrl_id": 24, 
+            "recycle_latency": 10, 
+            "name": "l1_cntrl24", 
+            "number_of_TBEs": 256, 
+            "transitions_per_cycle": 32, 
+            "cxx_class": "L1Cache_Controller", 
+            "cache_response_latency": 12, 
+            "version": 24, 
+            "sequencer": {
+                "access_phys_mem": false, 
+                "support_inst_reqs": true, 
+                "slave": {
+                    "peer": [
+                        "system.tester.cpuDataPort[24]", 
+                        "system.tester.cpuInstPort[24]"
+                    ], 
+                    "role": "SLAVE"
+                }, 
+                "name": "sequencer", 
+                "max_outstanding_requests": 16, 
+                "support_data_reqs": true, 
+                "deadlock_threshold": 500000, 
+                "using_ruby_tester": true, 
+                "version": 24, 
+                "cxx_class": "Sequencer", 
+                "path": "system.l1_cntrl24.sequencer", 
+                "using_network_tester": false, 
+                "type": "RubySequencer"
+            }, 
+            "buffer_size": 0, 
+            "path": "system.l1_cntrl24", 
+            "send_evictions": false, 
+            "type": "L1Cache_Controller", 
+            "issue_latency": 2
+        }, 
+        "l1_cntrl23": {
+            "cacheMemory": {
+                "latency": 3, 
+                "is_icache": false, 
+                "name": "cacheMemory", 
+                "assoc": 2, 
+                "start_index_bit": 6, 
+                "cxx_class": "CacheMemory", 
+                "path": "system.l1_cntrl23.cacheMemory", 
+                "type": "RubyCache", 
+                "size": 256
+            }, 
+            "cntrl_id": 23, 
+            "recycle_latency": 10, 
+            "name": "l1_cntrl23", 
+            "number_of_TBEs": 256, 
+            "transitions_per_cycle": 32, 
+            "cxx_class": "L1Cache_Controller", 
+            "cache_response_latency": 12, 
+            "version": 23, 
+            "sequencer": {
+                "access_phys_mem": false, 
+                "support_inst_reqs": true, 
+                "slave": {
+                    "peer": [
+                        "system.tester.cpuDataPort[23]", 
+                        "system.tester.cpuInstPort[23]"
+                    ], 
+                    "role": "SLAVE"
+                }, 
+                "name": "sequencer", 
+                "max_outstanding_requests": 16, 
+                "support_data_reqs": true, 
+                "deadlock_threshold": 500000, 
+                "using_ruby_tester": true, 
+                "version": 23, 
+                "cxx_class": "Sequencer", 
+                "path": "system.l1_cntrl23.sequencer", 
+                "using_network_tester": false, 
+                "type": "RubySequencer"
+            }, 
+            "buffer_size": 0, 
+            "path": "system.l1_cntrl23", 
+            "send_evictions": false, 
+            "type": "L1Cache_Controller", 
+            "issue_latency": 2
+        }, 
+        "l1_cntrl22": {
+            "cacheMemory": {
+                "latency": 3, 
+                "is_icache": false, 
+                "name": "cacheMemory", 
+                "assoc": 2, 
+                "start_index_bit": 6, 
+                "cxx_class": "CacheMemory", 
+                "path": "system.l1_cntrl22.cacheMemory", 
+                "type": "RubyCache", 
+                "size": 256
+            }, 
+            "cntrl_id": 22, 
+            "recycle_latency": 10, 
+            "name": "l1_cntrl22", 
+            "number_of_TBEs": 256, 
+            "transitions_per_cycle": 32, 
+            "cxx_class": "L1Cache_Controller", 
+            "cache_response_latency": 12, 
+            "version": 22, 
+            "sequencer": {
+                "access_phys_mem": false, 
+                "support_inst_reqs": true, 
+                "slave": {
+                    "peer": [
+                        "system.tester.cpuDataPort[22]", 
+                        "system.tester.cpuInstPort[22]"
+                    ], 
+                    "role": "SLAVE"
+                }, 
+                "name": "sequencer", 
+                "max_outstanding_requests": 16, 
+                "support_data_reqs": true, 
+                "deadlock_threshold": 500000, 
+                "using_ruby_tester": true, 
+                "version": 22, 
+                "cxx_class": "Sequencer", 
+                "path": "system.l1_cntrl22.sequencer", 
+                "using_network_tester": false, 
+                "type": "RubySequencer"
+            }, 
+            "buffer_size": 0, 
+            "path": "system.l1_cntrl22", 
+            "send_evictions": false, 
+            "type": "L1Cache_Controller", 
+            "issue_latency": 2
+        }, 
+        "l1_cntrl21": {
+            "cacheMemory": {
+                "latency": 3, 
+                "is_icache": false, 
+                "name": "cacheMemory", 
+                "assoc": 2, 
+                "start_index_bit": 6, 
+                "cxx_class": "CacheMemory", 
+                "path": "system.l1_cntrl21.cacheMemory", 
+                "type": "RubyCache", 
+                "size": 256
+            }, 
+            "cntrl_id": 21, 
+            "recycle_latency": 10, 
+            "name": "l1_cntrl21", 
+            "number_of_TBEs": 256, 
+            "transitions_per_cycle": 32, 
+            "cxx_class": "L1Cache_Controller", 
+            "cache_response_latency": 12, 
+            "version": 21, 
+            "sequencer": {
+                "access_phys_mem": false, 
+                "support_inst_reqs": true, 
+                "slave": {
+                    "peer": [
+                        "system.tester.cpuDataPort[21]", 
+                        "system.tester.cpuInstPort[21]"
+                    ], 
+                    "role": "SLAVE"
+                }, 
+                "name": "sequencer", 
+                "max_outstanding_requests": 16, 
+                "support_data_reqs": true, 
+                "deadlock_threshold": 500000, 
+                "using_ruby_tester": true, 
+                "version": 21, 
+                "cxx_class": "Sequencer", 
+                "path": "system.l1_cntrl21.sequencer", 
+                "using_network_tester": false, 
+                "type": "RubySequencer"
+            }, 
+            "buffer_size": 0, 
+            "path": "system.l1_cntrl21", 
+            "send_evictions": false, 
+            "type": "L1Cache_Controller", 
+            "issue_latency": 2
+        }, 
+        "l1_cntrl20": {
+            "cacheMemory": {
+                "latency": 3, 
+                "is_icache": false, 
+                "name": "cacheMemory", 
+                "assoc": 2, 
+                "start_index_bit": 6, 
+                "cxx_class": "CacheMemory", 
+                "path": "system.l1_cntrl20.cacheMemory", 
+                "type": "RubyCache", 
+                "size": 256
+            }, 
+            "cntrl_id": 20, 
+            "recycle_latency": 10, 
+            "name": "l1_cntrl20", 
+            "number_of_TBEs": 256, 
+            "transitions_per_cycle": 32, 
+            "cxx_class": "L1Cache_Controller", 
+            "cache_response_latency": 12, 
+            "version": 20, 
+            "sequencer": {
+                "access_phys_mem": false, 
+                "support_inst_reqs": true, 
+                "slave": {
+                    "peer": [
+                        "system.tester.cpuDataPort[20]", 
+                        "system.tester.cpuInstPort[20]"
+                    ], 
+                    "role": "SLAVE"
+                }, 
+                "name": "sequencer", 
+                "max_outstanding_requests": 16, 
+                "support_data_reqs": true, 
+                "deadlock_threshold": 500000, 
+                "using_ruby_tester": true, 
+                "version": 20, 
+                "cxx_class": "Sequencer", 
+                "path": "system.l1_cntrl20.sequencer", 
+                "using_network_tester": false, 
+                "type": "RubySequencer"
+            }, 
+            "buffer_size": 0, 
+            "path": "system.l1_cntrl20", 
+            "send_evictions": false, 
+            "type": "L1Cache_Controller", 
+            "issue_latency": 2
+        }, 
+        "l1_cntrl63": {
+            "cacheMemory": {
+                "latency": 3, 
+                "is_icache": false, 
+                "name": "cacheMemory", 
+                "assoc": 2, 
+                "start_index_bit": 6, 
+                "cxx_class": "CacheMemory", 
+                "path": "system.l1_cntrl63.cacheMemory", 
+                "type": "RubyCache", 
+                "size": 256
+            }, 
+            "cntrl_id": 63, 
+            "recycle_latency": 10, 
+            "name": "l1_cntrl63", 
+            "number_of_TBEs": 256, 
+            "transitions_per_cycle": 32, 
+            "cxx_class": "L1Cache_Controller", 
+            "cache_response_latency": 12, 
+            "version": 63, 
+            "sequencer": {
+                "access_phys_mem": false, 
+                "support_inst_reqs": true, 
+                "slave": {
+                    "peer": [
+                        "system.tester.cpuDataPort[63]", 
+                        "system.tester.cpuInstPort[63]"
+                    ], 
+                    "role": "SLAVE"
+                }, 
+                "name": "sequencer", 
+                "max_outstanding_requests": 16, 
+                "support_data_reqs": true, 
+                "deadlock_threshold": 500000, 
+                "using_ruby_tester": true, 
+                "version": 63, 
+                "cxx_class": "Sequencer", 
+                "path": "system.l1_cntrl63.sequencer", 
+                "using_network_tester": false, 
+                "type": "RubySequencer"
+            }, 
+            "buffer_size": 0, 
+            "path": "system.l1_cntrl63", 
+            "send_evictions": false, 
+            "type": "L1Cache_Controller", 
+            "issue_latency": 2
+        }, 
+        "l1_cntrl62": {
+            "cacheMemory": {
+                "latency": 3, 
+                "is_icache": false, 
+                "name": "cacheMemory", 
+                "assoc": 2, 
+                "start_index_bit": 6, 
+                "cxx_class": "CacheMemory", 
+                "path": "system.l1_cntrl62.cacheMemory", 
+                "type": "RubyCache", 
+                "size": 256
+            }, 
+            "cntrl_id": 62, 
+            "recycle_latency": 10, 
+            "name": "l1_cntrl62", 
+            "number_of_TBEs": 256, 
+            "transitions_per_cycle": 32, 
+            "cxx_class": "L1Cache_Controller", 
+            "cache_response_latency": 12, 
+            "version": 62, 
+            "sequencer": {
+                "access_phys_mem": false, 
+                "support_inst_reqs": true, 
+                "slave": {
+                    "peer": [
+                        "system.tester.cpuDataPort[62]", 
+                        "system.tester.cpuInstPort[62]"
+                    ], 
+                    "role": "SLAVE"
+                }, 
+                "name": "sequencer", 
+                "max_outstanding_requests": 16, 
+                "support_data_reqs": true, 
+                "deadlock_threshold": 500000, 
+                "using_ruby_tester": true, 
+                "version": 62, 
+                "cxx_class": "Sequencer", 
+                "path": "system.l1_cntrl62.sequencer", 
+                "using_network_tester": false, 
+                "type": "RubySequencer"
+            }, 
+            "buffer_size": 0, 
+            "path": "system.l1_cntrl62", 
+            "send_evictions": false, 
+            "type": "L1Cache_Controller", 
+            "issue_latency": 2
+        }, 
+        "l1_cntrl61": {
+            "cacheMemory": {
+                "latency": 3, 
+                "is_icache": false, 
+                "name": "cacheMemory", 
+                "assoc": 2, 
+                "start_index_bit": 6, 
+                "cxx_class": "CacheMemory", 
+                "path": "system.l1_cntrl61.cacheMemory", 
+                "type": "RubyCache", 
+                "size": 256
+            }, 
+            "cntrl_id": 61, 
+            "recycle_latency": 10, 
+            "name": "l1_cntrl61", 
+            "number_of_TBEs": 256, 
+            "transitions_per_cycle": 32, 
+            "cxx_class": "L1Cache_Controller", 
+            "cache_response_latency": 12, 
+            "version": 61, 
+            "sequencer": {
+                "access_phys_mem": false, 
+                "support_inst_reqs": true, 
+                "slave": {
+                    "peer": [
+                        "system.tester.cpuDataPort[61]", 
+                        "system.tester.cpuInstPort[61]"
+                    ], 
+                    "role": "SLAVE"
+                }, 
+                "name": "sequencer", 
+                "max_outstanding_requests": 16, 
+                "support_data_reqs": true, 
+                "deadlock_threshold": 500000, 
+                "using_ruby_tester": true, 
+                "version": 61, 
+                "cxx_class": "Sequencer", 
+                "path": "system.l1_cntrl61.sequencer", 
+                "using_network_tester": false, 
+                "type": "RubySequencer"
+            }, 
+            "buffer_size": 0, 
+            "path": "system.l1_cntrl61", 
+            "send_evictions": false, 
+            "type": "L1Cache_Controller", 
+            "issue_latency": 2
+        }, 
         "work_begin_cpu_id_exit": -1, 
         "work_item_id": -1, 
+        "l1_cntrl29": {
+            "cacheMemory": {
+                "latency": 3, 
+                "is_icache": false, 
+                "name": "cacheMemory", 
+                "assoc": 2, 
+                "start_index_bit": 6, 
+                "cxx_class": "CacheMemory", 
+                "path": "system.l1_cntrl29.cacheMemory", 
+                "type": "RubyCache", 
+                "size": 256
+            }, 
+            "cntrl_id": 29, 
+            "recycle_latency": 10, 
+            "name": "l1_cntrl29", 
+            "number_of_TBEs": 256, 
+            "transitions_per_cycle": 32, 
+            "cxx_class": "L1Cache_Controller", 
+            "cache_response_latency": 12, 
+            "version": 29, 
+            "sequencer": {
+                "access_phys_mem": false, 
+                "support_inst_reqs": true, 
+                "slave": {
+                    "peer": [
+                        "system.tester.cpuDataPort[29]", 
+                        "system.tester.cpuInstPort[29]"
+                    ], 
+                    "role": "SLAVE"
+                }, 
+                "name": "sequencer", 
+                "max_outstanding_requests": 16, 
+                "support_data_reqs": true, 
+                "deadlock_threshold": 500000, 
+                "using_ruby_tester": true, 
+                "version": 29, 
+                "cxx_class": "Sequencer", 
+                "path": "system.l1_cntrl29.sequencer", 
+                "using_network_tester": false, 
+                "type": "RubySequencer"
+            }, 
+            "buffer_size": 0, 
+            "path": "system.l1_cntrl29", 
+            "send_evictions": false, 
+            "type": "L1Cache_Controller", 
+            "issue_latency": 2
+        }, 
         "dir_cntrl0": {
-            "cntrl_id": 16, 
+            "cntrl_id": 64, 
             "recycle_latency": 10, 
             "memBuffer": {
                 "basic_bus_busy_time": 2, 

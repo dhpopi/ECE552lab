@@ -234,7 +234,7 @@ machine(Directory, "Directory protocol")
             trigger(Event:PUTM_NotOwner, in_msg.Address, tbe);
           }
         } else if (in_msg.Type == CoherenceRequestType:PUTS) {
-          if (getDirectoryEntry(in_msg.Address).Sharers.count() < 2) { //if we have one sharer or none at all (i.e., the block became modified)
+          if ((getDirectoryEntry(in_msg.Address).Sharers.count() < 2) && (getDirectoryEntry(in_msg.Address).Sharers.isElement(in_msg.Requestor))) { //if we have one sharer or none at all (i.e., the block became modified)
 	    DPRINTF(RubySlicc, "Directory - requestQueue_in port: PUTS_LAST for address %s from machine %s\n", in_msg.Address, in_msg.Requestor);
             trigger(Event:PUTS_Last, in_msg.Address, tbe);
           } else {
@@ -580,7 +580,7 @@ getDirectoryEntry(address).Sharers);
         qm_popMemQueue;
 	}
 
-    transition(IS_MD, {GETS, GETM, PUTM_NotOwner}){
+    transition(IS_MD, {GETS, GETM, PUTM_NotOwner, PUTS_Last, PUTS_NotLast}){
         z_stall;
 	}
 
@@ -625,7 +625,7 @@ getDirectoryEntry(address).Sharers);
         qm_popMemQueue;
 	}
 
-    transition(IM_MD, {GETS, GETM, PUTM_NotOwner}){
+    transition(IM_MD, {GETS, GETM, PUTM_NotOwner, PUTS_Last, PUTS_NotLast}){
 		z_stall;
 	}
 
